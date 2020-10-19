@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "title": "Example listing publications"
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "http://example.com/new",
+      "type": "application/opds+json"
+    }
+  ],
+  "publications": [
+    {
+      "metadata": {
+        "@type": "http://schema.org/Book",
+        "title": "Moby-Dick",
+        "author": "Herman Melville",
+        "identifier": "urn:isbn:978-3-16-148410-0",
+        "language": "en",
+        "published": "2015-09-29T00:00:00Z",
+        "modified": "2015-09-29T17:00:00Z",
+        "subject": [
+          {
+            "scheme": "http://schema.org/audience",
+            "code": "juvenile-fiction",
+            "name": "Juvenile Fiction",
+            "links": []
+          }
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "http://example.org/publication.json",
+          "type": "application/opds-publication+json"
+        },
+        {
+          "rel": "http://opds-spec.org/acquisition/open-access",
+          "href": "http://example.org/file.epub",
+          "type": "application/epub+zip"
+        }
+      ],
+      "images": [
+        {
+          "href": "http://example.org/cover.jpg",
+          "type": "image/jpeg",
+          "height": 1400,
+          "width": 800
+        },
+        {
+          "href": "http://example.org/cover-small.jpg",
+          "type": "image/jpeg",
+          "height": 700,
+          "width": 400
+        },
+        {
+          "href": "http://example.org/cover.svg",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "@type": "http://schema.org/Book",
+        "title": "Adventures of Huckleberry Finn",
+        "author": "Mark Twain",
+        "identifier": "urn:isbn:978-3-16-148410-0",
+        "language": "en",
+        "published": "2015-09-29T00:00:00Z",
+        "modified": "2015-09-29T17:00:00Z",
+        "subject": [
+          {
+            "scheme": "http://schema.org/audience",
+            "code": "juvenile-fiction",
+            "name": "Juvenile Fiction",
+            "links": []
+          }
+        ]
+      },
+      "links": [
+        {
+          "type": "application/opds-publication+json",
+          "rel": "http://opds-spec.org/acquisition/borrow",
+          "href": "http://montreal.pretnumerique.ca/v1/media/EDEN656014-9782404012711-epub/loans_activation.opds2?_resource_id=5f775a8c2357946dbe59f911",
+          "properties": {
+            "availability": {
+              "state": "available"
+            },
+            "indirectAcquisition": [
+              {
+                "type": "application/vnd.adobe.adept+xml",
+                "child": [
+                  {
+                    "type": "application/epub+zip"
+                  }
+                ]
+              },
+              {
+                "type": "application/vnd.readium.lcp.license.v1.0+json",
+                "child": [
+                  {
+                    "type": "application/epub+zip"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "images": [
+        {
+          "href": "http://example.org/cover.jpg",
+          "type": "image/jpeg",
+          "height": 1400,
+          "width": 800
+        }
+      ]
+    }
+  ]
+}
