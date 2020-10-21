@@ -461,9 +461,9 @@ class RWPMSyntaxAnalyzerTest(TestCase):
                 self.assertIsInstance(manifest.metadata, Metadata)
                 self.assertEqual("http://schema.org/Book", manifest.metadata.type)
                 self.assertEqual("Moby-Dick", manifest.metadata.title)
-                self.assertEqual("Herman Melville", manifest.metadata.author)
+                self.assertEqual(["Herman Melville"], manifest.metadata.authors)
                 self.assertEqual("urn:isbn:978031600000X", manifest.metadata.identifier)
-                self.assertEqual("en", manifest.metadata.language)
+                self.assertEqual(["en"], manifest.metadata.languages)
                 self.assertEqual(
                     datetime.datetime(2015, 9, 29, 17, 0, 0), manifest.metadata.modified
                 )
@@ -472,9 +472,9 @@ class RWPMSyntaxAnalyzerTest(TestCase):
                 self.assertEqual(1, len(manifest.links))
                 [link] = manifest.links
 
-                self.assertIsInstance(link.rel, list)
-                self.assertEqual(1, len(link.rel))
-                self.assertEqual(RWPMLinkRelationsRegistry.SELF.key, link.rel[0])
+                self.assertIsInstance(link.rels, list)
+                self.assertEqual(1, len(link.rels))
+                self.assertEqual(RWPMLinkRelationsRegistry.SELF.key, link.rels[0])
                 self.assertEqual("https://example.com/manifest.json", link.href)
                 self.assertEqual(RWPMMediaTypesRegistry.MANIFEST.key, link.type)
 

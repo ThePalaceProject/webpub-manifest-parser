@@ -33,7 +33,7 @@ class SemanticAnalyzerTest(TestCase):
                         [
                             Link(
                                 href="http://example.com",
-                                rel=[RWPMLinkRelationsRegistry.SELF.key],
+                                rels=[RWPMLinkRelationsRegistry.SELF.key],
                             )
                         ]
                     ),
@@ -52,7 +52,7 @@ class SemanticAnalyzerTest(TestCase):
                         [
                             Link(
                                 href="http://example.com",
-                                rel=[RWPMLinkRelationsRegistry.SELF.key],
+                                rels=[RWPMLinkRelationsRegistry.SELF.key],
                             )
                         ]
                     ),
@@ -94,7 +94,7 @@ class SemanticAnalyzerTest(TestCase):
                 [
                     Link(
                         href="http://example.com",
-                        rel=[RWPMLinkRelationsRegistry.SELF.key],
+                        rels=[RWPMLinkRelationsRegistry.SELF.key],
                     )
                 ]
             ),

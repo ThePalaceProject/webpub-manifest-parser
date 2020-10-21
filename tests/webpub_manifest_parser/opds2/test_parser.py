@@ -2,7 +2,12 @@ import datetime
 import os
 from unittest import TestCase
 
-from webpub_manifest_parser.core.ast import CompactCollection, PresentationMetadata
+from webpub_manifest_parser.core.ast import (
+    CompactCollection,
+    Contributor,
+    LinkList,
+    PresentationMetadata,
+)
 from webpub_manifest_parser.opds2.ast import (
     OPDS2AcquisitionObject,
     OPDS2AvailabilityType,
@@ -31,14 +36,14 @@ class OPDS2Parser(TestCase):
 
         # Assert
         self.assertIsInstance(feed.metadata, OPDS2FeedMetadata)
-        self.assertEqual(feed.metadata.title, "Example listing publications")
+        self.assertEqual("Example listing publications", feed.metadata.title)
 
         self.assertIsInstance(feed.links, list)
         self.assertEqual(1, len(feed.links))
         [manifest_link] = feed.links
-        self.assertEqual(manifest_link.rel[0], OPDS2LinkRelationsRegistry.SELF.key)
-        self.assertEqual(manifest_link.href, "http://example.com/new")
-        self.assertEqual(manifest_link.type, OPDS2MediaTypesRegistry.OPDS_FEED.key)
+        self.assertEqual(OPDS2LinkRelationsRegistry.SELF.key, manifest_link.rels[0])
+        self.assertEqual("http://example.com/new", manifest_link.href)
+        self.assertEqual(OPDS2MediaTypesRegistry.OPDS_FEED.key, manifest_link.type)
 
         self.assertIsInstance(feed.publications, list)
         self.assertEqual(2, len(feed.publications))
@@ -47,9 +52,9 @@ class OPDS2Parser(TestCase):
         self.assertIsInstance(publication.metadata, PresentationMetadata)
         self.assertEqual("http://schema.org/Book", publication.metadata.type)
         self.assertEqual("Moby-Dick", publication.metadata.title)
-        self.assertEqual("Herman Melville", publication.metadata.author)
+        self.assertEqual(["Herman Melville"], publication.metadata.authors)
         self.assertEqual("urn:isbn:978-3-16-148410-0", publication.metadata.identifier)
-        self.assertEqual("en", publication.metadata.language)
+        self.assertEqual(["en"], publication.metadata.languages)
         self.assertEqual(
             datetime.datetime(2015, 9, 29, 17, 0, 0), publication.metadata.modified
         )
@@ -61,7 +66,7 @@ class OPDS2Parser(TestCase):
             publication.links.get_by_rel(OPDS2LinkRelationsRegistry.SELF.key)
         )
         self.assertEqual(
-            OPDS2LinkRelationsRegistry.SELF.key, publication_self_link.rel[0]
+            OPDS2LinkRelationsRegistry.SELF.key, publication_self_link.rels[0]
         )
         self.assertEqual(
             "http://example.org/publication.json", publication_self_link.href
@@ -75,7 +80,7 @@ class OPDS2Parser(TestCase):
         )
         self.assertEqual(
             OPDS2LinkRelationsRegistry.OPEN_ACCESS.key,
-            publication_acquisition_link.rel[0],
+            publication_acquisition_link.rels[0],
         )
         self.assertEqual(
             "http://example.org/file.epub", publication_acquisition_link.href
@@ -92,7 +97,7 @@ class OPDS2Parser(TestCase):
         jpeg_cover_link = first_or_default(
             publication.images.links.get_by_href("http://example.org/cover.jpg")
         )
-        self.assertEqual([], jpeg_cover_link.rel)
+        self.assertEqual([], jpeg_cover_link.rels)
         self.assertEqual("http://example.org/cover.jpg", jpeg_cover_link.href)
         self.assertEqual(OPDS2MediaTypesRegistry.JPEG.key, jpeg_cover_link.type)
         self.assertEqual(1400, jpeg_cover_link.height)
@@ -118,9 +123,17 @@ class OPDS2Parser(TestCase):
         self.assertIsInstance(publication.metadata, PresentationMetadata)
         self.assertEqual("http://schema.org/Book", publication.metadata.type)
         self.assertEqual("Adventures of Huckleberry Finn", publication.metadata.title)
-        self.assertEqual("Mark Twain", publication.metadata.author)
+        self.assertEqual(
+            [
+                Contributor(name="Mark Twain", roles=[], links=LinkList()),
+                Contributor(
+                    name="Samuel Langhorne Clemens", roles=[], links=LinkList()
+                ),
+            ],
+            publication.metadata.authors,
+        )
         self.assertEqual("urn:isbn:978-3-16-148410-0", publication.metadata.identifier)
-        self.assertEqual("en", publication.metadata.language)
+        self.assertEqual(["eng", "fre"], publication.metadata.languages)
         self.assertEqual(
             datetime.datetime(2015, 9, 29, 0, 0, 0), publication.metadata.published
         )
@@ -134,7 +147,7 @@ class OPDS2Parser(TestCase):
             publication.links.get_by_rel(OPDS2LinkRelationsRegistry.BORROW.key)
         )
         self.assertEqual(
-            OPDS2LinkRelationsRegistry.BORROW.key, publication_acquisition_link.rel[0]
+            OPDS2LinkRelationsRegistry.BORROW.key, publication_acquisition_link.rels[0]
         )
         self.assertEqual(
             OPDS2MediaTypesRegistry.OPDS_PUBLICATION.key,

@@ -11,16 +11,15 @@ from webpub_manifest_parser.core.parsers import (
 from webpub_manifest_parser.core.properties import (
     ArrayOfStringsProperty,
     ArrayProperty,
+    BaseArrayProperty,
     BooleanProperty,
     DateOrTimeProperty,
     DateTimeProperty,
     EnumProperty,
     IntegerProperty,
-    LanguageProperty,
-    ListProperty,
+    ListOfLanguagesProperty,
     LocalizableStringProperty,
     NumberProperty,
-    ParsableProperty,
     PropertiesGrouping,
     Property,
     StringProperty,
@@ -144,14 +143,14 @@ class Link(Node):
     templated = BooleanProperty("templated", required=False)
     type = StringProperty("type", required=False)
     title = StringProperty("title", required=False)
-    rel = ArrayOfStringsProperty("rel", required=False)
+    rels = ArrayOfStringsProperty("rel", required=False)
     properties = TypeProperty("properties", required=False, nested_type=LinkProperties)
     height = IntegerProperty("height", required=False, exclusive_minimum=0)
     width = IntegerProperty("width", required=False, exclusive_minimum=0)
     bitrate = NumberProperty("bitrate", required=False, exclusive_minimum=0)
     duration = NumberProperty("duration", required=False, exclusive_minimum=0)
-    language = LanguageProperty("language", required=False)
-    alternate = ArrayProperty(
+    languages = ListOfLanguagesProperty("language", required=False)
+    alternates = ArrayProperty(
         "alternate",
         required=False,
         item_parser=TypeParser("webpub_manifest_parser.core.ast.Link"),
@@ -168,14 +167,14 @@ class Link(Node):
         templated=None,
         _type=None,
         title=None,
-        rel=None,
+        rels=None,
         properties=None,
         height=None,
         width=None,
         duration=None,
         bitrate=None,
-        language=None,
-        alternate=None,
+        languages=None,
+        alternates=None,
         children=None,
     ):
         """Initialize a new instance of Link class.
@@ -192,8 +191,8 @@ class Link(Node):
         :param title: Title of the linked resource
         :type title: str
 
-        :param rel: Relation between the resource and its containing collection
-        :type rel: List[registry.LinkRelation]
+        :param rels: Relation between the resource and its containing collection
+        :type rels: List[registry.LinkRelation]
 
         :param properties: Relation between the resource and its containing collection
         :type properties: object
@@ -210,11 +209,11 @@ class Link(Node):
         :param bitrate: Bit rate of the linked resource in kilobits per second
         :type bitrate: float
 
-        :param language: Expected language of the linked resource
-        :type language: List[str]
+        :param languages: Expected languages of the linked resource
+        :type languages: List[str]
 
-        :param alternate: Alternate resources for the linked resource
-        :type alternate: List[Link]
+        :param alternates: Alternate resources for the linked resource
+        :type alternates: List[Link]
 
         :param children: Resources that are children of the linked resource, in the context of a given collection role
         :type children: List[Link]
@@ -225,14 +224,14 @@ class Link(Node):
         self.templated = templated
         self.type = _type
         self.title = title
-        self.rel = rel
+        self.rels = rels
         self.properties = properties
         self.height = height
         self.width = width
         self.duration = duration
         self.bitrate = bitrate
-        self.language = language
-        self.alternate = alternate
+        self.languages = languages
+        self.alternates = alternates
         self.children = children
 
     def __hash__(self):
@@ -247,16 +246,16 @@ class Link(Node):
                 self.templated,
                 self.type,
                 self.title,
-                frozenset(self.rel),
+                frozenset(self.rels),
                 self.properties,
                 self.height,
                 self.width,
                 self.duration,
                 self.bitrate,
-                frozenset(self.language)
-                if isinstance(self.language, list)
-                else self.language,
-                frozenset(self.alternate),
+                frozenset(self.languages)
+                if isinstance(self.languages, list)
+                else self.languages,
+                frozenset(self.alternates),
                 frozenset(self.children),
             )
         )
@@ -273,27 +272,27 @@ class Link(Node):
             u"templated={1}, "
             u"type={2}, "
             u"title={3}, "
-            u"rel={4}, "
+            u"rels={4}, "
             u"properties={5}, "
             u"height={6}, "
             u"width={7}, "
             u"duration={8}, "
             u"bitrate={9}, "
-            u"language={10}, "
-            u"alternate={11}, "
+            u"languages={10}, "
+            u"alternates={11}, "
             u"children={12}".format(
                 self.href,
                 self.templated,
                 self.type,
                 self.title,
-                self.rel,
+                self.rels,
                 self.properties,
                 self.height,
                 self.width,
                 self.duration,
                 self.bitrate,
-                self.language,
-                self.alternate,
+                self.languages,
+                self.alternates,
                 self.children,
             )
         )
@@ -325,7 +324,7 @@ class LinkList(Node, list):
         :return: Links with the specified relation
         :rtype: List[Link]
         """
-        return [link for link in self if rel in link.rel]
+        return [link for link in self if rel in link.rels]
 
     def get_by_href(self, href):
         """Return links with the specific URL.
@@ -339,7 +338,7 @@ class LinkList(Node, list):
         return [link for link in self if href == link.href]
 
 
-class ArrayOfLinksProperty(ListProperty):
+class ArrayOfLinksProperty(BaseArrayProperty):
     """Property allowing to contain only unique links."""
 
     def __init__(self, key, required):
@@ -362,9 +361,49 @@ class Contributor(Node):
     name = LocalizableStringProperty("name", required=True)
     identifier = URIProperty("identifier", required=False)
     sort_as = StringProperty("sortAs", required=False)
-    role = ArrayOfStringsProperty("role", required=False)
+    roles = ArrayOfStringsProperty("role", required=False)
     position = NumberProperty("position", required=False)
     links = ArrayOfLinksProperty("links", required=False)
+
+    def __init__(  # pylint: disable=R0913
+        self,
+        name=None,
+        identifier=None,
+        sort_as=None,
+        roles=None,
+        position=None,
+        links=None,
+    ):
+        """Initialize a new instance of Contributor class."""
+        super(Contributor, self).__init__()
+
+        self.name = name
+        self.identifier = identifier
+        self.sort_as = sort_as
+        self.roles = roles
+        self.position = position
+        self.links = links
+
+    def __eq__(self, other):
+        """Compare two Contributor objects.
+
+        :param other: Contributor object
+        :type other: Contributor
+
+        :return: Boolean value indicating whether two items are equal
+        :rtype: bool
+        """
+        if not isinstance(other, Contributor):
+            return False
+
+        return (
+            self.name == other.name
+            and self.identifier == other.identifier
+            and self.sort_as == other.sort_as
+            and self.roles == other.roles
+            and self.position == other.position
+            and self.links == other.links
+        )
 
     def __hash__(self):
         """Calculate the hash.
@@ -377,7 +416,7 @@ class Contributor(Node):
                 self.name,
                 self.identifier,
                 self.sort_as,
-                frozenset(self.role),
+                frozenset(self.roles),
                 self.position,
                 frozenset(self.links),
             )
@@ -389,18 +428,37 @@ class Contributor(Node):
         :return: String representation
         :rtype: str
         """
-        return u"<Contributor(name={0}, identifier={1}, sort_as={2}, role={3}, position={4}, links={5})>".format(
+        return u"<Contributor(name={0}, identifier={1}, sort_as={2}, roles={3}, position={4}, links={5})>".format(
             encode(self.name),
             self.identifier,
             self.sort_as,
-            self.role,
+            self.roles,
             self.position,
             self.links,
         )
 
 
-class ContributorProperty(ParsableProperty):
-    """Property containing information about a contributor."""
+class ArrayOfContributorsProperty(BaseArrayProperty):
+    """Property containing information about contributors.
+
+    For example:
+        - "Herman Melville"
+        - {
+            name: "Herman Melville"
+          }
+        - [
+            "Herman Melville",
+            "Mark Twain"
+          ]
+        - [
+            {
+                name: "Herman Melville"
+            },
+            {
+                name: "Mark Twain"
+            }
+          ]
+    """
 
     PARSER = AnyOfParser(
         [
@@ -409,6 +467,19 @@ class ContributorProperty(ParsableProperty):
             TypeParser(Contributor),
         ]
     )
+
+    def __init__(self, key, required):
+        """Initialize a new instance of ArrayOfContributorsProperty class.
+
+        :param key: Property's key
+        :type key: str
+
+        :param required: Boolean value indicating whether the property is required or not
+        :type required: bool
+        """
+        super(ArrayOfContributorsProperty, self).__init__(
+            key, required, self.PARSER, list, []
+        )
 
 
 class Subject(Node, PropertiesGrouping):
@@ -443,8 +514,27 @@ class Subject(Node, PropertiesGrouping):
         )
 
 
-class SubjectProperty(ParsableProperty):
-    """Property containing information about a subject."""
+class ArrayOfSubjectsProperty(BaseArrayProperty):
+    """Property containing information about subjects.
+
+    For example:
+        - "Juvenile Fiction"
+        - {
+            name: "Juvenile Fiction"
+          }
+        - [
+            "Juvenile Fiction",
+            "Biography"
+          ]
+        - [
+            {
+                name: "Juvenile Fiction"
+            },
+            {
+                name: "Biography"
+            }
+          ]
+    """
 
     PARSER = AnyOfParser(
         [
@@ -453,6 +543,19 @@ class SubjectProperty(ParsableProperty):
             TypeParser(Subject),
         ]
     )
+
+    def __init__(self, key, required):
+        """Initialize a new instance of ArrayOfSubjectsProperty class.
+
+        :param key: Property's key
+        :type key: str
+
+        :param required: Boolean value indicating whether the property is required or not
+        :type required: bool
+        """
+        super(ArrayOfSubjectsProperty, self).__init__(
+            key, required, self.PARSER, list, []
+        )
 
 
 class Owner(Node, PropertiesGrouping):
@@ -489,22 +592,22 @@ class Metadata(Node):
     subtitle = LocalizableStringProperty("subtitle", required=False)
     modified = DateTimeProperty("modified", required=False)
     published = DateOrTimeProperty("published", required=False)
-    language = LanguageProperty("language", required=False)
+    languages = ListOfLanguagesProperty("language", required=False)
     sort_as = StringProperty("sortAs", required=False)
-    author = ContributorProperty("author", required=False)
-    translator = ContributorProperty("translator", required=False)
-    editor = ContributorProperty("editor", required=False)
-    artist = ContributorProperty("artist", required=False)
-    illustrator = ContributorProperty("illustrator", required=False)
-    letterer = ContributorProperty("letterer", required=False)
-    penciler = ContributorProperty("penciler", required=False)
-    colorist = ContributorProperty("colorist", required=False)
-    inker = ContributorProperty("inker", required=False)
-    narrator = ContributorProperty("narrator", required=False)
-    contributor = ContributorProperty("contributor", required=False)
-    publisher = ContributorProperty("publisher", required=False)
-    imprint = ContributorProperty("imprint", required=False)
-    subject = SubjectProperty("subject", required=False)
+    authors = ArrayOfContributorsProperty("author", required=False)
+    translators = ArrayOfContributorsProperty("translator", required=False)
+    editors = ArrayOfContributorsProperty("editor", required=False)
+    artists = ArrayOfContributorsProperty("artist", required=False)
+    illustrators = ArrayOfContributorsProperty("illustrator", required=False)
+    letterers = ArrayOfContributorsProperty("letterer", required=False)
+    pencilers = ArrayOfContributorsProperty("penciler", required=False)
+    colorists = ArrayOfContributorsProperty("colorist", required=False)
+    inkers = ArrayOfContributorsProperty("inker", required=False)
+    narrators = ArrayOfContributorsProperty("narrator", required=False)
+    contributors = ArrayOfContributorsProperty("contributor", required=False)
+    publishers = ArrayOfContributorsProperty("publisher", required=False)
+    imprints = ArrayOfContributorsProperty("imprint", required=False)
+    subjects = ArrayOfSubjectsProperty("subject", required=False)
     reading_progression = EnumProperty(
         "readingProgression",
         required=False,
@@ -554,22 +657,22 @@ class Metadata(Node):
         self.subtitle = subtitle
         self.modified = modified
         self.published = published
-        self.language = language
+        self.languages = language
         self.sort_as = sort_as
-        self.author = author
-        self.translator = translator
-        self.editor = editor
-        self.artist = artist
-        self.illustrator = illustrator
-        self.letterer = letterer
-        self.penciler = penciler
-        self.colorist = colorist
-        self.inker = inker
-        self.narrator = narrator
-        self.contributor = contributor
-        self.publisher = publisher
-        self.imprint = imprint
-        self.subject = subject
+        self.authors = author
+        self.translators = translator
+        self.editors = editor
+        self.artists = artist
+        self.illustrators = illustrator
+        self.letterers = letterer
+        self.pencilers = penciler
+        self.colorists = colorist
+        self.inkers = inker
+        self.narrators = narrator
+        self.contributors = contributor
+        self.publishers = publisher
+        self.imprints = imprint
+        self.subjects = subject
         self.description = description
         self.duration = duration
         self.number_of_pages = number_of_pages
@@ -589,22 +692,22 @@ class Metadata(Node):
                 self.subtitle,
                 self.modified,
                 self.published,
-                self.language,
+                self.languages,
                 self.sort_as,
-                self.author,
-                self.translator,
-                self.editor,
-                self.artist,
-                self.illustrator,
-                self.letterer,
-                self.penciler,
-                self.colorist,
-                self.inker,
-                self.narrator,
-                self.contributor,
-                self.publisher,
-                self.imprint,
-                self.subject,
+                self.authors,
+                self.translators,
+                self.editors,
+                self.artists,
+                self.illustrators,
+                self.letterers,
+                self.pencilers,
+                self.colorists,
+                self.inkers,
+                self.narrators,
+                self.contributors,
+                self.publishers,
+                self.imprints,
+                self.subjects,
                 self.description,
                 self.duration,
                 self.number_of_pages,
@@ -634,7 +737,7 @@ class CompactCollection(Node):
     def __init__(self, role=None, links=None):
         """Initialize a new instance of Collection class.
 
-        :param role: Collection's role (can be empty when self is a manifest)
+        :param role: Collection's roles (can be empty when self is a manifest)
         :type role: Optional[CollectionRole]
 
         :param links: Collection's links
@@ -777,7 +880,7 @@ class CompactCollectionProperty(Property):
         return self._role
 
 
-class ArrayOfCollectionsProperty(ListProperty):
+class ArrayOfCollectionsProperty(BaseArrayProperty):
     """Property allowing to contain a compact sub-collection."""
 
     def __init__(self, key, required, role, collection_type=Collection):

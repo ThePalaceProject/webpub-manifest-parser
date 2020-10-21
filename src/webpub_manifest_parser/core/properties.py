@@ -173,7 +173,7 @@ class Property(object):
         return self._default_value
 
 
-class ListProperty(Property):
+class BaseArrayProperty(Property):
     """Property containing a list of items."""
 
     def __init__(
@@ -199,7 +199,7 @@ class ListProperty(Property):
         if not issubclass(list_type, list):
             raise ValueError("List type argument must be a subclass of list class")
 
-        super(ListProperty, self).__init__(key, required, parser, default_value)
+        super(BaseArrayProperty, self).__init__(key, required, parser, default_value)
 
         self._list_type = list_type
 
@@ -217,7 +217,7 @@ class ListProperty(Property):
                 "Value must be a subclass of {0} class".format(self._list_type)
             )
 
-        super(ListProperty, self).__set__(owner_instance, value)
+        super(BaseArrayProperty, self).__set__(owner_instance, value)
 
     @property
     def list_type(self):
@@ -458,7 +458,7 @@ class DateOrTimeProperty(ParsableProperty):
     PARSER = AnyOfParser([DateParser(), DateTimeParser()])
 
 
-class ArrayProperty(ListProperty):
+class ArrayProperty(BaseArrayProperty):
     """Property containing an array of items."""
 
     def __init__(  # pylint: disable=R0913
@@ -506,7 +506,7 @@ class ArrayProperty(ListProperty):
         )
 
 
-class ArrayOfStringsProperty(ListProperty):
+class ArrayOfStringsProperty(BaseArrayProperty):
     """Property allowing either a string or array of strings as its values."""
 
     def __init__(  # pylint: disable=R0913
@@ -541,19 +541,52 @@ class ArrayOfStringsProperty(ListProperty):
         )
 
 
-class LanguageProperty(ParsableProperty):
-    """Property allowing localizable strings."""
+class ListOfLanguagesProperty(BaseArrayProperty):
+    """Property allowing localizable strings.
 
-    PARSER = AnyOfParser(
-        [
-            StringPatternParser(LocalizableStringParser.LANGUAGE_PATTERN),
-            ArrayParser(StringPatternParser(LocalizableStringParser.LANGUAGE_PATTERN)),
-        ]
-    )
+    For example:
+        - "en"
+        - [
+            "eng",
+            "fre"
+          ]
+    """
+
+    def __init__(self, key, required):  # pylint: disable=R0913
+        """Initialize a new instance of ListOfLanguagesProperty class.
+
+        :param key: Property's key
+        :type key: str
+
+        :param required: Boolean value indicating whether the property is required or not
+        :type required: bool
+        """
+        super(ListOfLanguagesProperty, self).__init__(
+            key,
+            required,
+            AnyOfParser(
+                [
+                    StringPatternParser(LocalizableStringParser.LANGUAGE_PATTERN),
+                    ArrayParser(
+                        StringPatternParser(LocalizableStringParser.LANGUAGE_PATTERN)
+                    ),
+                ]
+            ),
+            list,
+            [],
+        )
 
 
 class LocalizableStringProperty(ParsableProperty):
-    """Property allowing either only string/localizable string values."""
+    """Property allowing either only string/localizable string values.
+
+    For example:
+    - "plain string"
+    - {
+        "eng": "Hello",
+        "esp": "Hola"
+      }
+    """
 
     PARSER = AnyOfParser([LocalizableStringParser(), StringParser()])
 

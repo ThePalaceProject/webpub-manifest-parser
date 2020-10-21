@@ -4,9 +4,9 @@ from nose.tools import assert_raises
 from parameterized import parameterized
 
 from webpub_manifest_parser.core.ast import (
+    ArrayOfContributorsProperty,
+    ArrayOfSubjectsProperty,
     Contributor,
-    ContributorProperty,
-    SubjectProperty,
 )
 from webpub_manifest_parser.core.parsers import (
     AnyOfParser,
@@ -56,7 +56,7 @@ class FunctionsTest(TestCase):
         [
             (
                 "contributor_property",
-                ContributorProperty.PARSER,
+                ArrayOfContributorsProperty.PARSER,
                 TypeParser,
                 [
                     (
@@ -70,7 +70,7 @@ class FunctionsTest(TestCase):
             ),
             (
                 "subject_property",
-                SubjectProperty.PARSER,
+                ArrayOfSubjectsProperty.PARSER,
                 TypeParser,
                 [
                     (

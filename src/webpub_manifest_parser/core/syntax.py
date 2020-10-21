@@ -7,7 +7,7 @@ import six
 from webpub_manifest_parser.core.ast import CompactCollection
 from webpub_manifest_parser.core.errors import BaseSyntaxError
 from webpub_manifest_parser.core.parsers import ArrayParser, TypeParser, find_parser
-from webpub_manifest_parser.core.properties import ListProperty, PropertiesGrouping
+from webpub_manifest_parser.core.properties import BaseArrayProperty, PropertiesGrouping
 from webpub_manifest_parser.utils import encode
 
 
@@ -182,7 +182,7 @@ class SyntaxAnalyzer(object):
 
         For example, values of list properties have to be a collection of the type specified in the property.
         """
-        if isinstance(object_property, ListProperty) and not isinstance(
+        if isinstance(object_property, BaseArrayProperty) and not isinstance(
             property_value, object_property.list_type
         ):
             if property_value is not None:

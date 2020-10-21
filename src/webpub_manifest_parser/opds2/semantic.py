@@ -155,7 +155,7 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         ]
 
         for link in node.links:
-            if link.rel is not None and set(acquisition_links) & set(link.rel):
+            if link.rels is not None and set(acquisition_links) & set(link.rels):
                 break
         else:
             raise MISSING_ACQUISITION_LINK

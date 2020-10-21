@@ -97,7 +97,7 @@ class SemanticAnalyzer(Visitor):
         node.links.accept(self)
 
         for link in node.links:
-            if not link.rel:
+            if not link.rels:
                 raise MISSING_MANIFEST_LINK_REL_PROPERTY_ERROR
 
         self_link = first_or_default(

@@ -63,9 +63,16 @@
       "metadata": {
         "@type": "http://schema.org/Book",
         "title": "Adventures of Huckleberry Finn",
-        "author": "Mark Twain",
+        "author": [
+          {
+            "name": "Mark Twain"
+          },
+          {
+            "name": "Samuel Langhorne Clemens"
+          }
+        ],
         "identifier": "urn:isbn:978-3-16-148410-0",
-        "language": "en",
+        "language": ["eng", "fre"],
         "published": "2015-09-29T00:00:00Z",
         "modified": "2015-09-29T17:00:00Z",
         "subject": [

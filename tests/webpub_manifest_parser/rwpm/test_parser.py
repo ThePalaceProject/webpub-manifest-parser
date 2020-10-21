@@ -2,13 +2,9 @@ import datetime
 import os
 from unittest import TestCase
 
-from nose.tools import eq_
-
 from webpub_manifest_parser.core.ast import CompactCollection, Metadata
-from webpub_manifest_parser.rwpm.ast import RWPMManifest
 from webpub_manifest_parser.rwpm.parser import RWPMDocumentParserFactory
 from webpub_manifest_parser.rwpm.registry import (
-    RWPMCollectionRolesRegistry,
     RWPMLinkRelationsRegistry,
     RWPMMediaTypesRegistry,
 )
@@ -36,9 +32,9 @@ class RWPMParserTest(TestCase):
         self.assertIsInstance(manifest.metadata, Metadata)
         self.assertEqual("http://schema.org/Book", manifest.metadata.type)
         self.assertEqual("Moby-Dick", manifest.metadata.title)
-        self.assertEqual("Herman Melville", manifest.metadata.author)
+        self.assertEqual(["Herman Melville"], manifest.metadata.authors)
         self.assertEqual("urn:isbn:978031600000X", manifest.metadata.identifier)
-        self.assertEqual("en", manifest.metadata.language)
+        self.assertEqual(["en"], manifest.metadata.languages)
         self.assertEqual(
             datetime.datetime(2015, 9, 29, 17, 0, 0), manifest.metadata.modified
         )
@@ -50,7 +46,7 @@ class RWPMParserTest(TestCase):
             manifest.links.get_by_rel(RWPMLinkRelationsRegistry.SELF.key)
         )
         self.assertIsNotNone(self_link)
-        self.assertIn(RWPMLinkRelationsRegistry.SELF.key, self_link.rel)
+        self.assertIn(RWPMLinkRelationsRegistry.SELF.key, self_link.rels)
         self.assertEqual("https://example.com/manifest.json", self_link.href)
         self.assertEqual(RWPMMediaTypesRegistry.MANIFEST.key, self_link.type)
 
@@ -58,7 +54,7 @@ class RWPMParserTest(TestCase):
             manifest.links.get_by_rel(RWPMLinkRelationsRegistry.ALTERNATE.key)
         )
         self.assertIsNotNone(alternate_link)
-        self.assertIn(RWPMLinkRelationsRegistry.ALTERNATE.key, alternate_link.rel)
+        self.assertIn(RWPMLinkRelationsRegistry.ALTERNATE.key, alternate_link.rels)
         self.assertEqual("https://example.com/publication.epub", alternate_link.href)
         self.assertEqual(
             RWPMMediaTypesRegistry.EPUB_PUBLICATION_PACKAGE.key, alternate_link.type
@@ -68,63 +64,63 @@ class RWPMParserTest(TestCase):
             manifest.links.get_by_rel(RWPMLinkRelationsRegistry.SEARCH.key)
         )
         self.assertIsNotNone(search_link)
-        self.assertIn(RWPMLinkRelationsRegistry.SEARCH.key, search_link.rel)
+        self.assertIn(RWPMLinkRelationsRegistry.SEARCH.key, search_link.rels)
         self.assertEqual("https://example.com/search{?query}", search_link.href)
         self.assertEqual(RWPMMediaTypesRegistry.HTML.key, search_link.type)
 
         self.assertIsInstance(manifest.reading_order, CompactCollection)
-        # self.assertIsInstance(manifest.reading_order.role, CollectionRole)
-        # self.assertEqual(manifest.reading_order.role.key, RWPMCollectionRolesRegistry.READING_ORDER.key)
         self.assertIsInstance(manifest.reading_order.links, list)
         self.assertEqual(2, len(manifest.reading_order.links))
-        # [reading_order_link] = manifest.reading_order.links
-        # self.assertEqual('https://example.com/c001.html', reading_order_link.href)
-        # self.assertEqual(RWPMMediaTypesRegistry.HTML.key, reading_order_link.type)
-        # self.assertEqual('Chapter 1', reading_order_link.title)
 
-        # eq_(len(manifest.sub_collections), 2)
-        #
-        # reading_order_sub_collection = first_or_default(
-        #     manifest.sub_collections.get_by_role(
-        #         RWPMCollectionRolesRegistry.READING_ORDER.key
-        #     )
-        # )
-        # eq_(
-        #     reading_order_sub_collection.role.key,
-        #     RWPMCollectionRolesRegistry.READING_ORDER.key,
-        # )
-        # eq_(len(reading_order_sub_collection.links), 2)
-        # eq_(reading_order_sub_collection.links[0].href, "https://example.com/c001.html")
-        # eq_(reading_order_sub_collection.links[0].type, RWPMMediaTypesRegistry.HTML.key)
-        # eq_(reading_order_sub_collection.links[0].title, "Chapter 1")
-        #
-        # eq_(reading_order_sub_collection.links[1].href, "https://example.com/c002.html")
-        # eq_(reading_order_sub_collection.links[1].type, RWPMMediaTypesRegistry.HTML.key)
-        # eq_(reading_order_sub_collection.links[1].title, "Chapter 2")
-        #
-        # resources_sub_collection = first_or_default(
-        #     manifest.sub_collections.get_by_role(
-        #         RWPMCollectionRolesRegistry.RESOURCES.key
-        #     )
-        # )
-        # eq_(
-        #     resources_sub_collection.role.key, RWPMCollectionRolesRegistry.RESOURCES.key
-        # )
-        # eq_(len(resources_sub_collection.links), 5)
-        # eq_(resources_sub_collection.links[0].rel, RWPMLinkRelationsRegistry.COVER.key)
-        # eq_(resources_sub_collection.links[0].href, "https://example.com/cover.jpg")
-        # eq_(resources_sub_collection.links[0].type, RWPMMediaTypesRegistry.JPEG.key)
-        # eq_(resources_sub_collection.links[0].height, 600)
-        # eq_(resources_sub_collection.links[0].width, 400)
-        #
-        # eq_(resources_sub_collection.links[1].href, "https://example.com/style.css")
-        # eq_(resources_sub_collection.links[1].type, RWPMMediaTypesRegistry.CSS.key)
-        #
-        # eq_(resources_sub_collection.links[2].href, "https://example.com/whale.jpg")
-        # eq_(resources_sub_collection.links[2].type, RWPMMediaTypesRegistry.JPEG.key)
-        #
-        # eq_(resources_sub_collection.links[3].href, "https://example.com/boat.svg")
-        # eq_(resources_sub_collection.links[3].type, RWPMMediaTypesRegistry.SVG_XML.key)
-        #
-        # eq_(resources_sub_collection.links[4].href, "https://example.com/notes.html")
-        # eq_(resources_sub_collection.links[4].type, RWPMMediaTypesRegistry.HTML.key)
+        reading_order_link = manifest.reading_order.links[0]
+        self.assertEqual("https://example.com/c001.html", reading_order_link.href)
+        self.assertEqual(RWPMMediaTypesRegistry.HTML.key, reading_order_link.type)
+        self.assertEqual("Chapter 1", reading_order_link.title)
+
+        reading_order_link = manifest.reading_order.links[1]
+        self.assertEqual("https://example.com/c002.html", reading_order_link.href)
+        self.assertEqual(RWPMMediaTypesRegistry.HTML.key, reading_order_link.type)
+        self.assertEqual("Chapter 2", reading_order_link.title)
+
+        resources_sub_collection = manifest.resources
+        self.assertEqual(5, len(resources_sub_collection.links))
+        self.assertEqual(
+            [RWPMLinkRelationsRegistry.COVER.key],
+            resources_sub_collection.links[0].rels,
+        )
+        self.assertEqual(
+            "https://example.com/cover.jpg", resources_sub_collection.links[0].href
+        )
+        self.assertEqual(
+            RWPMMediaTypesRegistry.JPEG.key, resources_sub_collection.links[0].type
+        )
+        self.assertEqual(600, resources_sub_collection.links[0].height)
+        self.assertEqual(400, resources_sub_collection.links[0].width)
+
+        self.assertEqual(
+            "https://example.com/style.css", resources_sub_collection.links[1].href
+        )
+        self.assertEqual(
+            RWPMMediaTypesRegistry.CSS.key, resources_sub_collection.links[1].type
+        )
+
+        self.assertEqual(
+            "https://example.com/whale.jpg", resources_sub_collection.links[2].href
+        )
+        self.assertEqual(
+            RWPMMediaTypesRegistry.JPEG.key, resources_sub_collection.links[2].type
+        )
+
+        self.assertEqual(
+            "https://example.com/boat.svg", resources_sub_collection.links[3].href
+        )
+        self.assertEqual(
+            RWPMMediaTypesRegistry.SVG_XML.key, resources_sub_collection.links[3].type
+        )
+
+        self.assertEqual(
+            "https://example.com/notes.html", resources_sub_collection.links[4].href
+        )
+        self.assertEqual(
+            RWPMMediaTypesRegistry.HTML.key, resources_sub_collection.links[4].type
+        )
