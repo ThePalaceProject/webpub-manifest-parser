@@ -243,18 +243,18 @@ class SyntaxAnalyzer(object):
 
         return ast_object
 
-    def analyze(self, input_file):
+    def analyze(self, input_stream):
         """Parse JSON file into RWPM AST.
 
-        :param input_file: File descriptor
-        :type input_file: BinaryIO
+        :param input_stream: File descriptor
+        :type input_stream: six.StringIO
 
         :return: RWPM AST
         :rtype: ManifestLike
         """
-        self._logger.debug(u"Started analyzing input file {0}".format(input_file))
+        self._logger.debug(u"Started analyzing input file {0}".format(input_stream))
 
-        input_file_content = input_file.read()
+        input_file_content = input_stream.read()
         input_file_content = input_file_content.strip()
         manifest_json = json.loads(input_file_content)
 
@@ -262,7 +262,7 @@ class SyntaxAnalyzer(object):
         manifest = self._parse_object(manifest_json, manifest.__class__)
 
         self._logger.debug(
-            u"Finished analyzing input file {0}: {1}".format(input_file, manifest)
+            u"Finished analyzing input file {0}: {1}".format(input_stream, manifest)
         )
 
         return manifest

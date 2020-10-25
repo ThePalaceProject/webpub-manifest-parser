@@ -3,8 +3,8 @@ import io
 import logging
 import re
 from abc import ABCMeta, abstractmethod
+from io import StringIO
 from pydoc import locate
-from tempfile import NamedTemporaryFile
 
 import jsonschema  # noqa: I201
 import requests  # noqa: I201
@@ -716,6 +716,20 @@ class DocumentParser(object):
 
         return manifest
 
+    def parse_stream(self, input_stream):
+        """Parse the input file and return a validated AST object.
+
+        :param input_stream: Full path to the file containing RWPM-compatible document
+        :type input_stream: six.StringIO
+
+        :return: Validated manifest-like object
+        :rtype: python_rwpm_parser.ast.Manifestlike
+        """
+        manifest = self._syntax_analyzer.analyze(input_stream)
+        manifest.accept(self._semantic_analyzer)
+
+        return manifest
+
     def parse_url(self, url):
         """Fetch the content pointed by the URL, parse it and return a validated AST object.
 
@@ -726,13 +740,10 @@ class DocumentParser(object):
         :rtype: python_rwpm_parser.ast.Manifestlike
         """
         response = requests.get(url)
+        input_stream = StringIO(response.content)
 
-        with NamedTemporaryFile() as input_file:
-            input_file.write(response.content)
-            input_file.flush()
-
-            manifest = self._syntax_analyzer.analyze(input_file)
-            manifest.accept(self._semantic_analyzer)
+        manifest = self._syntax_analyzer.analyze(input_stream)
+        manifest.accept(self._semantic_analyzer)
 
         return manifest
 
