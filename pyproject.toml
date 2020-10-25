@@ -5,6 +5,9 @@ description = "A parser for the Readium Web Publication Manifest and OPDS 2.0 fo
 license = "Apache-2.0"
 authors = ["Leonard Richardson <leonardr@segfault.org>"]
 maintainers = ["Viacheslav Bessonov <viacheslav.bessonov@hilbertteam.com>"]
+readme = "README.md"
+repository = "https://github.com/NYPL-Simplified/python-webpub-manifest-parser"
+homepage = "https://github.com/NYPL-Simplified/python-webpub-manifest-parser"
 keywords = ["Readium Web Publication Manifest", "RWPM", "Open Publication Distribution System 2.0", "OPDS 2.0"]
 classifiers = [
     "Intended Audience :: Developers",
