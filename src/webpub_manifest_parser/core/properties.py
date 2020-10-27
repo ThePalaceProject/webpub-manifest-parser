@@ -173,62 +173,6 @@ class Property(object):
         return self._default_value
 
 
-class BaseArrayProperty(Property):
-    """Property containing a list of items."""
-
-    def __init__(
-        self, key, required, parser, list_type=list, default_value=None
-    ):  # pylint: disable=R0913
-        """Initialize a new instance of ListProperty class.
-
-        :param key: Property's key
-        :type key: str
-
-        :param required: Boolean value indicating whether the property is required or not
-        :type required: bool
-
-        :param parser: Parse used to validate and parse property's value
-        :type parser: parsers.ValueParser
-
-        :param list_type: Class of a collection used to hold the items
-        :type list_type: Type
-
-        :param default_value: Property's default value
-        :type default_value: Any
-        """
-        if not issubclass(list_type, list):
-            raise ValueError("List type argument must be a subclass of list class")
-
-        super(BaseArrayProperty, self).__init__(key, required, parser, default_value)
-
-        self._list_type = list_type
-
-    def __set__(self, owner_instance, value):
-        """Set the property's value.
-
-        :param owner_instance: Instance of the owner, class having instance of ObjectProperty as an attribute
-        :type owner_instance: Optional[HasProperties]
-
-        :param value: New setting's value
-        :type value: Any
-        """
-        if value is not None and not isinstance(value, self._list_type):
-            raise ValueError(
-                "Value must be a subclass of {0} class".format(self._list_type)
-            )
-
-        super(BaseArrayProperty, self).__set__(owner_instance, value)
-
-    @property
-    def list_type(self):
-        """Return the class of a collection used to hold the items.
-
-        :return: Class of a collection used to hold the items
-        :rtype: Type
-        """
-        return self._list_type
-
-
 class PropertiesGrouping(HasProperties):
     """Group of properties."""
 
@@ -271,6 +215,25 @@ class PropertiesGrouping(HasProperties):
         members = inspect.getmembers(klass, lambda member: isinstance(member, Property))
 
         return members
+
+    @staticmethod
+    def get_required_class_properties(klass):
+        """Return a list of 2-tuples containing information about required ConfigurationMetadata properties.
+
+        :param klass: Class
+        :type klass: type
+
+        :return: List of 2-tuples containing information ConfigurationMetadata properties in the specified class
+        :rtype: List[Tuple[string, ConfigurationMetadata]]
+        """
+        class_properties = PropertiesGrouping.get_class_properties(klass)
+        required_class_properties = [
+            (class_property_name, class_property)
+            for (class_property_name, class_property) in class_properties
+            if class_property.required
+        ]
+
+        return required_class_properties
 
 
 @six.add_metaclass(ABCMeta)
@@ -456,6 +419,62 @@ class DateOrTimeProperty(ParsableProperty):
     """Property allowing date or date & time values."""
 
     PARSER = AnyOfParser([DateParser(), DateTimeParser()])
+
+
+class BaseArrayProperty(Property):
+    """Property containing a list of items."""
+
+    def __init__(
+        self, key, required, parser, list_type=list, default_value=None
+    ):  # pylint: disable=R0913
+        """Initialize a new instance of ListProperty class.
+
+        :param key: Property's key
+        :type key: str
+
+        :param required: Boolean value indicating whether the property is required or not
+        :type required: bool
+
+        :param parser: Parse used to validate and parse property's value
+        :type parser: parsers.ValueParser
+
+        :param list_type: Class of a collection used to hold the items
+        :type list_type: Type
+
+        :param default_value: Property's default value
+        :type default_value: Any
+        """
+        if not issubclass(list_type, list):
+            raise ValueError("List type argument must be a subclass of list class")
+
+        super(BaseArrayProperty, self).__init__(key, required, parser, default_value)
+
+        self._list_type = list_type
+
+    def __set__(self, owner_instance, value):
+        """Set the property's value.
+
+        :param owner_instance: Instance of the owner, class having instance of ObjectProperty as an attribute
+        :type owner_instance: Optional[HasProperties]
+
+        :param value: New setting's value
+        :type value: Any
+        """
+        if value is not None and not isinstance(value, self._list_type):
+            raise ValueError(
+                "Value must be a subclass of {0} class".format(self._list_type)
+            )
+
+        super(BaseArrayProperty, self).__set__(owner_instance, value)
+
+    @property
+    def list_type(self):
+        """Return the class of a collection used to hold the items.
+
+        :return: Class of a collection used to hold the items
+        :rtype: Type
+        """
+        return self._list_type
 
 
 class ArrayProperty(BaseArrayProperty):

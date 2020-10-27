@@ -9,16 +9,15 @@ from webpub_manifest_parser.core.ast import (
     CompactCollection,
     Contributor,
     Link,
+    LinkList,
     Metadata,
     PresentationMetadata,
     Subject,
 )
 from webpub_manifest_parser.core.parsers import ValueParsingError
-from webpub_manifest_parser.core.registry import Registry
 from webpub_manifest_parser.core.syntax import MissingPropertyError
 from webpub_manifest_parser.rwpm.ast import RWPMManifest
 from webpub_manifest_parser.rwpm.registry import (
-    RWPMCollectionRolesRegistry,
     RWPMLinkRelationsRegistry,
     RWPMMediaTypesRegistry,
 )
@@ -283,6 +282,138 @@ RWPM_MANIFEST_WITH_INCORRECT_LINK_HEIGHT_PROPERTY = """
 }
 """
 
+RWPM_MANIFEST_WITH_AUTHOR_ENCODED_AS_STRING = """
+{
+    "@context": "https://readium.org/webpub-manifest/context.jsonld",
+
+    "metadata": {
+        "@type": "http://schema.org/Book",
+        "title": "Moby-Dick",
+        "author": "Herman Melville",
+        "identifier": "urn:isbn:978031600000X",
+        "language": "en",
+        "modified": "2015-09-29T17:00:00Z"
+    },
+
+    "links": [
+        {"rel": "self", "href": "https://example.com/manifest.json", "type": "application/webpub+json"}
+    ],
+
+    "readingOrder": [
+        {"href": "https://example.com/c001.html", "type": "text/html", "title": "Chapter 1"}
+    ]
+}
+"""
+
+RWPM_MANIFEST_WITH_AUTHORS_ENCODED_AS_ARRAY_OF_STRINGS = """
+{
+    "@context": "https://readium.org/webpub-manifest/context.jsonld",
+
+    "metadata": {
+        "@type": "http://schema.org/Book",
+        "title": "Moby-Dick",
+        "author": [
+            "Herman Melville 1",
+            "Herman Melville 2"
+        ],
+        "identifier": "urn:isbn:978031600000X",
+        "language": "en",
+        "modified": "2015-09-29T17:00:00Z"
+    },
+
+    "links": [
+        {"rel": "self", "href": "https://example.com/manifest.json", "type": "application/webpub+json"}
+    ],
+
+    "readingOrder": [
+        {"href": "https://example.com/c001.html", "type": "text/html", "title": "Chapter 1"}
+    ]
+}
+"""
+
+RWPM_MANIFEST_WITH_AUTHOR_ENCODED_AS_OBJECT = """
+{
+    "@context": "https://readium.org/webpub-manifest/context.jsonld",
+
+    "metadata": {
+        "@type": "http://schema.org/Book",
+        "title": "Moby-Dick",
+        "author": {
+            "name": "Herman Melville"
+        },
+        "identifier": "urn:isbn:978031600000X",
+        "language": "en",
+        "modified": "2015-09-29T17:00:00Z"
+    },
+
+    "links": [
+        {"rel": "self", "href": "https://example.com/manifest.json", "type": "application/webpub+json"}
+    ],
+
+    "readingOrder": [
+        {"href": "https://example.com/c001.html", "type": "text/html", "title": "Chapter 1"}
+    ]
+}
+"""
+
+RWPM_MANIFEST_WITH_AUTHORS_ENCODED_AS_ARRAY_OF_OBJECTS = """
+{
+    "@context": "https://readium.org/webpub-manifest/context.jsonld",
+
+    "metadata": {
+        "@type": "http://schema.org/Book",
+        "title": "Moby-Dick",
+        "author": [
+            {
+                "name": "Herman Melville 1"
+            },
+            {
+                "name": "Herman Melville 2"
+            }
+        ],
+        "identifier": "urn:isbn:978031600000X",
+        "language": "en",
+        "modified": "2015-09-29T17:00:00Z"
+    },
+
+    "links": [
+        {"rel": "self", "href": "https://example.com/manifest.json", "type": "application/webpub+json"}
+    ],
+
+    "readingOrder": [
+        {"href": "https://example.com/c001.html", "type": "text/html", "title": "Chapter 1"}
+    ]
+}
+"""
+
+RWPM_MANIFEST_WITH_AUTHORS_ENCODED_AS_MIXED_ARRAY_OF_STRINGS_AND_OBJECTS = """
+{
+    "@context": "https://readium.org/webpub-manifest/context.jsonld",
+
+    "metadata": {
+        "@type": "http://schema.org/Book",
+        "title": "Moby-Dick",
+        "author": [
+            "Herman Melville 1",
+            {
+                "name": "Herman Melville 2"
+            }
+        ],
+        "identifier": "urn:isbn:978031600000X",
+        "language": "en",
+        "modified": "2015-09-29T17:00:00Z"
+    },
+
+    "links": [
+        {"rel": "self", "href": "https://example.com/manifest.json", "type": "application/webpub+json"}
+    ],
+
+    "readingOrder": [
+        {"href": "https://example.com/c001.html", "type": "text/html", "title": "Chapter 1"}
+    ]
+}
+"""
+
 RWPM_MANIFEST = """
 {
     "@context": "https://readium.org/webpub-manifest/context.jsonld",
@@ -436,6 +567,63 @@ class RWPMSyntaxAnalyzerTest(TestCase):
                     six.text_type(assert_raises_context.exception).strip("u"),
                 )
 
+    @parameterized.expand(
+        [
+            (
+                "when_manifest_has_author_encoded_as_string",
+                RWPM_MANIFEST_WITH_AUTHOR_ENCODED_AS_STRING,
+                [Contributor(name="Herman Melville", roles=[], links=LinkList())],
+            ),
+            (
+                "when_manifest_has_authors_encoded_as_array_of_strings",
+                RWPM_MANIFEST_WITH_AUTHORS_ENCODED_AS_ARRAY_OF_STRINGS,
+                [
+                    Contributor(name="Herman Melville 1", roles=[], links=LinkList()),
+                    Contributor(name="Herman Melville 2", roles=[], links=LinkList()),
+                ],
+            ),
+            (
+                "when_manifest_has_author_encoded_as_object",
+                RWPM_MANIFEST_WITH_AUTHOR_ENCODED_AS_OBJECT,
+                [Contributor(name="Herman Melville", roles=[], links=LinkList())],
+            ),
+            (
+                "when_manifest_has_authors_encoded_as_array_of_objects",
+                RWPM_MANIFEST_WITH_AUTHORS_ENCODED_AS_ARRAY_OF_OBJECTS,
+                [
+                    Contributor(name="Herman Melville 1", roles=[], links=LinkList()),
+                    Contributor(name="Herman Melville 2", roles=[], links=LinkList()),
+                ],
+            ),
+            (
+                "when_manifest_has_authors_encoded_as_mixed_array_of_strings_and_objects",
+                RWPM_MANIFEST_WITH_AUTHORS_ENCODED_AS_MIXED_ARRAY_OF_STRINGS_AND_OBJECTS,
+                [
+                    Contributor(name="Herman Melville 1", roles=[], links=LinkList()),
+                    Contributor(name="Herman Melville 2", roles=[], links=LinkList()),
+                ],
+            ),
+        ]
+    )
+    def test_syntax_analyzer_correctly_parses_contributor_metadata_as_contributor_objects(
+        self, _, rwpm_manifest_content, expected_authors
+    ):
+        # Arrange
+        syntax_analyzer = RWPMSyntaxAnalyzer()
+        input_file_path = "/tmp/rwpm.jsonld"
+
+        with Patcher() as patcher:
+            input_file = patcher.fs.create_file(
+                input_file_path, contents=rwpm_manifest_content
+            )
+
+            with open(input_file.path, "r") as input_file:
+                # Act
+                manifest = syntax_analyzer.analyze(input_file)
+
+                # Assert
+                self.assertEqual(expected_authors, manifest.metadata.authors)
+
     def test_syntax_analyzer_returns_ast(self):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
@@ -461,7 +649,10 @@ class RWPMSyntaxAnalyzerTest(TestCase):
                 self.assertIsInstance(manifest.metadata, Metadata)
                 self.assertEqual("http://schema.org/Book", manifest.metadata.type)
                 self.assertEqual("Moby-Dick", manifest.metadata.title)
-                self.assertEqual(["Herman Melville"], manifest.metadata.authors)
+                self.assertEqual(
+                    [Contributor(name="Herman Melville", roles=[], links=LinkList())],
+                    manifest.metadata.authors,
+                )
                 self.assertEqual("urn:isbn:978031600000X", manifest.metadata.identifier)
                 self.assertEqual(["en"], manifest.metadata.languages)
                 self.assertEqual(

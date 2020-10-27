@@ -4,11 +4,10 @@ from abc import ABCMeta, abstractmethod
 
 import six
 
-from webpub_manifest_parser.core.ast import CompactCollection
 from webpub_manifest_parser.core.errors import BaseSyntaxError
 from webpub_manifest_parser.core.parsers import ArrayParser, TypeParser, find_parser
 from webpub_manifest_parser.core.properties import BaseArrayProperty, PropertiesGrouping
-from webpub_manifest_parser.utils import encode
+from webpub_manifest_parser.utils import encode, first_or_default, is_string
 
 
 class MissingPropertyError(BaseSyntaxError):
@@ -152,13 +151,7 @@ class SyntaxAnalyzer(object):
                 break
         else:
             for parent_parser, type_parser in type_parsers_result:
-                if not isinstance(parent_parser, ArrayParser) and (
-                    isinstance(property_value, dict)
-                    or (
-                        isinstance(property_value, list)
-                        and issubclass(type_parser.type, CompactCollection)
-                    )
-                ):
+                if not isinstance(parent_parser, ArrayParser):
                     found = True
                     property_value = self._parse_object(
                         property_value, type_parser.type
@@ -196,6 +189,108 @@ class SyntaxAnalyzer(object):
 
         return property_value
 
+    def _set_scalar_value(self, json_content, ast_object):
+        """Parse a scalar string value and initialize an object's property with it.
+
+        :param json_content: Scalar string value containing a required object's property
+        :type json_content: str
+
+        :param ast_object: AST object
+        :type ast_object: Node
+        """
+        required_object_properties = PropertiesGrouping.get_required_class_properties(
+            ast_object.__class__
+        )
+
+        if len(required_object_properties) != 1:
+            raise BaseSyntaxError(
+                u"There are {0} required properties in {1} but only a single value ({2} was provided".format(
+                    len(required_object_properties), encode(ast_object), json_content
+                )
+            )
+
+        required_object_property_name, required_object_property = first_or_default(
+            required_object_properties
+        )
+
+        self._set_property_value(
+            ast_object,
+            required_object_property_name,
+            required_object_property,
+            json_content,
+        )
+
+        # We need to initialize other properties with default values
+        self._set_non_scalar_value(None, ast_object, {required_object_property_name})
+
+    def _set_non_scalar_value(
+        self, json_content, ast_object, excluded_property_names=None
+    ):
+        """Parse a dictionary and initialize object's properties with its values.
+
+        :param json_content: Dictionary containing property values
+        :type json_content: Dict
+
+        :param ast_object: AST object
+        :type ast_object: Node
+
+        :param excluded_property_names: Set of property names to exclude from consideration
+        :type excluded_property_names: Set
+        """
+        ast_object_properties = PropertiesGrouping.get_class_properties(
+            ast_object.__class__
+        )
+
+        for object_property_name, object_property in ast_object_properties:
+            if (
+                excluded_property_names
+                and object_property_name in excluded_property_names
+            ):
+                continue
+
+            property_value = self._get_property_value(json_content, object_property)
+            property_value = self._parse_nested_object(property_value, object_property)
+
+            self._set_property_value(
+                ast_object, object_property_name, object_property, property_value
+            )
+
+    def _set_property_value(
+        self, ast_object, object_property_name, object_property, property_value
+    ):
+        """Set the value of the specified property.
+
+        :param ast_object: AST object
+        :type ast_object: Node
+
+        :param object_property_name: Name of the property
+        :type object_property_name: str
+
+        :param object_property: Object's property
+        :type object_property: Property
+
+        :param property_value: Value to be set
+        :type property_value: Any
+        """
+        self._logger.debug(
+            u"Property '{0}' has the following value: {1}".format(
+                object_property.key, encode(property_value)
+            )
+        )
+
+        if property_value is None and object_property.default_value is not None:
+            property_value = object_property.default_value
+
+        if object_property.required and property_value is None:
+            raise MissingPropertyError(ast_object.__class__, object_property)
+
+        if property_value is not None:
+            property_value = object_property.parser.parse(property_value)
+
+        property_value = self._format_property_value(property_value, object_property)
+
+        setattr(ast_object, object_property_name, property_value)
+
     def _parse_object(self, json_content, cls):
         """Parse RWPM's object JSON into a corresponding AST object.
 
@@ -212,32 +307,11 @@ class SyntaxAnalyzer(object):
 
         extended_cls = cls.get_extension()
         ast_object = extended_cls()
-        ast_object_properties = PropertiesGrouping.get_class_properties(extended_cls)
 
-        for object_property_name, object_property in ast_object_properties:
-            property_value = self._get_property_value(json_content, object_property)
-            property_value = self._parse_nested_object(property_value, object_property)
-
-            self._logger.debug(
-                u"Property '{0}' has the following value: {1}".format(
-                    object_property.key, encode(property_value)
-                )
-            )
-
-            if property_value is None and object_property.default_value is not None:
-                property_value = object_property.default_value
-
-            if object_property.required and property_value is None:
-                raise MissingPropertyError(cls, object_property)
-
-            if property_value is not None:
-                property_value = object_property.parser.parse(property_value)
-
-            property_value = self._format_property_value(
-                property_value, object_property
-            )
-
-            setattr(ast_object, object_property_name, property_value)
+        if is_string(json_content):
+            self._set_scalar_value(json_content, ast_object)
+        elif isinstance(json_content, (list, dict)):
+            self._set_non_scalar_value(json_content, ast_object)
 
         self._logger.debug(u"Finished parsing {0} object: {1}".format(cls, ast_object))
 
@@ -247,16 +321,16 @@ class SyntaxAnalyzer(object):
         """Parse JSON file into RWPM AST.
 
         :param input_stream: File descriptor
-        :type input_stream: six.StringIO
+        :type input_stream: Union[six.StringIO, six.BinaryIO]
 
         :return: RWPM AST
         :rtype: ManifestLike
         """
         self._logger.debug(u"Started analyzing input file {0}".format(input_stream))
 
-        input_file_content = input_stream.read()
-        input_file_content = input_file_content.strip()
-        manifest_json = json.loads(input_file_content)
+        input_stream_content = input_stream.read()
+        input_stream_content = input_stream_content.strip()
+        manifest_json = json.loads(input_stream_content)
 
         manifest = self._create_manifest()
         manifest = self._parse_object(manifest_json, manifest.__class__)

@@ -2,7 +2,12 @@ import datetime
 import os
 from unittest import TestCase
 
-from webpub_manifest_parser.core.ast import CompactCollection, Metadata
+from webpub_manifest_parser.core.ast import (
+    CompactCollection,
+    Contributor,
+    LinkList,
+    Metadata,
+)
 from webpub_manifest_parser.rwpm.parser import RWPMDocumentParserFactory
 from webpub_manifest_parser.rwpm.registry import (
     RWPMLinkRelationsRegistry,
@@ -32,7 +37,10 @@ class RWPMParserTest(TestCase):
         self.assertIsInstance(manifest.metadata, Metadata)
         self.assertEqual("http://schema.org/Book", manifest.metadata.type)
         self.assertEqual("Moby-Dick", manifest.metadata.title)
-        self.assertEqual(["Herman Melville"], manifest.metadata.authors)
+        self.assertEqual(
+            [Contributor(name="Herman Melville", roles=[], links=LinkList())],
+            manifest.metadata.authors,
+        )
         self.assertEqual("urn:isbn:978031600000X", manifest.metadata.identifier)
         self.assertEqual(["en"], manifest.metadata.languages)
         self.assertEqual(

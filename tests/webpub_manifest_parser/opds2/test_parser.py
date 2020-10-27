@@ -52,7 +52,10 @@ class OPDS2Parser(TestCase):
         self.assertIsInstance(publication.metadata, PresentationMetadata)
         self.assertEqual("http://schema.org/Book", publication.metadata.type)
         self.assertEqual("Moby-Dick", publication.metadata.title)
-        self.assertEqual(["Herman Melville"], publication.metadata.authors)
+        self.assertEqual(
+            [Contributor(name="Herman Melville", roles=[], links=LinkList())],
+            publication.metadata.authors
+        )
         self.assertEqual("urn:isbn:978-3-16-148410-0", publication.metadata.identifier)
         self.assertEqual(["en"], publication.metadata.languages)
         self.assertEqual(

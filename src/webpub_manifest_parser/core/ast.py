@@ -416,9 +416,9 @@ class Contributor(Node):
                 self.name,
                 self.identifier,
                 self.sort_as,
-                frozenset(self.roles),
+                frozenset(self.roles) if self.roles else frozenset(),
                 self.position,
-                frozenset(self.links),
+                frozenset(self.links) if self.links else frozenset(),
             )
         )
 
@@ -561,8 +561,8 @@ class ArrayOfSubjectsProperty(BaseArrayProperty):
 class Owner(Node, PropertiesGrouping):
     """Object containing information about the collection's owners."""
 
-    collection = TypeProperty("collection", required=False, nested_type=Contributor)
-    series = TypeProperty("series", required=False, nested_type=Contributor)
+    collection = ArrayOfContributorsProperty("collection", required=False)
+    series = ArrayOfContributorsProperty("series", required=False)
 
     def __hash__(self):
         """Calculate the hash.
@@ -579,7 +579,7 @@ class Owner(Node, PropertiesGrouping):
         :rtype: str
         """
         return u"<Owner(collection={0}, series={1})>".format(
-            self.collection, self.series
+            encode(self.collection), encode(self.series)
         )
 
 
