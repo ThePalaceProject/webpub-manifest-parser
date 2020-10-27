@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "webpub_manifest_parser"
-version = "0.0.2"
+version = "0.0.3"
 description = "A parser for the Readium Web Publication Manifest and OPDS 2.0 formats."
 license = "Apache-2.0"
 authors = ["Leonard Richardson <leonardr@segfault.org>"]
