@@ -14,7 +14,7 @@ from webpub_manifest_parser.core.ast import (
     PresentationMetadata,
     Subject,
 )
-from webpub_manifest_parser.core.parsers import ValueParsingError
+from webpub_manifest_parser.core.parsers import DocumentParser, ValueParsingError
 from webpub_manifest_parser.core.syntax import MissingPropertyError
 from webpub_manifest_parser.rwpm.ast import RWPMManifest
 from webpub_manifest_parser.rwpm.registry import (
@@ -494,27 +494,22 @@ class RWPMSyntaxAnalyzerTest(TestCase):
     ):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
-        input_file_path = "/tmp/rwpm.jsonld"
+        input_steam = six.StringIO(rwpm_manifest_content)
+        manifest_json = DocumentParser.get_manifest_json(input_steam)
 
-        with Patcher() as patcher:
-            input_file = patcher.fs.create_file(
-                input_file_path, contents=rwpm_manifest_content
-            )
+        # Act
+        with self.assertRaises(MissingPropertyError) as assert_raises_context:
+            syntax_analyzer.analyze(manifest_json)
 
-            with open(input_file.path, "r") as input_file:
-                # Act
-                with self.assertRaises(MissingPropertyError) as assert_raises_context:
-                    syntax_analyzer.analyze(input_file)
-
-                # Assert
-                self.assertEqual(
-                    expected_class_with_missing_property,
-                    assert_raises_context.exception.cls,
-                )
-                self.assertEqual(
-                    expected_missing_property,
-                    assert_raises_context.exception.object_property.key,
-                )
+        # Assert
+        self.assertEqual(
+            expected_class_with_missing_property,
+            assert_raises_context.exception.cls,
+        )
+        self.assertEqual(
+            expected_missing_property,
+            assert_raises_context.exception.object_property.key,
+        )
 
     @parameterized.expand(
         [
@@ -550,22 +545,18 @@ class RWPMSyntaxAnalyzerTest(TestCase):
     ):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
-        input_file_path = "/tmp/rwpm.jsonld"
+        input_steam = six.StringIO(rwpm_manifest_content)
+        manifest_json = DocumentParser.get_manifest_json(input_steam)
 
-        with Patcher() as patcher:
-            input_file = patcher.fs.create_file(
-                input_file_path, contents=rwpm_manifest_content
-            )
+        # Act
+        with self.assertRaises(ValueParsingError) as assert_raises_context:
+            syntax_analyzer.analyze(manifest_json)
 
-            with open(input_file.path, "r") as input_file:
-                # Act
-                with self.assertRaises(ValueParsingError) as assert_raises_context:
-                    syntax_analyzer.analyze(input_file)
-
-                self.assertEqual(
-                    expected_error_message,
-                    six.text_type(assert_raises_context.exception).strip("u"),
-                )
+        # Assert
+        self.assertEqual(
+            expected_error_message,
+            six.text_type(assert_raises_context.exception).strip("u"),
+        )
 
     @parameterized.expand(
         [
@@ -610,73 +601,59 @@ class RWPMSyntaxAnalyzerTest(TestCase):
     ):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
-        input_file_path = "/tmp/rwpm.jsonld"
+        input_steam = six.StringIO(rwpm_manifest_content)
+        manifest_json = DocumentParser.get_manifest_json(input_steam)
 
-        with Patcher() as patcher:
-            input_file = patcher.fs.create_file(
-                input_file_path, contents=rwpm_manifest_content
-            )
+        # Act
+        manifest = syntax_analyzer.analyze(manifest_json)
 
-            with open(input_file.path, "r") as input_file:
-                # Act
-                manifest = syntax_analyzer.analyze(input_file)
-
-                # Assert
-                self.assertEqual(expected_authors, manifest.metadata.authors)
+        # Assert
+        self.assertEqual(expected_authors, manifest.metadata.authors)
 
     def test_syntax_analyzer_returns_ast(self):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
-        input_file_path = "/tmp/rwpm.jsonld"
+        input_steam = six.StringIO(RWPM_MANIFEST)
+        manifest_json = DocumentParser.get_manifest_json(input_steam)
 
-        with Patcher() as patcher:
-            input_file = patcher.fs.create_file(input_file_path, contents=RWPM_MANIFEST)
+        # Act
+        manifest = syntax_analyzer.analyze(manifest_json)
 
-            with open(input_file.path, "r") as input_file:
-                # Act
-                manifest = syntax_analyzer.analyze(input_file)
+        # Assert
+        self.assertIsInstance(manifest, RWPMManifest)
 
-                # Assert
-                self.assertIsInstance(manifest, RWPMManifest)
+        self.assertIsInstance(manifest.context, list)
+        self.assertEqual(1, len(manifest.context))
+        [context] = manifest.context
+        self.assertEqual(context, "https://readium.org/webpub-manifest/context.jsonld")
 
-                self.assertIsInstance(manifest.context, list)
-                self.assertEqual(1, len(manifest.context))
-                [context] = manifest.context
-                self.assertEqual(
-                    context, "https://readium.org/webpub-manifest/context.jsonld"
-                )
+        self.assertIsInstance(manifest.metadata, Metadata)
+        self.assertEqual("http://schema.org/Book", manifest.metadata.type)
+        self.assertEqual("Moby-Dick", manifest.metadata.title)
+        self.assertEqual(
+            [Contributor(name="Herman Melville", roles=[], links=LinkList())],
+            manifest.metadata.authors,
+        )
+        self.assertEqual("urn:isbn:978031600000X", manifest.metadata.identifier)
+        self.assertEqual(["en"], manifest.metadata.languages)
+        self.assertEqual(
+            datetime.datetime(2015, 9, 29, 17, 0, 0), manifest.metadata.modified
+        )
 
-                self.assertIsInstance(manifest.metadata, Metadata)
-                self.assertEqual("http://schema.org/Book", manifest.metadata.type)
-                self.assertEqual("Moby-Dick", manifest.metadata.title)
-                self.assertEqual(
-                    [Contributor(name="Herman Melville", roles=[], links=LinkList())],
-                    manifest.metadata.authors,
-                )
-                self.assertEqual("urn:isbn:978031600000X", manifest.metadata.identifier)
-                self.assertEqual(["en"], manifest.metadata.languages)
-                self.assertEqual(
-                    datetime.datetime(2015, 9, 29, 17, 0, 0), manifest.metadata.modified
-                )
+        self.assertIsInstance(manifest.links, list)
+        self.assertEqual(1, len(manifest.links))
+        [link] = manifest.links
 
-                self.assertIsInstance(manifest.links, list)
-                self.assertEqual(1, len(manifest.links))
-                [link] = manifest.links
+        self.assertIsInstance(link.rels, list)
+        self.assertEqual(1, len(link.rels))
+        self.assertEqual(RWPMLinkRelationsRegistry.SELF.key, link.rels[0])
+        self.assertEqual("https://example.com/manifest.json", link.href)
+        self.assertEqual(RWPMMediaTypesRegistry.MANIFEST.key, link.type)
 
-                self.assertIsInstance(link.rels, list)
-                self.assertEqual(1, len(link.rels))
-                self.assertEqual(RWPMLinkRelationsRegistry.SELF.key, link.rels[0])
-                self.assertEqual("https://example.com/manifest.json", link.href)
-                self.assertEqual(RWPMMediaTypesRegistry.MANIFEST.key, link.type)
-
-                self.assertIsInstance(manifest.reading_order, CompactCollection)
-                self.assertIsInstance(manifest.reading_order.links, list)
-                self.assertEqual(1, len(manifest.reading_order.links))
-                [reading_order_link] = manifest.reading_order.links
-                self.assertEqual(
-                    "https://example.com/c001.html", reading_order_link.href
-                )
-                self.assertEqual(
-                    RWPMMediaTypesRegistry.HTML.key, reading_order_link.type
-                )
-                self.assertEqual("Chapter 1", reading_order_link.title)
+        self.assertIsInstance(manifest.reading_order, CompactCollection)
+        self.assertIsInstance(manifest.reading_order.links, list)
+        self.assertEqual(1, len(manifest.reading_order.links))
+        [reading_order_link] = manifest.reading_order.links
+        self.assertEqual("https://example.com/c001.html", reading_order_link.href)
+        self.assertEqual(RWPMMediaTypesRegistry.HTML.key, reading_order_link.type)
+        self.assertEqual("Chapter 1", reading_order_link.title)

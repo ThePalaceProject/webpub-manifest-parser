@@ -1,4 +1,3 @@
-import json
 import logging
 from abc import ABCMeta, abstractmethod
 
@@ -317,26 +316,22 @@ class SyntaxAnalyzer(object):
 
         return ast_object
 
-    def analyze(self, input_stream):
+    def analyze(self, manifest_json):
         """Parse JSON file into RWPM AST.
 
-        :param input_stream: File descriptor
-        :type input_stream: Union[six.StringIO, six.BinaryIO]
+        :param manifest_json: RWPM-compatible manifest
+        :type manifest_json: Dict
 
         :return: RWPM AST
         :rtype: ManifestLike
         """
-        self._logger.debug(u"Started analyzing input file {0}".format(input_stream))
-
-        input_stream_content = input_stream.read()
-        input_stream_content = input_stream_content.strip()
-        manifest_json = json.loads(input_stream_content)
+        self._logger.debug(u"Started analyzing {0}".format(manifest_json))
 
         manifest = self._create_manifest()
         manifest = self._parse_object(manifest_json, manifest.__class__)
 
         self._logger.debug(
-            u"Finished analyzing input file {0}: {1}".format(input_stream, manifest)
+            u"Finished analyzing {0}: {1}".format(manifest_json, manifest)
         )
 
         return manifest

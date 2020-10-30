@@ -1,5 +1,6 @@
 import datetime
 import io
+import json
 import logging
 import re
 from abc import ABCMeta, abstractmethod
@@ -698,6 +699,8 @@ class DocumentParser(object):
         self._syntax_analyzer = syntax_analyzer
         self._semantic_analyzer = semantic_analyzer
 
+        self._logger = logging.getLogger(__name__)
+
     def parse_file(self, input_file_path, encoding="utf-8"):
         """Parse the input file and return a validated AST object.
 
@@ -711,7 +714,8 @@ class DocumentParser(object):
         :rtype: python_rwpm_parser.ast.Manifestlike
         """
         with io.open(input_file_path, "r", encoding=encoding) as input_file:
-            manifest = self._syntax_analyzer.analyze(input_file)
+            manifest_json = self.get_manifest_json(input_file)
+            manifest = self._syntax_analyzer.analyze(manifest_json)
             manifest.accept(self._semantic_analyzer)
 
         return manifest
@@ -725,7 +729,8 @@ class DocumentParser(object):
         :return: Validated manifest-like object
         :rtype: python_rwpm_parser.ast.Manifestlike
         """
-        manifest = self._syntax_analyzer.analyze(input_stream)
+        manifest_json = self.get_manifest_json(input_stream)
+        manifest = self._syntax_analyzer.analyze(manifest_json)
         manifest.accept(self._semantic_analyzer)
 
         return manifest
@@ -744,11 +749,45 @@ class DocumentParser(object):
         """
         response = requests.get(url)
         input_stream = StringIO(six.text_type(response.content, encoding))
-
-        manifest = self._syntax_analyzer.analyze(input_stream)
+        manifest_json = self.get_manifest_json(input_stream)
+        manifest = self._syntax_analyzer.analyze(manifest_json)
         manifest.accept(self._semantic_analyzer)
 
         return manifest
+
+    def parse_json(self, manifest_json):
+        """Parse the JSON document with an RWPM-compatible manifest and return a validated AST object.
+
+        :param manifest_json: JSON document with an RWPM-compatible manifest
+        :type manifest_json: Dict
+
+        :return: Validated manifest-like object
+        :rtype: python_rwpm_parser.ast.Manifestlike
+        """
+        manifest = self._syntax_analyzer.analyze(manifest_json)
+        manifest.accept(self._semantic_analyzer)
+
+        return manifest
+
+    @staticmethod
+    def get_manifest_json(input_stream):
+        """Parse the input stream into a JSON document containing an RWPM-compatible manifest.
+
+        :param input_stream: Input stream containing JSON document with an RWPM-compatible manifest
+        :type input_stream: Union[six.StringIO, six.BinaryIO]
+
+        :return: JSON document containing an RWPM-compatible manifest
+        :rtype: Dict
+        """
+        logging.debug("Started parsing input stream into a JSON document")
+
+        input_stream_content = input_stream.read()
+        input_stream_content = input_stream_content.strip()
+        manifest_json = json.loads(input_stream_content)
+
+        logging.debug("Finished parsing input stream into a JSON document")
+
+        return manifest_json
 
 
 @six.add_metaclass(ABCMeta)
