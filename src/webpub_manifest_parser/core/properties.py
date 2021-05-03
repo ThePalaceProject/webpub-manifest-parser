@@ -12,6 +12,7 @@ from webpub_manifest_parser.core.parsers import (
     EnumParser,
     IntegerParser,
     LocalizableStringParser,
+    NumberParser,
     StringParser,
     StringPatternParser,
     TypeParser,
@@ -76,11 +77,13 @@ class Property(object):
         :type default_value: Any
         """
         if not is_string(key):
-            raise ValueError("Key argument must be a string")
+            raise ValueError("Argument 'key' must be a string")
         if not isinstance(required, bool):
-            raise ValueError("Required argument must be boolean")
+            raise ValueError("Argument 'required' must be boolean")
         if not isinstance(parser, ValueParser):
-            raise ValueError("Parser argument must be a ValueParser instance")
+            raise ValueError(
+                "Argument 'parser' must be an instance of {0}".format(ValueParser)
+            )
 
         self._key = key
         self._required = required
@@ -106,7 +109,11 @@ class Property(object):
             return self
 
         if not isinstance(owner_instance, HasProperties):
-            raise ValueError("owner must be an instance of HasProperties type")
+            raise ValueError(
+                "Argument 'owner_instance' must be an instance of {0}".format(
+                    HasProperties
+                )
+            )
 
         return owner_instance.get_setting_value(self._key, self._default_value)
 
@@ -120,7 +127,11 @@ class Property(object):
         :type value: Any
         """
         if not isinstance(owner_instance, HasProperties):
-            raise ValueError("owner must be an instance of HasProperties class")
+            raise ValueError(
+                "Argument 'owner_instance' must be an instance of {0}".format(
+                    HasProperties
+                )
+            )
 
         return owner_instance.set_setting_value(self._key, value)
 
@@ -342,7 +353,7 @@ class NumberProperty(Property):
         super(NumberProperty, self).__init__(
             key,
             required,
-            IntegerParser(minimum, exclusive_minimum, maximum, exclusive_maximum),
+            NumberParser(minimum, exclusive_minimum, maximum, exclusive_maximum),
             default_value,
         )
 
@@ -378,7 +389,7 @@ class EnumProperty(Property):
         :type default_value: Any
         """
         if not isinstance(items, list):
-            raise ValueError("Items argument must be a list")
+            raise ValueError("Argument 'items' must be an instance of {0}".format(list))
 
         super(EnumProperty, self).__init__(
             key, required, EnumParser(items), default_value
@@ -445,7 +456,9 @@ class BaseArrayProperty(Property):
         :type default_value: Any
         """
         if not issubclass(list_type, list):
-            raise ValueError("List type argument must be a subclass of list class")
+            raise ValueError(
+                "Argument 'list_type' must be a subclass of {0}".format(list)
+            )
 
         super(BaseArrayProperty, self).__init__(key, required, parser, default_value)
 
@@ -511,10 +524,10 @@ class ArrayProperty(BaseArrayProperty):
         """
         if not isinstance(item_parser, ValueParser):
             raise ValueError(
-                "Item parser argument must be an instance of ValueParser class"
+                "Argument 'item_parser' must be an instance of {0}".format(ValueParser)
             )
         if not isinstance(unique_items, bool):
-            raise ValueError("Unique items argument must be boolean")
+            raise ValueError("Argument 'unique_items' must be boolean")
 
         super(ArrayProperty, self).__init__(
             key,
@@ -549,7 +562,7 @@ class ArrayOfStringsProperty(BaseArrayProperty):
         :type default_value: Any
         """
         if not isinstance(unique_items, bool):
-            raise ValueError("Unique items argument must be boolean")
+            raise ValueError("Argument 'unique_items' must be boolean")
 
         super(ArrayOfStringsProperty, self).__init__(
             key,

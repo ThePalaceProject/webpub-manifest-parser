@@ -1,3 +1,6 @@
+import six
+
+
 class BaseError(Exception):
     """Base class for all errors."""
 
@@ -5,10 +8,13 @@ class BaseError(Exception):
         """Initialize a new instance of BaseError class.
 
         :param message: String containing description of the error occurred
+        :type message: Optional[str]
+
         :param inner_exception: (Optional) Inner exception
+        :type inner_exception: Optional[Exception]
         """
         if inner_exception and not message:
-            message = inner_exception.message
+            message = inner_exception.error_message
 
         super(BaseError, self).__init__(message)
 
@@ -22,6 +28,15 @@ class BaseError(Exception):
         :rtype: Exception
         """
         return self._inner_exception
+
+    @property
+    def error_message(self):
+        """Return the description of the error.
+
+        :return: Description of the error
+        :rtype: str
+        """
+        return six.text_type(str(self))
 
     def __eq__(self, other):
         """Compare two BaseError objects.
@@ -44,5 +59,5 @@ class BaseError(Exception):
         :rtype: str
         """
         return u"<BaseError(message={0}, inner_exception={1})>".format(
-            str(self), self.inner_exception
+            self.error_message, self.inner_exception
         )

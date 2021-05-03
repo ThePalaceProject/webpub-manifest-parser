@@ -1,71 +1,118 @@
-from unittest import TestCase
-
 from parameterized import parameterized
 
+from tests.webpub_manifest_parser.core.test_analyzer import AnalyzerTest
 from webpub_manifest_parser.core.ast import (
-    CompactCollection,
     Link,
     LinkList,
+    Manifestlike,
     PresentationMetadata,
 )
-from webpub_manifest_parser.core.registry import Registry
+from webpub_manifest_parser.core.registry import LinkRelationsRegistry, Registry
 from webpub_manifest_parser.core.semantic import (
-    MISSING_MANIFEST_LINK_REL_PROPERTY_ERROR,
-    MISSING_SELF_LINK_ERROR,
-    WRONG_SELF_LINK_HREF_FORMAT,
+    MANIFEST_LINK_MISSING_REL_PROPERTY_ERROR,
+    MANIFEST_MISSING_SELF_LINK_ERROR,
+    MANIFEST_SELF_LINK_WRONG_HREF_FORMAT_ERROR,
     SemanticAnalyzer,
+    SemanticAnalyzerError,
 )
-from webpub_manifest_parser.rwpm.ast import RWPMManifest
-from webpub_manifest_parser.rwpm.registry import RWPMLinkRelationsRegistry
 
 
-class SemanticAnalyzerTest(TestCase):
+class SemanticAnalyzerTest(AnalyzerTest):
     @parameterized.expand(
         [
             (
                 "when_manifest_link_rel_property_is_missing",
-                RWPMManifest(
-                    metadata=PresentationMetadata("test"),
+                Manifestlike(
+                    metadata=PresentationMetadata(title="Manifest # 1"),
                     links=LinkList([Link(href="http://example.com")]),
-                    reading_order=CompactCollection(),
                 ),
-                MISSING_MANIFEST_LINK_REL_PROPERTY_ERROR,
+                [
+                    MANIFEST_LINK_MISSING_REL_PROPERTY_ERROR(
+                        node=Link(href="http://example.com"), node_property=Link.rels
+                    ),
+                    MANIFEST_MISSING_SELF_LINK_ERROR(
+                        node=Manifestlike(
+                            metadata=PresentationMetadata(identifier="Manifest # 1")
+                        ),
+                        node_property=None,
+                    ),
+                ],
             ),
             (
                 "when_manifest_self_link_is_missing",
-                RWPMManifest(
-                    metadata=PresentationMetadata("test"),
+                Manifestlike(
+                    metadata=PresentationMetadata(title="Manifest # 1"),
                     links=LinkList(
                         [
                             Link(
                                 href="http://example.com",
-                                rels=[RWPMLinkRelationsRegistry.SEARCH.key],
+                                rels=["test"],
                             )
                         ]
                     ),
-                    reading_order=CompactCollection(),
                 ),
-                MISSING_SELF_LINK_ERROR,
+                [
+                    MANIFEST_MISSING_SELF_LINK_ERROR(
+                        node=Manifestlike(
+                            metadata=PresentationMetadata(title="Manifest # 1")
+                        ),
+                        node_property=None,
+                    )
+                ],
             ),
             (
                 "when_manifest_self_link_has_wrong_href",
-                RWPMManifest(
-                    metadata=PresentationMetadata("test"),
+                Manifestlike(
+                    metadata=PresentationMetadata(title="Manifest # 1"),
                     links=LinkList(
                         [
                             Link(
                                 href="example.com",
-                                rels=[RWPMLinkRelationsRegistry.SELF.key],
+                                rels=[LinkRelationsRegistry.SELF.key],
                             )
                         ]
                     ),
-                    reading_order=CompactCollection(),
                 ),
-                WRONG_SELF_LINK_HREF_FORMAT,
+                [
+                    MANIFEST_SELF_LINK_WRONG_HREF_FORMAT_ERROR(
+                        node=Link(href="example.com"), node_property=Link.href
+                    )
+                ],
+            ),
+            (
+                "when_manifest_link_rel_property_is_missing_and_self_link_has_incorrect_href",
+                Manifestlike(
+                    metadata=PresentationMetadata(title="Manifest # 1"),
+                    links=LinkList(
+                        [
+                            Link(href="http://example.com"),
+                            Link(
+                                href="example.com",
+                                rels=[LinkRelationsRegistry.SELF.key],
+                            ),
+                        ]
+                    ),
+                ),
+                [
+                    MANIFEST_LINK_MISSING_REL_PROPERTY_ERROR(
+                        node=Link(href="http://example.com"), node_property=Link.rels
+                    ),
+                    MANIFEST_SELF_LINK_WRONG_HREF_FORMAT_ERROR(
+                        node=Link(href="example.com"), node_property=Link.href
+                    ),
+                ],
             ),
         ]
     )
-    def test_semantic_analyzer_raises_error(self, _, manifest, expected_error):
+    def test_semantic_analyzer_raises_error(self, _, manifest, expected_errors):
+        """Ensure that the base semantic analyzer correctly raises errors and saves them in the current context.
+
+        :param manifest: AST object containing the RWPM-like manifest
+        :type manifest: webpub_manifest_parser.core.ast.Manifestlike
+
+        :param expected_errors: List of expected semantic errors
+        :type expected_errors: List[webpub_manifest_parser.core.analyzer.BaseAnalyzerError]
+        """
         # Arrange
         media_types_registry = Registry()
         link_relations_registry = Registry()
@@ -75,8 +122,9 @@ class SemanticAnalyzerTest(TestCase):
         )
 
         # Act
-        with self.assertRaises(expected_error.__class__) as assert_raises_context:
-            semantic_analyzer.visit(manifest)
+        semantic_analyzer.visit(manifest)
 
         # Assert
-        self.assertEqual(str(expected_error), str(assert_raises_context.exception))
+        self.check_analyzer_errors(
+            semantic_analyzer.context.errors, expected_errors, SemanticAnalyzerError
+        )

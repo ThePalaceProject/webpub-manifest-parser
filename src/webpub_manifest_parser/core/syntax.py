@@ -1,25 +1,32 @@
 import logging
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 
-import six
-
-from webpub_manifest_parser.core.errors import BaseSyntaxError
-from webpub_manifest_parser.core.parsers import ArrayParser, TypeParser, find_parser
+from webpub_manifest_parser.core.analyzer import BaseAnalyzer, BaseAnalyzerError
+from webpub_manifest_parser.core.parsers import (
+    ArrayParser,
+    TypeParser,
+    ValueParserError,
+    find_parser,
+)
 from webpub_manifest_parser.core.properties import BaseArrayProperty, PropertiesGrouping
 from webpub_manifest_parser.utils import encode, first_or_default, is_string
 
 
-class MissingPropertyError(BaseSyntaxError):
+class SyntaxAnalyzerError(BaseAnalyzerError):
+    """Exception raised in the case of syntax errors."""
+
+
+class MissingPropertyError(SyntaxAnalyzerError):
     """Exception raised in the case of a missing required property."""
 
-    def __init__(self, cls, object_property, message=None, inner_exception=None):
+    def __init__(self, node, node_property, message=None, inner_exception=None):
         """Initialize a new instance of MissingPropertyError class.
 
-        :param cls: Object's class where the missing property is defined
-        :type cls: Type
+        :param node: AST node where the error was found
+        :type node: webpub_manifest_parser.core.ast.Node
 
-        :param object_property: Missing property
-        :type object_property: python_rwpm_parser.metadata.ObjectProperty
+        :param node_property: AST node's property associated with the error
+        :type node_property: webpub_manifest_parser.core.properties.Property
 
         :param message: (Optional) Message
         :type message: Optional[str]
@@ -29,38 +36,18 @@ class MissingPropertyError(BaseSyntaxError):
         """
         if message is None:
             message = "{0}'s required property {1} is missing".format(
-                cls, object_property.key
+                node.__class__, node_property.key
             )
 
         super(MissingPropertyError, self).__init__(
+            node,
+            node_property,
             message,
             inner_exception,
         )
 
-        self._cls = cls
-        self._object_property = object_property
 
-    @property
-    def cls(self):
-        """Return the object's class where the missing property is defined.
-
-        :return: Object's class where the missing property is defined
-        :rtype: Type
-        """
-        return self._cls
-
-    @property
-    def object_property(self):
-        """Return the missing property.
-
-        :return: Missing property
-        :rtype: python_rwpm_parser.metadata.ObjectProperty
-        """
-        return self._object_property
-
-
-@six.add_metaclass(ABCMeta)
-class SyntaxAnalyzer(object):
+class SyntaxAnalyzer(BaseAnalyzer):
     """Base class for syntax analyzers checking the base grammar rules of RWPM and parsing raw JSON into AST."""
 
     CONTEXT = "@context"
@@ -70,6 +57,8 @@ class SyntaxAnalyzer(object):
 
     def __init__(self):
         """Initialize a new instance of SyntaxParser class."""
+        super(SyntaxAnalyzer, self).__init__()
+
         self._logger = logging.getLogger(__name__)
 
     @abstractmethod
@@ -202,10 +191,14 @@ class SyntaxAnalyzer(object):
         )
 
         if len(required_object_properties) != 1:
-            raise BaseSyntaxError(
-                u"There are {0} required properties in {1} but only a single value ({2} was provided".format(
-                    len(required_object_properties), encode(ast_object), json_content
-                )
+            raise SyntaxAnalyzerError(
+                ast_object,
+                None,
+                u"There are {0} required properties in {1} but only a single value ({2}) was provided".format(
+                    len(required_object_properties),
+                    encode(ast_object),
+                    json_content,
+                ),
             )
 
         required_object_property_name, required_object_property = first_or_default(
@@ -247,12 +240,15 @@ class SyntaxAnalyzer(object):
             ):
                 continue
 
-            property_value = self._get_property_value(json_content, object_property)
-            property_value = self._parse_nested_object(property_value, object_property)
+            with self._record_errors():
+                property_value = self._get_property_value(json_content, object_property)
+                property_value = self._parse_nested_object(
+                    property_value, object_property
+                )
 
-            self._set_property_value(
-                ast_object, object_property_name, object_property, property_value
-            )
+                self._set_property_value(
+                    ast_object, object_property_name, object_property, property_value
+                )
 
     def _set_property_value(
         self, ast_object, object_property_name, object_property, property_value
@@ -281,10 +277,15 @@ class SyntaxAnalyzer(object):
             property_value = object_property.default_value
 
         if object_property.required and property_value is None:
-            raise MissingPropertyError(ast_object.__class__, object_property)
+            raise MissingPropertyError(ast_object, object_property)
 
         if property_value is not None:
-            property_value = object_property.parser.parse(property_value)
+            try:
+                property_value = object_property.parser.parse(property_value)
+            except ValueParserError as error:
+                raise SyntaxAnalyzerError(
+                    ast_object, object_property, error.error_message, error
+                )
 
         property_value = self._format_property_value(property_value, object_property)
 
@@ -307,10 +308,11 @@ class SyntaxAnalyzer(object):
         extended_cls = cls.get_extension()
         ast_object = extended_cls()
 
-        if is_string(json_content):
-            self._set_scalar_value(json_content, ast_object)
-        elif isinstance(json_content, (list, dict)):
-            self._set_non_scalar_value(json_content, ast_object)
+        with self._record_errors():
+            if is_string(json_content):
+                self._set_scalar_value(json_content, ast_object)
+            elif isinstance(json_content, (list, dict)):
+                self._set_non_scalar_value(json_content, ast_object)
 
         self._logger.debug(u"Finished parsing {0} object: {1}".format(cls, ast_object))
 
@@ -326,6 +328,8 @@ class SyntaxAnalyzer(object):
         :rtype: ManifestLike
         """
         self._logger.debug(u"Started analyzing {0}".format(manifest_json))
+
+        self.context.reset()
 
         manifest = self._create_manifest()
         manifest = self._parse_object(manifest_json, manifest.__class__)

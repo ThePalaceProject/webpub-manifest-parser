@@ -15,14 +15,14 @@ from webpub_manifest_parser.core.parsers import (
     StringParser,
     TypeParser,
     URIParser,
-    ValueParsingError,
+    ValueParserError,
     find_parser,
 )
 
 
 class NumberParserTest(TestCase):
     @parameterized.expand(
-        [("correct_number", "123"), ("incorrect_number", "abc", ValueParsingError)]
+        [("correct_number", "123"), ("incorrect_number", "abc", ValueParserError)]
     )
     def test(self, _, value, expected_error_class=None):
         validator = NumberParser()
@@ -38,7 +38,7 @@ class URIParserTest(TestCase):
     @parameterized.expand(
         [
             ("correct_uri", "http://example.com"),
-            ("incorrect_uri", "123", ValueParsingError),
+            ("incorrect_uri", "123", ValueParserError),
         ]
     )
     def test(self, _, value, expected_error_class=None):

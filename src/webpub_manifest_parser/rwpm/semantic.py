@@ -1,4 +1,5 @@
 import logging
+from functools import partial
 
 from multipledispatch import dispatch
 
@@ -11,14 +12,15 @@ from webpub_manifest_parser.core.ast import (
     Manifestlike,
     Metadata,
 )
-from webpub_manifest_parser.core.errors import BaseSemanticError
-from webpub_manifest_parser.core.semantic import SemanticAnalyzer
+from webpub_manifest_parser.core.semantic import LinkSemanticError, SemanticAnalyzer
 
-MISSING_READING_ORDER_LINK_TYPE_PROPERTY_ERROR = BaseSemanticError(
-    "readingOrder link's type property is missing"
+READING_ORDER_SUBCOLLECTION_LINK_MISSING_TYPE_PROPERTY_ERROR = partial(
+    LinkSemanticError,
+    message="readingOrder subcollection's link '{0}' does not have a required 'type' property",
 )
-MISSING_RESOURCES_LINK_TYPE_PROPERTY_ERROR = BaseSemanticError(
-    "resources link's type property is missing"
+RESOURCES_SUBCOLLECTION_MISSING_LINK_TYPE_PROPERTY_ERROR = partial(
+    LinkSemanticError,
+    message="resources subcollection's link '{0}' does not have a required 'type' property",
 )
 
 
@@ -55,12 +57,19 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
         super(RWPMSemanticAnalyzer, self).visit(node)
 
         for link in node.reading_order.links:
-            if link.type is None:
-                raise MISSING_READING_ORDER_LINK_TYPE_PROPERTY_ERROR
+            with self._record_errors():
+                if link.type is None:
+                    raise READING_ORDER_SUBCOLLECTION_LINK_MISSING_TYPE_PROPERTY_ERROR(
+                        node=link, node_property=Link.type
+                    )
 
-        for link in node.resources.links:
-            if link.type is None:
-                raise MISSING_RESOURCES_LINK_TYPE_PROPERTY_ERROR
+        if node.resources:
+            for link in node.resources.links:
+                with self._record_errors():
+                    if link.type is None:
+                        raise RESOURCES_SUBCOLLECTION_MISSING_LINK_TYPE_PROPERTY_ERROR(
+                            node=link, node_property=Link.type
+                        )
 
     @dispatch(Metadata)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102

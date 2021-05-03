@@ -1,25 +1,46 @@
 import datetime
-import io
-import json
 import logging
 import re
 from abc import ABCMeta, abstractmethod
-from io import StringIO
 from pydoc import locate
 
 import jsonschema  # noqa: I201
-import requests  # noqa: I201
 import six  # noqa: I201
 import strict_rfc3339  # noqa: I201
 from jsonschema import FormatError  # noqa: I201, I100
 from uritemplate import URITemplate  # noqa: I201
 
-import webpub_manifest_parser.core.errors
+from webpub_manifest_parser.errors import BaseError
 from webpub_manifest_parser.utils import encode, is_string
 
 
-class ValueParsingError(webpub_manifest_parser.core.errors.BaseSyntaxError):
+class ValueParserError(BaseError):
     """Base class for all errors raised by value parsers."""
+
+    def __init__(self, value, message, inner_exception=None):
+        """Initialize a new instance of ValueParsingError class.
+
+        :param value: Value associated with this error
+        :type value: Any
+
+        :param message: String containing description of the error occurred
+        :type message: basestring
+
+        :param inner_exception: (Optional) Inner exception
+        :type inner_exception: Optional[Exception]
+        """
+        super(ValueParserError, self).__init__(message, inner_exception)
+
+        self._value = value
+
+    @property
+    def value(self):
+        """Return the value associated with this error.
+
+        :return: Value associated with this error
+        :rtype: Any
+        """
+        return self._value
 
 
 @six.add_metaclass(ABCMeta)
@@ -86,7 +107,7 @@ class AnyOfParser(ValueParser):
                 )
 
                 return result
-            except ValueParsingError as error:
+            except ValueParserError as error:
                 self._logger.debug(u"Parser {0} failed".format(encode(parser)))
 
                 if first_validation_error is None:
@@ -151,26 +172,32 @@ class NumericParser(ValueParser):
         value = self._parse(value)
 
         if self._minimum is not None and value < self._minimum:
-            raise ValueParsingError(
-                u"Value {0} is less than the minimum ({1})".format(value, self._minimum)
+            raise ValueParserError(
+                value,
+                u"Value {0} is less than the minimum ({1})".format(
+                    value, self._minimum
+                ),
             )
         if self._exclusive_minimum is not None and value <= self._exclusive_minimum:
-            raise ValueParsingError(
+            raise ValueParserError(
+                value,
                 u"Value {0} is less or equal than the exclusive minimum ({1})".format(
                     value, self._exclusive_minimum
-                )
+                ),
             )
         if self._maximum is not None and value > self._maximum:
-            raise ValueParsingError(
+            raise ValueParserError(
+                value,
                 u"Value {0} is greater than the maximum ({1})".format(
                     value, self._maximum
-                )
+                ),
             )
         if self._exclusive_maximum is not None and value >= self._exclusive_maximum:
-            raise ValueParsingError(
+            raise ValueParserError(
+                value,
                 u"Value {0} is greater or equal than the exclusive maximum ({1})".format(
                     value, self._exclusive_maximum
-                )
+                ),
             )
 
         return value
@@ -193,7 +220,7 @@ class IntegerParser(NumericParser):
         try:
             return int(value)
         except ValueError as error:
-            raise ValueParsingError(str(error), error)
+            raise ValueParserError(value, six.u(str(error)), error)
 
 
 class NumberParser(NumericParser):
@@ -213,7 +240,7 @@ class NumberParser(NumericParser):
         try:
             return float(value)
         except ValueError as error:
-            raise ValueParsingError(str(error), error)
+            raise ValueParserError(value, six.u(str(error)), error)
 
 
 class BooleanParser(ValueParser):
@@ -240,7 +267,9 @@ class BooleanParser(ValueParser):
             if value == "true":
                 return True
 
-        raise ValueParsingError(u"Value '{0}' must be boolean".format(encode(value)))
+        raise ValueParserError(
+            value, u"Value '{0}' must be boolean".format(encode(value))
+        )
 
 
 class StringParser(ValueParser):
@@ -258,8 +287,8 @@ class StringParser(ValueParser):
         :raise: ValidationError
         """
         if not is_string(value):
-            raise ValueParsingError(
-                u"Value '{0}' must be a string".format(encode(value))
+            raise ValueParserError(
+                value, u"Value '{0}' must be a string".format(encode(value))
             )
 
         return value
@@ -275,7 +304,7 @@ class StringPatternParser(StringParser):
         :type pattern: RegEx
         """
         if not is_string(pattern):
-            raise ValueError("Pattern argument must be a string")
+            raise ValueError("Argument 'pattern' must be a string")
 
         self._pattern = pattern
         self._regex = re.compile(pattern) if pattern is not None else None
@@ -294,10 +323,11 @@ class StringPatternParser(StringParser):
         value = super(StringPatternParser, self).parse(value)
 
         if not self._regex.match(value):
-            raise ValueParsingError(
+            raise ValueParserError(
+                value,
                 u"String value '{0}' does not match regular expression {1}".format(
                     encode(value), self._pattern
-                )
+                ),
             )
 
         return value
@@ -328,8 +358,9 @@ class EnumParser(StringParser):
         value = super(EnumParser, self).parse(value)
 
         if value not in self._items:
-            raise ValueParsingError(
-                u"Value '{0}' is not among {1}".format(encode(value), self._items)
+            raise ValueParserError(
+                value,
+                u"Value '{0}' is not among {1}".format(encode(value), self._items),
             )
 
         return value
@@ -359,7 +390,7 @@ class FormatChecker(StringParser):
         try:
             self._format_checker.check(value, self._json_schema_format)
         except FormatError as error:
-            raise ValueParsingError(str(error), error)
+            raise ValueParserError(value, six.u(str(error)), error)
 
     def _parse(self, value):
         """Parse the value into an appropriate Python type.
@@ -462,7 +493,16 @@ class DateParser(FormatChecker):
         :return: Parsed date object
         :rtype: datetime.datetime
         """
-        return datetime.datetime.strptime(value, "%Y-%m-%d")
+        try:
+            return datetime.datetime.strptime(value, "%Y-%m-%d")
+        except Exception as exception:
+            raise ValueParserError(
+                value,
+                u"Value '{0}' is not a correct date: it does not match '%Y-%m-%d' pattern".format(
+                    encode(value)
+                ),
+                exception,
+            )
 
 
 class DateTimeParser(FormatChecker):
@@ -481,9 +521,19 @@ class DateTimeParser(FormatChecker):
         :return: Parsed date & time object
         :rtype: datetime.datetime
         """
-        timestamp = strict_rfc3339.rfc3339_to_timestamp(value)
+        try:
+            timestamp = strict_rfc3339.rfc3339_to_timestamp(value)
 
-        return datetime.datetime.utcfromtimestamp(timestamp)
+            return datetime.datetime.utcfromtimestamp(timestamp)
+        except Exception as exception:
+            raise ValueParserError(
+                value,
+                u"Value '{0}' is not correct date & time value: "
+                u"it does not comply with RFC 3339 date & time formatting rules".format(
+                    encode(value)
+                ),
+                exception,
+            )
 
 
 class ArrayParser(ValueParser):
@@ -523,7 +573,9 @@ class ArrayParser(ValueParser):
         :raise: ValidationError
         """
         if not isinstance(value, list):
-            raise ValueParsingError(u"Value '{0}' must be a list".format(encode(value)))
+            raise ValueParserError(
+                value, u"Value '{0}' must be a list".format(encode(value))
+            )
 
         result = []
         seen = set()
@@ -532,8 +584,8 @@ class ArrayParser(ValueParser):
             item = self._item_parser.parse(item)
 
             if self._unique_items and item in seen:
-                raise ValueParsingError(
-                    u"Item '{0}' is not unique".format(encode(item))
+                raise ValueParserError(
+                    value, u"Item '{0}' is not unique".format(encode(item))
                 )
 
             result.append(item)
@@ -571,21 +623,22 @@ class ObjectParser(ValueParser):
         :raise: ValidationError
         """
         if not isinstance(value, dict):
-            raise ValueParsingError("Value must be a dictionary")
+            raise ValueParserError(value, u"Value must be a dictionary")
 
         result = {}
 
         for key, item in value.items():
             if not isinstance(key, str):
-                raise ValueParsingError(
-                    u"Key '{0}' must be a string".format(encode(key))
+                raise ValueParserError(
+                    value, u"Key '{0}' must be a string".format(encode(key))
                 )
 
             if self._properties_regex and not self._properties_regex.match(key):
-                raise ValueParsingError(
+                raise ValueParserError(
+                    value,
                     u"Key '{0}' does not match the pattern '{1}'".format(
                         encode(key), self._properties_regex
-                    )
+                    ),
                 )
 
             item = self._properties_parser.parse(item)
@@ -645,10 +698,11 @@ class TypeParser(ValueParser):
         :raise: ValidationError
         """
         if not isinstance(value, self._type):
-            raise ValueParsingError(
+            raise ValueParserError(
+                value,
                 u"Value '{0}' must be an instance of '{1}'".format(
                     encode(value), self._type
-                )
+                ),
             )
 
         return value
@@ -682,123 +736,3 @@ def find_parser(parent_parser, child_parser_type):
     _find_parser(None, parent_parser)
 
     return candidates
-
-
-class DocumentParser(object):
-    """Base class for RWPM-compatible parsers."""
-
-    def __init__(self, syntax_analyzer, semantic_analyzer):
-        """Initialize a new instance of Parser class.
-
-        :param syntax_analyzer: Syntax analyzer
-        :type syntax_analyzer: syntax.SyntaxAnalyzer
-
-        :param semantic_analyzer: Semantic analyser
-        :type semantic_analyzer: semantic.SemanticAnalyzer
-        """
-        self._syntax_analyzer = syntax_analyzer
-        self._semantic_analyzer = semantic_analyzer
-
-        self._logger = logging.getLogger(__name__)
-
-    def parse_file(self, input_file_path, encoding="utf-8"):
-        """Parse the input file and return a validated AST object.
-
-        :param input_file_path: Full path to the file containing RWPM-compatible document
-        :type input_file_path: str
-
-        :param encoding: Input file's encoding
-        :type encoding: str
-
-        :return: Validated manifest-like object
-        :rtype: python_rwpm_parser.ast.Manifestlike
-        """
-        with io.open(input_file_path, "r", encoding=encoding) as input_file:
-            manifest_json = self.get_manifest_json(input_file)
-            manifest = self._syntax_analyzer.analyze(manifest_json)
-            manifest.accept(self._semantic_analyzer)
-
-        return manifest
-
-    def parse_stream(self, input_stream):
-        """Parse the input file and return a validated AST object.
-
-        :param input_stream: Full path to the file containing RWPM-compatible document
-        :type input_stream: six.StringIO
-
-        :return: Validated manifest-like object
-        :rtype: python_rwpm_parser.ast.Manifestlike
-        """
-        manifest_json = self.get_manifest_json(input_stream)
-        manifest = self._syntax_analyzer.analyze(manifest_json)
-        manifest.accept(self._semantic_analyzer)
-
-        return manifest
-
-    def parse_url(self, url, encoding="utf-8"):
-        """Fetch the content pointed by the URL, parse it and return a validated AST object.
-
-        :param url: URL pointing to the RWPM-compatible document
-        :type url: str
-
-        :param encoding: Input file's encoding
-        :type encoding: str
-
-        :return: Validated manifest-like object
-        :rtype: python_rwpm_parser.ast.Manifestlike
-        """
-        response = requests.get(url)
-        input_stream = StringIO(six.text_type(response.content, encoding))
-        manifest_json = self.get_manifest_json(input_stream)
-        manifest = self._syntax_analyzer.analyze(manifest_json)
-        manifest.accept(self._semantic_analyzer)
-
-        return manifest
-
-    def parse_json(self, manifest_json):
-        """Parse the JSON document with an RWPM-compatible manifest and return a validated AST object.
-
-        :param manifest_json: JSON document with an RWPM-compatible manifest
-        :type manifest_json: Dict
-
-        :return: Validated manifest-like object
-        :rtype: python_rwpm_parser.ast.Manifestlike
-        """
-        manifest = self._syntax_analyzer.analyze(manifest_json)
-        manifest.accept(self._semantic_analyzer)
-
-        return manifest
-
-    @staticmethod
-    def get_manifest_json(input_stream):
-        """Parse the input stream into a JSON document containing an RWPM-compatible manifest.
-
-        :param input_stream: Input stream containing JSON document with an RWPM-compatible manifest
-        :type input_stream: Union[six.StringIO, six.BinaryIO]
-
-        :return: JSON document containing an RWPM-compatible manifest
-        :rtype: Dict
-        """
-        logging.debug("Started parsing input stream into a JSON document")
-
-        input_stream_content = input_stream.read()
-        input_stream_content = input_stream_content.strip()
-        manifest_json = json.loads(input_stream_content)
-
-        logging.debug("Finished parsing input stream into a JSON document")
-
-        return manifest_json
-
-
-@six.add_metaclass(ABCMeta)
-class DocumentParserFactory(object):
-    """Base class for factories creating parsers for particular RWPM-compatible standards (for example, OPDS 2.0)."""
-
-    @abstractmethod
-    def create(self):
-        """Create a new Parser instance.
-
-        :return: Parser instance
-        :rtype: DocumentParser
-        """
-        raise NotImplementedError()
