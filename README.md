@@ -1,6 +1,6 @@
-# python-webpub-manifest-parser
+# webpub manifest parser
 
-[![Build Status](https://travis-ci.com/vbessonov/python-webpub-manifest-parser.svg?branch=master)](https://travis-ci.com/vbessonov/python-webpub-manifest-parser)
+[![Lint & Run Tests](https://github.com/ThePalaceProject/webpub-manifest-parser/actions/workflows/lint-test.yml/badge.svg)](https://github.com/ThePalaceProject/webpub-manifest-parser/actions/workflows/lint-test.yml)
 
 A parser for the [Readium Web Publication Manifest (RWPM)](https://github.com/readium/webpub-manifest) and [Open Publication Distribution System 2.0 (OPDS 2.0)](https://drafts.opds.io/opds-2.0) formats.
 
@@ -22,7 +22,7 @@ pyenv activate <virtual-env-name>
 
 6. Install the library
 ```bash
-pip install webpub-manifest-parser
+pip install palace-webpub-manifest-parser
 ``` 
 
 

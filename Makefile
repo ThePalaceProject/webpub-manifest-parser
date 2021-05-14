@@ -6,7 +6,7 @@ all: install lint build
 POETRY_VERSION = 1.0.10
 
 PROJECT = python-webpub-manifest-parser
-PACKAGE = webpub_manifest_parser
+PACKAGE = palace_webpub_manifest_parser
 
 init:
 	python -m pip install pip
