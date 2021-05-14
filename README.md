@@ -63,3 +63,16 @@ For example, to run the unit test using Python 2.7 run the following command:
 ```bash
 make test-py27
 ```
+
+# Releasing
+
+Releases will be automatically published to PyPI when new tags are pushed into the
+repository. We use bump2version to update the version number and create a tag for the
+release.
+
+To publish a new release:
+```
+pip install bump2version
+bump2version {part}
+git push origin main --tags
+```
