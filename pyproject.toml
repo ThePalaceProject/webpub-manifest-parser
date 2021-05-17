@@ -1,14 +1,14 @@
 [tool.poetry]
-name = "webpub_manifest_parser"
-version = "0.0.4"
-description = "A parser for the Readium Web Publication Manifest and OPDS 2.0 formats."
+name = "palace_webpub_manifest_parser"
+version = "1.0.0"
+description = "A parser for the Readium Web Publication Manifest, OPDS 2.0 and ODL formats."
 license = "Apache-2.0"
-authors = ["Leonard Richardson <leonardr@segfault.org>"]
+authors = ["Viacheslav Bessonov <viacheslav.bessonov@hilbertteam.com>"]
 maintainers = ["Viacheslav Bessonov <viacheslav.bessonov@hilbertteam.com>"]
 readme = "README.md"
-repository = "https://github.com/NYPL-Simplified/python-webpub-manifest-parser"
-homepage = "https://github.com/NYPL-Simplified/python-webpub-manifest-parser"
-keywords = ["Readium Web Publication Manifest", "RWPM", "Open Publication Distribution System 2.0", "OPDS 2.0"]
+repository = "https://github.com/ThePalaceProject/python-webpub-manifest-parser"
+homepage = "https://github.com/ThePalaceProject/python-webpub-manifest-parser"
+keywords = ["Readium Web Publication Manifest", "RWPM", "Open Publication Distribution System 2.0", "OPDS 2.0", "ODL"]
 classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
@@ -18,6 +18,9 @@ classifiers = [
     "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: Implementation :: CPython",
     "Topic :: Software Development :: Libraries :: Python Modules",
+]
+packages = [
+    { include = "webpub_manifest_parser", from = "src" }
 ]
 
 [tool.poetry.dependencies]

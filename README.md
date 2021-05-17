@@ -1,13 +1,22 @@
-# python-webpub-manifest-parser
+# webpub manifest parser
 
-[![Build Status](https://travis-ci.com/vbessonov/python-webpub-manifest-parser.svg?branch=master)](https://travis-ci.com/vbessonov/python-webpub-manifest-parser)
+[![Lint & Run Tests](https://github.com/ThePalaceProject/webpub-manifest-parser/actions/workflows/lint-test.yml/badge.svg)](https://github.com/ThePalaceProject/webpub-manifest-parser/actions/workflows/lint-test.yml)
 
 A parser for the [Readium Web Publication Manifest (RWPM)](https://github.com/readium/webpub-manifest) and [Open Publication Distribution System 2.0 (OPDS 2.0)](https://drafts.opds.io/opds-2.0) formats.
 
 ## Usage
+Install the library with `pip`
+```bash
+pip install palace-webpub-manifest-parser
+``` 
+
+### Pyenv
+
+You can optionally install the python version to run the library with using pyenv.
+
 1. Install [pyenv](https://github.com/pyenv/pyenv#installation)
 
-3. Install one of the supported Python versions mentioned in [.python-version](.python-version) or other PATCH versions of the same MINOR versions:
+3. Install one of the supported Python versions:
 ```bash
 pyenv install <python-version>
 ```
@@ -22,7 +31,7 @@ pyenv activate <virtual-env-name>
 
 6. Install the library
 ```bash
-pip install webpub-manifest-parser
+pip install palace-webpub-manifest-parser
 ``` 
 
 
@@ -62,4 +71,17 @@ where `<python-version>` is one of supported python versions:
 For example, to run the unit test using Python 2.7 run the following command:
 ```bash
 make test-py27
+```
+
+# Releasing
+
+Releases will be automatically published to PyPI when new tags are pushed into the
+repository. We use bump2version to update the version number and create a tag for the
+release.
+
+To publish a new release:
+```
+pip install bump2version
+bump2version {part}
+git push origin main --tags
 ```
