@@ -21,8 +21,6 @@ build:
 	poetry build
 
 publish:
-	make prepare
-	make config
 	poetry publish --build -r pypi
 
 clean:
