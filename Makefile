@@ -21,7 +21,7 @@ build:
 	poetry build
 
 publish:
-	poetry publish --build -r pypi
+	poetry publish --build
 
 clean:
 	rm -rf build dist
