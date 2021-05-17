@@ -5,9 +5,18 @@
 A parser for the [Readium Web Publication Manifest (RWPM)](https://github.com/readium/webpub-manifest) and [Open Publication Distribution System 2.0 (OPDS 2.0)](https://drafts.opds.io/opds-2.0) formats.
 
 ## Usage
+Install the library with `pip`
+```bash
+pip install palace-webpub-manifest-parser
+``` 
+
+### Pyenv
+
+You can optionally install the python version to run the library with using pyenv.
+
 1. Install [pyenv](https://github.com/pyenv/pyenv#installation)
 
-3. Install one of the supported Python versions mentioned in [.python-version](.python-version) or other PATCH versions of the same MINOR versions:
+3. Install one of the supported Python versions:
 ```bash
 pyenv install <python-version>
 ```
