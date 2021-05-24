@@ -2,13 +2,15 @@ import datetime
 import os
 from unittest import TestCase
 
+from webpub_manifest_parser.core import ManifestParserResult
 from webpub_manifest_parser.core.ast import (
     CompactCollection,
     Contributor,
     LinkList,
     Metadata,
 )
-from webpub_manifest_parser.rwpm.parser import RWPMDocumentParserFactory
+from webpub_manifest_parser.rwpm import RWPMManifestParserFactory
+from webpub_manifest_parser.rwpm.ast import RWPMManifest
 from webpub_manifest_parser.rwpm.registry import (
     RWPMLinkRelationsRegistry,
     RWPMMediaTypesRegistry,
@@ -16,19 +18,25 @@ from webpub_manifest_parser.rwpm.registry import (
 from webpub_manifest_parser.utils import first_or_default
 
 
-class RWPMParserTest(TestCase):
+class RWPMManifestParserTest(TestCase):
     def test(self):
         # Arrange
-        parser_factory = RWPMDocumentParserFactory()
+        parser_factory = RWPMManifestParserFactory()
         parser = parser_factory.create()
         input_file_path = os.path.join(
             os.path.dirname(__file__), "../../files/rwpm/spec_example.json"
         )
 
         # Act
-        manifest = parser.parse_file(input_file_path)
+        result = parser.parse_file(input_file_path)
 
         # Assert
+        self.assertIsInstance(result, ManifestParserResult)
+        self.assertEqual(0, len(result.errors))
+
+        manifest = result.root
+        self.assertIsInstance(manifest, RWPMManifest)
+
         self.assertIsInstance(manifest.context, list)
         self.assertEqual(1, len(manifest.context))
         [context] = manifest.context

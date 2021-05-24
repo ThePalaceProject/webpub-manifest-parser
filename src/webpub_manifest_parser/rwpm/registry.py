@@ -1,6 +1,7 @@
 from webpub_manifest_parser.core.registry import (
     CollectionRole,
     LinkRelation,
+    LinkRelationsRegistry,
     MediaType,
     Registry,
 )
@@ -32,7 +33,7 @@ class RWPMCollectionRolesRegistry(Registry):
         )
 
 
-class RWPMLinkRelationsRegistry(Registry):
+class RWPMLinkRelationsRegistry(LinkRelationsRegistry):
     """Registry containing link relations mentioned in the RWPM spec."""
 
     ALTERNATE = LinkRelation(key="alternate")
@@ -40,9 +41,15 @@ class RWPMLinkRelationsRegistry(Registry):
     COVER = LinkRelation(key="cover")
     MANIFEST = LinkRelation(key="manifest")
     SEARCH = LinkRelation(key="search")
-    SELF = LinkRelation(key="self")
 
-    CORE_LINK_RELATIONS = [ALTERNATE, CONTENTS, COVER, MANIFEST, SEARCH, SELF]
+    CORE_LINK_RELATIONS = [
+        ALTERNATE,
+        CONTENTS,
+        COVER,
+        MANIFEST,
+        SEARCH,
+        LinkRelationsRegistry.SELF,
+    ]
 
     def __init__(self):
         """Initialize a new instance of RWPMLinkRelationsRegistry class."""

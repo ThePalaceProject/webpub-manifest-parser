@@ -9,7 +9,7 @@ PROJECT = python-webpub-manifest-parser
 PACKAGE = palace_webpub_manifest_parser
 
 init:
-	python -m pip install pip
+	python -m pip install -U pip
 	pip uninstall -y enum34  # This line is required for Python versions greater than 2.7 to work correctly
 	python -m pip install poetry==${POETRY_VERSION}
 	poetry config virtualenvs.create false

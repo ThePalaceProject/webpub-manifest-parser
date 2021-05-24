@@ -234,6 +234,34 @@ class Link(Node):
         self.alternates = alternates
         self.children = children
 
+    def __eq__(self, other):
+        """Compare two Link objects.
+
+        :param other: Link object
+        :type other: Link
+
+        :return: Boolean value indicating whether two items are equal
+        :rtype: bool
+        """
+        if not isinstance(other, Link):
+            return False
+
+        return (
+            self.href == other.href
+            and self.templated == other.templated
+            and self.type == other.type
+            and self.title == other.title
+            and self.rels == other.rels
+            and self.properties == other.properties
+            and self.height == other.height
+            and self.width == other.width
+            and self.duration == other.duration
+            and self.bitrate == other.bitrate
+            and self.languages == other.languages
+            and self.alternates == other.alternates
+            and self.children == other.children
+        )
+
     def __hash__(self):
         """Calculate the hash.
 
@@ -246,17 +274,17 @@ class Link(Node):
                 self.templated,
                 self.type,
                 self.title,
-                frozenset(self.rels),
+                tuple(self.rels),
                 self.properties,
                 self.height,
                 self.width,
                 self.duration,
                 self.bitrate,
-                frozenset(self.languages)
+                tuple(self.languages)
                 if isinstance(self.languages, list)
                 else self.languages,
-                frozenset(self.alternates),
-                frozenset(self.children),
+                tuple(self.alternates),
+                tuple(self.children),
             )
         )
 
@@ -311,9 +339,19 @@ class LinkList(Node, list):
 
         if items is not None:
             if not isinstance(items, list):
-                raise ValueError("Items argument must be a list")
+                raise ValueError(
+                    "Argument 'items' must be an instance of {0}".format(list)
+                )
 
             self.extend(items)
+
+    def __hash__(self):
+        """Calculate the hash.
+
+        :return: Hash
+        :rtype: int
+        """
+        return hash(tuple(self))
 
     def get_by_rel(self, rel):
         """Return links with the specific relation.
@@ -324,7 +362,7 @@ class LinkList(Node, list):
         :return: Links with the specified relation
         :rtype: List[Link]
         """
-        return [link for link in self if rel in link.rels]
+        return [link for link in self if link.rels and rel in link.rels]
 
     def get_by_href(self, href):
         """Return links with the specific URL.
@@ -416,9 +454,9 @@ class Contributor(Node):
                 self.name,
                 self.identifier,
                 self.sort_as,
-                frozenset(self.roles) if self.roles else frozenset(),
+                tuple(self.roles) if self.roles else tuple(),
                 self.position,
-                frozenset(self.links) if self.links else frozenset(),
+                tuple(self.links) if self.links else tuple(),
             )
         )
 
@@ -498,7 +536,7 @@ class Subject(Node, PropertiesGrouping):
         :rtype: int
         """
         return hash(
-            (self.name, self.sort_as, self.code, self.scheme, frozenset(self.links))
+            (self.name, self.sort_as, self.code, self.scheme, tuple(self.links))
         )
 
     def __repr__(self):
@@ -570,7 +608,7 @@ class Owner(Node, PropertiesGrouping):
         :return: Hash
         :rtype: int
         """
-        return hash((self.collection, self.series))
+        return hash((tuple(self.collection), tuple(self.series)))
 
     def __repr__(self):
         """Return a string representation of the object.
@@ -628,22 +666,22 @@ class Metadata(Node):
         subtitle=None,
         modified=None,
         published=None,
-        language=None,
+        languages=None,
         sort_as=None,
-        author=None,
-        translator=None,
-        editor=None,
-        artist=None,
-        illustrator=None,
-        letterer=None,
-        penciler=None,
-        colorist=None,
-        inker=None,
-        narrator=None,
-        contributor=None,
-        publisher=None,
-        imprint=None,
-        subject=None,
+        authors=None,
+        translators=None,
+        editors=None,
+        artists=None,
+        illustrators=None,
+        letterers=None,
+        pencilers=None,
+        colorists=None,
+        inkers=None,
+        narrators=None,
+        contributors=None,
+        publishers=None,
+        imprints=None,
+        subjects=None,
         description=None,
         duration=None,
         number_of_pages=None,
@@ -657,26 +695,67 @@ class Metadata(Node):
         self.subtitle = subtitle
         self.modified = modified
         self.published = published
-        self.languages = language
+        self.languages = languages
         self.sort_as = sort_as
-        self.authors = author
-        self.translators = translator
-        self.editors = editor
-        self.artists = artist
-        self.illustrators = illustrator
-        self.letterers = letterer
-        self.pencilers = penciler
-        self.colorists = colorist
-        self.inkers = inker
-        self.narrators = narrator
-        self.contributors = contributor
-        self.publishers = publisher
-        self.imprints = imprint
-        self.subjects = subject
+        self.authors = authors
+        self.translators = translators
+        self.editors = editors
+        self.artists = artists
+        self.illustrators = illustrators
+        self.letterers = letterers
+        self.pencilers = pencilers
+        self.colorists = colorists
+        self.inkers = inkers
+        self.narrators = narrators
+        self.contributors = contributors
+        self.publishers = publishers
+        self.imprints = imprints
+        self.subjects = subjects
         self.description = description
         self.duration = duration
         self.number_of_pages = number_of_pages
         self.belongs_to = belongs_to
+
+    def __eq__(self, other):
+        """Compare two Metadata objects.
+
+        :param other: Metadata object
+        :type other: Metadata
+
+        :return: Boolean value indicating whether two items are equal
+        :rtype: bool
+        """
+        if not isinstance(other, Metadata):
+            return False
+
+        return (
+            self.identifier == other.identifier
+            and self.type == other.type
+            and self.title == other.title
+            and self.subtitle == other.subtitle
+            and self.modified == other.modified
+            and self.published == other.published
+            and self.languages == other.languages
+            and self.sort_as == other.sort_as
+            and self.authors == other.authors
+            and self.translators == other.translators
+            and self.editors == other.editors
+            and self.artists == other.artists
+            and self.illustrators == other.illustrators
+            and self.letterers == other.letterers
+            and self.pencilers == other.pencilers
+            and self.colorists == other.colorists
+            and self.inkers == other.inkers
+            and self.narrators == other.narrators
+            and self.contributors == other.contributors
+            and self.publishers == other.publishers
+            and self.imprints == other.imprints
+            and self.subjects == other.subjects
+            and self.description == other.description
+            and self.duration == other.duration
+            and self.number_of_pages == other.number_of_pages
+            and self.belongs_to == other.belongs_to
+        )
 
     def __hash__(self):
         """Calculate the hash.
@@ -692,22 +771,22 @@ class Metadata(Node):
                 self.subtitle,
                 self.modified,
                 self.published,
-                self.languages,
+                tuple(self.languages),
                 self.sort_as,
-                self.authors,
-                self.translators,
-                self.editors,
-                self.artists,
-                self.illustrators,
-                self.letterers,
-                self.pencilers,
-                self.colorists,
-                self.inkers,
-                self.narrators,
-                self.contributors,
-                self.publishers,
-                self.imprints,
-                self.subjects,
+                tuple(self.authors),
+                tuple(self.translators),
+                tuple(self.editors),
+                tuple(self.artists),
+                tuple(self.illustrators),
+                tuple(self.letterers),
+                tuple(self.pencilers),
+                tuple(self.colorists),
+                tuple(self.inkers),
+                tuple(self.narrators),
+                tuple(self.contributors),
+                tuple(self.publishers),
+                tuple(self.imprints),
+                tuple(self.subjects),
                 self.description,
                 self.duration,
                 self.number_of_pages,
@@ -727,6 +806,48 @@ class PresentationMetadata(Metadata):
         "overflow", False, ["auto", "paginated", "scrolled", "scrolled-continuous"]
     )
     spread = EnumProperty("spread", False, ["auto", "both", "none", "landscape"])
+
+    def __eq__(self, other):
+        """Compare two PresentationMetadata objects.
+
+        :param other: PresentationMetadata object
+        :type other: PresentationMetadata
+
+        :return: Boolean value indicating whether two items are equal
+        :rtype: bool
+        """
+        if not super(PresentationMetadata, self).__eq__(other):
+            return False
+
+        if not isinstance(other, PresentationMetadata):
+            return False
+
+        return (
+            self.clipped == other.clipped
+            and self.continuous == other.continuous
+            and self.fit == other.fit
+            and self.orientation == other.orientation
+            and self.overflow == other.overflow
+            and self.spread == other.spread
+        )
+
+    def __hash__(self):
+        """Calculate the hash.
+
+        :return: Hash
+        :rtype: int
+        """
+        return hash(
+            (
+                super(PresentationMetadata, self).__hash__(),
+                self.clipped,
+                self.continuous,
+                self.fit,
+                self.orientation,
+                self.overflow,
+                self.spread,
+            )
+        )
 
 
 class CompactCollection(Node):
@@ -748,6 +869,28 @@ class CompactCollection(Node):
         self._role = role
         self.links = links
 
+    def __eq__(self, other):
+        """Compare two CompactCollection objects.
+
+        :param other: CompactCollection object
+        :type other: CompactCollection
+
+        :return: Boolean value indicating whether two items are equal
+        :rtype: bool
+        """
+        if not isinstance(other, CompactCollection):
+            return False
+
+        return self.role == other.role and self.links == other.links
+
+    def __hash__(self):
+        """Calculate the hash.
+
+        :return: Hash
+        :rtype: int
+        """
+        return hash((self.role, self.links))
+
     @property
     def role(self):
         """Return the collection's role.
@@ -760,6 +903,10 @@ class CompactCollection(Node):
 
 class Collection(CompactCollection):
     """A collection is defined as a grouping of metadata, links and sub-collections."""
+
+    metadata = TypeProperty(
+        key="metadata", required=True, nested_type=PresentationMetadata
+    )
 
     def __init__(self, role=None, links=None, metadata=None):
         """Initialize a new instance of Collection class.
@@ -779,9 +926,33 @@ class Collection(CompactCollection):
         self._sub_collections = CollectionList()
         self.metadata = metadata
 
-    metadata = TypeProperty(
-        key="metadata", required=True, nested_type=PresentationMetadata
-    )
+    def __eq__(self, other):
+        """Compare two Collection objects.
+
+        :param other: Collection object
+        :type other: Collection
+
+        :return: Boolean value indicating whether two items are equal
+        :rtype: bool
+        """
+        if not super(Collection, self).__eq__(other):
+            return False
+
+        if not isinstance(other, Collection):
+            return False
+
+        return (
+            self.metadata == other.metadata
+            and self.sub_collections == other.sub_collections
+        )
+
+    def __hash__(self):
+        """Calculate the hash.
+
+        :return: Hash
+        :rtype: int
+        """
+        return hash((super(Collection, self).__hash__(), self.metadata))
 
     @property
     def sub_collections(self):
@@ -824,9 +995,19 @@ class CollectionList(Node, list):
 
         if items is not None:
             if not isinstance(items, list):
-                raise ValueError("Items argument must be a list")
+                raise ValueError(
+                    "Argument 'items' must be an instance of {0}".format(list)
+                )
 
             self.extend(items)
+
+    def __hash__(self):
+        """Calculate the hash.
+
+        :return: Hash
+        :rtype: int
+        """
+        return hash(tuple(self))
 
     def get_by_role(self, role):
         """Return collections with the specific role.
@@ -857,11 +1038,13 @@ class CompactCollectionProperty(Property):
         """
         if not isinstance(role, CollectionRole):
             raise ValueError(
-                "Role argument must be an instance of CollectionRole class"
+                "Argument 'role' must be an instance of {0}".format(CollectionRole)
             )
         if not issubclass(collection_class, CompactCollection):
             raise ValueError(
-                "Collection class argument must be a subclass of CompactCollection class"
+                "Argument 'collection_class' must be a subclass of {0}".format(
+                    CompactCollection
+                )
             )
 
         super(CompactCollectionProperty, self).__init__(
@@ -897,11 +1080,13 @@ class ArrayOfCollectionsProperty(BaseArrayProperty):
         """
         if not isinstance(role, CollectionRole):
             raise ValueError(
-                "Role argument must be an instance of CollectionRole class"
+                "Argument 'role' must be an instance of {0}".format(CollectionRole)
             )
         if not issubclass(collection_type, Collection):
             raise ValueError(
-                "Collection type argument must be a subclass of Collection class"
+                "Argument 'collection_type' must be a subclass of {0}".format(
+                    Collection
+                )
             )
 
         super(ArrayOfCollectionsProperty, self).__init__(

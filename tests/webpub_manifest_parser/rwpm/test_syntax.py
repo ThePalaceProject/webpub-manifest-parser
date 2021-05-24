@@ -3,8 +3,8 @@ from unittest import TestCase
 
 import six
 from parameterized import parameterized
-from pyfakefs.fake_filesystem_unittest import Patcher
 
+from webpub_manifest_parser.core import ManifestParser
 from webpub_manifest_parser.core.ast import (
     CompactCollection,
     Contributor,
@@ -14,14 +14,13 @@ from webpub_manifest_parser.core.ast import (
     PresentationMetadata,
     Subject,
 )
-from webpub_manifest_parser.core.parsers import DocumentParser, ValueParsingError
-from webpub_manifest_parser.core.syntax import MissingPropertyError
 from webpub_manifest_parser.rwpm.ast import RWPMManifest
 from webpub_manifest_parser.rwpm.registry import (
     RWPMLinkRelationsRegistry,
     RWPMMediaTypesRegistry,
 )
 from webpub_manifest_parser.rwpm.syntax import RWPMSyntaxAnalyzer
+from webpub_manifest_parser.utils import first_or_default
 
 RWPM_MANIFEST_WITHOUT_METADATA = """
 {
@@ -495,20 +494,22 @@ class RWPMSyntaxAnalyzerTest(TestCase):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
         input_steam = six.StringIO(rwpm_manifest_content)
-        manifest_json = DocumentParser.get_manifest_json(input_steam)
+        manifest_json = ManifestParser.get_manifest_json(input_steam)
 
         # Act
-        with self.assertRaises(MissingPropertyError) as assert_raises_context:
-            syntax_analyzer.analyze(manifest_json)
+        syntax_analyzer.analyze(manifest_json)
 
         # Assert
+        error = first_or_default(syntax_analyzer.context.errors)
+
+        self.assertIsNotNone(error)
         self.assertEqual(
             expected_class_with_missing_property,
-            assert_raises_context.exception.cls,
+            error.node.__class__,
         )
         self.assertEqual(
             expected_missing_property,
-            assert_raises_context.exception.object_property.key,
+            error.node_property.key,
         )
 
     @parameterized.expand(
@@ -546,16 +547,18 @@ class RWPMSyntaxAnalyzerTest(TestCase):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
         input_steam = six.StringIO(rwpm_manifest_content)
-        manifest_json = DocumentParser.get_manifest_json(input_steam)
+        manifest_json = ManifestParser.get_manifest_json(input_steam)
 
         # Act
-        with self.assertRaises(ValueParsingError) as assert_raises_context:
-            syntax_analyzer.analyze(manifest_json)
+        syntax_analyzer.analyze(manifest_json)
 
         # Assert
+        error = first_or_default(syntax_analyzer.context.errors)
+
+        self.assertIsNotNone(error)
         self.assertEqual(
             expected_error_message,
-            six.text_type(assert_raises_context.exception).strip("u"),
+            six.text_type(error).strip("u"),
         )
 
     @parameterized.expand(
@@ -602,7 +605,7 @@ class RWPMSyntaxAnalyzerTest(TestCase):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
         input_steam = six.StringIO(rwpm_manifest_content)
-        manifest_json = DocumentParser.get_manifest_json(input_steam)
+        manifest_json = ManifestParser.get_manifest_json(input_steam)
 
         # Act
         manifest = syntax_analyzer.analyze(manifest_json)
@@ -614,7 +617,7 @@ class RWPMSyntaxAnalyzerTest(TestCase):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
         input_steam = six.StringIO(RWPM_MANIFEST)
-        manifest_json = DocumentParser.get_manifest_json(input_steam)
+        manifest_json = ManifestParser.get_manifest_json(input_steam)
 
         # Act
         manifest = syntax_analyzer.analyze(manifest_json)

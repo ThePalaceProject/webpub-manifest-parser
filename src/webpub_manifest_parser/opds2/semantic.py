@@ -1,4 +1,5 @@
 import logging
+from functools import partial
 
 from multipledispatch import dispatch
 
@@ -11,8 +12,7 @@ from webpub_manifest_parser.core.ast import (
     Manifestlike,
     Metadata,
 )
-from webpub_manifest_parser.core.errors import BaseSemanticError
-from webpub_manifest_parser.core.semantic import SemanticAnalyzer
+from webpub_manifest_parser.core.semantic import SemanticAnalyzer, SemanticAnalyzerError
 from webpub_manifest_parser.opds2.ast import (
     OPDS2FeedMetadata,
     OPDS2Group,
@@ -22,20 +22,23 @@ from webpub_manifest_parser.opds2.ast import (
 from webpub_manifest_parser.opds2.registry import OPDS2LinkRelationsRegistry
 from webpub_manifest_parser.utils import cast, encode
 
-MISSING_REQUIRED_FEED_SUB_COLLECTIONS = BaseSemanticError(
-    "OPDS 2.0 feed must contain one of the following sub-collections: publications, navigation, groups"
+MISSING_REQUIRED_FEED_SUB_COLLECTIONS = partial(
+    SemanticAnalyzerError,
+    message="OPDS 2.0 feed must contain one of the following sub-collections: publications, navigation, groups",
 )
 
-MISSING_NAVIGATION_LINK_TITLE_ERROR = BaseSemanticError(
-    "OPDS 2.0 navigation link must contain a title"
+MISSING_NAVIGATION_LINK_TITLE_ERROR = partial(
+    SemanticAnalyzerError, message="OPDS 2.0 navigation link must contain a title"
 )
 
-MISSING_ACQUISITION_LINK = BaseSemanticError(
-    "OPDS 2.0 publication must contain at least one acquisition link"
+MISSING_ACQUISITION_LINK = partial(
+    SemanticAnalyzerError,
+    message="OPDS 2.0 publication must contain at least one acquisition link",
 )
 
-WRONG_GROUP_STRUCTURE = BaseSemanticError(
-    "OPDS 2.0 group must contain either a single navigation collection or a single publications collection"
+WRONG_GROUP_STRUCTURE = partial(
+    SemanticAnalyzerError,
+    message="OPDS 2.0 group must contain either a single navigation collection or a single publications collection",
 )
 
 
@@ -78,14 +81,20 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
             and node.navigation is None
             and node.groups is None
         ):
-            raise MISSING_REQUIRED_FEED_SUB_COLLECTIONS
+            with self._record_errors():
+                raise MISSING_REQUIRED_FEED_SUB_COLLECTIONS(
+                    node=node, node_property=None
+                )
 
         if node.publications is not None:
-            node.publications.accept(self)
+            with self._record_errors():
+                node.publications.accept(self)
         if node.navigation is not None:
-            node.navigation.accept(self)
+            with self._record_errors():
+                node.navigation.accept(self)
         if node.groups is not None:
-            node.groups.accept(self)
+            with self._record_errors():
+                node.groups.accept(self)
 
         self._logger.debug(u"Finished processing {0}".format(encode(node)))
 
@@ -99,9 +108,9 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
 
     @dispatch(Metadata)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
-        """Perform semantic analysis of the manifest's metadata.
+        """Perform semantic analysis of the publication's metadata.
 
-        :param node: Manifest's metadata
+        :param node: Publication's metadata
         :type node: Metadata
         """
         super(OPDS2SemanticAnalyzer, self).visit(node)
@@ -158,7 +167,8 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
             if link.rels is not None and set(acquisition_links) & set(link.rels):
                 break
         else:
-            raise MISSING_ACQUISITION_LINK
+            with self._record_errors():
+                raise MISSING_ACQUISITION_LINK(node=node, node_property=None)
 
         self._logger.debug(u"Finished processing {0}".format(encode(node)))
 
@@ -176,17 +186,22 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         # super(OPDS2SemanticAnalyzer, self).visit(node)
 
         if node.metadata:
-            node.metadata.accept(self)
+            with self._record_errors():
+                node.metadata.accept(self)
 
         if node.publications and node.navigation:
-            raise WRONG_GROUP_STRUCTURE
+            with self._record_errors():
+                raise WRONG_GROUP_STRUCTURE(node=node, node_property=None)
 
         if node.publications:
-            node.publications.accept(self)
+            with self._record_errors():
+                node.publications.accept(self)
         if node.navigation:
-            node.navigation.accept(self)
+            with self._record_errors():
+                node.navigation.accept(self)
         if node.links:
-            node.links.accept(self)
+            with self._record_errors():
+                node.links.accept(self)
 
         self._logger.debug(u"Finished processing {0}".format(encode(node)))
 
@@ -199,11 +214,15 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         """
         self._logger.debug(u"Started processing {0}".format(encode(node)))
 
-        self.visit(cast(node, CompactCollection))
+        with self._record_errors():
+            self.visit(cast(node, CompactCollection))
 
         for link in node.links:
             if link.title is None:
-                raise MISSING_NAVIGATION_LINK_TITLE_ERROR
+                with self._record_errors():
+                    raise MISSING_NAVIGATION_LINK_TITLE_ERROR(
+                        node=link, node_property=Link.title
+                    )
 
         self._logger.debug(u"Finished processing {0}".format(encode(node)))
 

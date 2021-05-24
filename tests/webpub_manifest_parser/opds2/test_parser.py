@@ -2,19 +2,21 @@ import datetime
 import os
 from unittest import TestCase
 
+from webpub_manifest_parser.core import ManifestParserResult
 from webpub_manifest_parser.core.ast import (
     CompactCollection,
     Contributor,
     LinkList,
     PresentationMetadata,
 )
+from webpub_manifest_parser.opds2 import OPDS2FeedParserFactory
 from webpub_manifest_parser.opds2.ast import (
     OPDS2AcquisitionObject,
     OPDS2AvailabilityType,
+    OPDS2Feed,
     OPDS2FeedMetadata,
     OPDS2LinkProperties,
 )
-from webpub_manifest_parser.opds2.parsers import OPDS2DocumentParserFactory
 from webpub_manifest_parser.opds2.registry import (
     OPDS2LinkRelationsRegistry,
     OPDS2MediaTypesRegistry,
@@ -22,19 +24,25 @@ from webpub_manifest_parser.opds2.registry import (
 from webpub_manifest_parser.utils import first_or_default
 
 
-class OPDS2Parser(TestCase):
+class OPDS2ParserTest(TestCase):
     def test(self):
         # Arrange
-        parser_factory = OPDS2DocumentParserFactory()
+        parser_factory = OPDS2FeedParserFactory()
         parser = parser_factory.create()
         input_file_path = os.path.join(
             os.path.dirname(__file__), "../../files/opds2/feed.json"
         )
 
         # Act
-        feed = parser.parse_file(input_file_path)
+        result = parser.parse_file(input_file_path)
 
         # Assert
+        self.assertIsInstance(result, ManifestParserResult)
+        self.assertEqual(0, len(result.errors))
+
+        feed = result.root
+        self.assertIsInstance(feed, OPDS2Feed)
+
         self.assertIsInstance(feed.metadata, OPDS2FeedMetadata)
         self.assertEqual("Example listing publications", feed.metadata.title)
 
@@ -54,7 +62,7 @@ class OPDS2Parser(TestCase):
         self.assertEqual("Moby-Dick", publication.metadata.title)
         self.assertEqual(
             [Contributor(name="Herman Melville", roles=[], links=LinkList())],
-            publication.metadata.authors
+            publication.metadata.authors,
         )
         self.assertEqual("urn:isbn:978-3-16-148410-0", publication.metadata.identifier)
         self.assertEqual(["en"], publication.metadata.languages)

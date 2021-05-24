@@ -156,3 +156,21 @@ class CollectionRole(RegistryItem):
         :rtype: bool
         """
         return self._multi
+
+
+class LinkRelationsRegistry(Registry):
+    """Registry containing link relations mentioned in the RWPM spec."""
+
+    SELF = LinkRelation(key="self")
+
+    CORE_LINK_RELATIONS = [SELF]
+
+    def __init__(self, items=None):
+        """Initialize a new instance of LinkRelationsRegistry class.
+
+        :param items: (Optional) collection of registry items. Note that all items have to be RegistryItem descendants
+        :type items: List[RegistryItems]
+        """
+        super(LinkRelationsRegistry, self).__init__(
+            self.CORE_LINK_RELATIONS if not items else items
+        )
