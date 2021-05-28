@@ -3,6 +3,7 @@ from contextlib import contextmanager
 
 import six
 
+from webpub_manifest_parser.core.properties import BaseArrayProperty, PropertiesGrouping
 from webpub_manifest_parser.errors import BaseError
 
 
@@ -96,3 +97,90 @@ class BaseAnalyzer(object):
             yield
         except BaseAnalyzerError as error:
             self.context.errors.append(error)
+
+
+class NodeFinder(object):
+    """Used for traversing the AST."""
+
+    def _find_parent_or_self(
+        self, current_node, target_node, target_parent_class, parent_nodes=None
+    ):
+        """In the AST defined by `root` for the given `target_node` find a parent node with `target_parent_class`.
+
+        :param current_node: The root of the current sub-tree
+        :type current_node: webpub_manifest_parser.core.ast.Node
+
+        :param target_node: Target AST node which parent we want to find
+        :type target_node: webpub_manifest_parser.core.ast.Node
+
+        :param target_parent_class: Class of the parent node
+        :type target_parent_class: Type
+
+        :param parent_nodes: List of the parent nodes
+        :type parent_nodes: list
+
+        :return: Parent of the `target_node` with `target_parent_class`
+        :rtype target_node: webpub_manifest_parser.core.ast.Node
+        """
+        if current_node == target_node:
+            if isinstance(current_node, target_parent_class):
+                return current_node
+
+            while parent_nodes:
+                parent_node = parent_nodes.pop()
+
+                if isinstance(parent_node, target_parent_class):
+                    return parent_node
+
+        parent_nodes = parent_nodes if parent_nodes else []
+        parent_nodes.append(current_node)
+
+        ast_object_properties = PropertiesGrouping.get_class_properties(
+            current_node.__class__
+        )
+
+        for object_property_name, object_property in ast_object_properties:
+            if isinstance(object_property, BaseArrayProperty):
+                child_nodes = getattr(current_node, object_property_name)
+
+                if not child_nodes:
+                    continue
+
+                for child_node in child_nodes:
+                    parent = self._find_parent_or_self(
+                        child_node, target_node, target_parent_class, parent_nodes
+                    )
+
+                    if parent:
+                        return parent
+            else:
+                child_node = getattr(current_node, object_property_name)
+
+                if not child_node:
+                    continue
+
+                parent = self._find_parent_or_self(
+                    child_node, target_node, target_parent_class, parent_nodes
+                )
+
+                if parent:
+                    return parent
+
+        return None
+
+    def find_parent_or_self(self, root, target_node, target_parent_class):
+        """In the AST defined by `root` for the given `target_node` find a parent node with `target_parent_class`.
+
+        :param root: Root node of the AST
+        :type root: webpub_manifest_parser.core.ast.Node
+
+        :param target_node: Target AST node whose parent we want to find
+        :type target_node: webpub_manifest_parser.core.ast.Node
+
+        :param target_parent_class: Class of the parent node
+        :type target_parent_class: Type
+
+        :return: Parent of the `target_node` with `target_parent_class`
+        :rtype target_node: webpub_manifest_parser.core.ast.Node
+        """
+        return self._find_parent_or_self(root, target_node, target_parent_class)
