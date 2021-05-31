@@ -75,13 +75,17 @@ make test-py27
 
 # Releasing
 
-Releases will be automatically published to PyPI when new tags are pushed into the
-repository. We use bump2version to update the version number and create a tag for the
-release.
+Releases will be automatically published to PyPI when new releases are created on github. We use 
+`bump2version` to update the version number, then create a release in github.
 
 To publish a new release:
-```
-pip install bump2version
-bump2version {part}
-git push origin main --tags
-```
+- Bump the version and push it as a branch
+  ```
+  git checkout -b release/vX.X.X
+  pip install bump2version
+  bump2version {part}
+  git push origin release/vX.X.X
+  ```
+- Create a PR for new version
+- Merge PR into `main`
+- Create a release for the version in github
