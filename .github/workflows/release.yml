@@ -2,9 +2,8 @@ name: Publish Release
 
 on:
   # The build will be triggered when we publish a release
-  push:
-    tags:
-      - v[0-9]+.[0-9]+.[0-9]+
+  release:
+    types: [published]
 
 jobs:
   release:
@@ -24,11 +23,11 @@ jobs:
 
     - name: Check if version matches 🪄
       run: |
-        export GIT_TAG=$(git describe HEAD --tags --abbrev=0)
-        export PROJECT_VERSION=v$(poetry version -s)
-        echo $GIT_TAG
+        export RELEASE_VERSION="${{ github.event.release.tag_name }}"
+        export PROJECT_VERSION="v$(poetry version -s)"
+        echo $RELEASE_VERSION
         echo $PROJECT_VERSION
-        if [[ "$GIT_TAG" != "$PROJECT_VERSION" ]]; then exit 1; fi
+        if [[ "$RELEASE_VERSION" != "$PROJECT_VERSION" ]]; then exit 1; fi
 
     - name: Build & Publish 📚
       run: make publish
