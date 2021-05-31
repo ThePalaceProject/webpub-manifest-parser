@@ -1,6 +1,7 @@
 # webpub manifest parser
 
 [![Lint & Run Tests](https://github.com/ThePalaceProject/webpub-manifest-parser/actions/workflows/lint-test.yml/badge.svg)](https://github.com/ThePalaceProject/webpub-manifest-parser/actions/workflows/lint-test.yml)
+[![PyPI](https://img.shields.io/pypi/v/palace-webpub-manifest-parser)](https://pypi.org/project/palace-webpub-manifest-parser/)
 
 A parser for the [Readium Web Publication Manifest (RWPM)](https://github.com/readium/webpub-manifest), [Open Publication Distribution System 2.0 (OPDS 2.0)](https://drafts.opds.io/opds-2.0), and [Open Distribution to Libraries 1.0 (ODL)](https://drafts.opds.io/odl-1.0.html) formats.
 
