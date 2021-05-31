@@ -1,6 +1,7 @@
 # webpub manifest parser
 
 [![Lint & Run Tests](https://github.com/ThePalaceProject/webpub-manifest-parser/actions/workflows/lint-test.yml/badge.svg)](https://github.com/ThePalaceProject/webpub-manifest-parser/actions/workflows/lint-test.yml)
+[![PyPI](https://img.shields.io/pypi/v/palace-webpub-manifest-parser)](https://pypi.org/project/palace-webpub-manifest-parser/)
 
 A parser for the [Readium Web Publication Manifest (RWPM)](https://github.com/readium/webpub-manifest), [Open Publication Distribution System 2.0 (OPDS 2.0)](https://drafts.opds.io/opds-2.0), and [Open Distribution to Libraries 1.0 (ODL)](https://drafts.opds.io/odl-1.0.html) formats.
 
@@ -75,13 +76,17 @@ make test-py27
 
 # Releasing
 
-Releases will be automatically published to PyPI when new tags are pushed into the
-repository. We use bump2version to update the version number and create a tag for the
-release.
+Releases will be automatically published to PyPI when new releases are created on github. We use 
+`bump2version` to update the version number, then create a release in github.
 
 To publish a new release:
-```
-pip install bump2version
-bump2version {part}
-git push origin main --tags
-```
+- Bump the version and push it as a branch
+  ```
+  git checkout -b release/vX.X.X
+  pip install bump2version
+  bump2version {part}
+  git push origin release/vX.X.X
+  ```
+- Create a PR for new version
+- Merge PR into `main`
+- Create a release for the version in github
