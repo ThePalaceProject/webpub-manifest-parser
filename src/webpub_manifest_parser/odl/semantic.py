@@ -112,7 +112,7 @@ ODL_FEED_CONTAINS_REDUNDANT_NAVIGATION_SUBCOLLECTION_ERROR = partial(
 
 ODL_PUBLICATION_MUST_CONTAIN_EITHER_LICENSES_OR_OA_ACQUISITION_LINK_ERROR = partial(
     ODLPublicationSemanticError,
-    message="ODL publication '{0}' does not contain neither 'licenses' subcollection nor "
+    message="ODL publication '{0}' contains neither 'licenses' subcollection nor "
     "an Open-Access Acquisition Link (http://opds-spec.org/acquisition/open-access)",
 )
 
