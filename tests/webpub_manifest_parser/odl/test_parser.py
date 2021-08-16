@@ -2,6 +2,8 @@ import datetime
 import os
 from unittest import TestCase
 
+from dateutil.tz import tzoffset
+
 from webpub_manifest_parser.core import ManifestParserResult
 from webpub_manifest_parser.odl import ODLFeedParserFactory
 from webpub_manifest_parser.opds2.ast import OPDS2FeedMetadata
@@ -44,12 +46,14 @@ class ODLParserTest(TestCase):
         self.assertEqual(7.99, license.metadata.price.value)
 
         self.assertEqual(
-            datetime.datetime(2014, 4, 25, 10, 25, 21), license.metadata.created
+            datetime.datetime(2014, 4, 25, 12, 25, 21, tzinfo=tzoffset(None, 7200)),
+            license.metadata.created,
         )
 
         self.assertEqual(30, license.metadata.terms.checkouts)
         self.assertEqual(
-            datetime.datetime(2016, 4, 25, 10, 25, 21), license.metadata.terms.expires
+            datetime.datetime(2016, 4, 25, 12, 25, 21, tzinfo=tzoffset(None, 7200)),
+            license.metadata.terms.expires,
         )
         self.assertEqual(10, license.metadata.terms.concurrency)
         self.assertEqual(5097600, license.metadata.terms.length)

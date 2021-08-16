@@ -1,4 +1,3 @@
-import datetime
 import logging
 import re
 from abc import ABCMeta, abstractmethod
@@ -6,7 +5,7 @@ from pydoc import locate
 
 import jsonschema  # noqa: I201
 import six  # noqa: I201
-import strict_rfc3339  # noqa: I201
+from dateutil import parser as datetime_parser  # noqa: I201, I100
 from jsonschema import FormatError  # noqa: I201, I100
 from uritemplate import URITemplate  # noqa: I201
 
@@ -477,14 +476,10 @@ class URIReferenceParser(FormatChecker):
         return value
 
 
-class DateParser(FormatChecker):
+class DateParser(StringParser):
     """Date parser."""
 
-    def __init__(self):
-        """Initialize a new instance of DateParser class."""
-        super(DateParser, self).__init__("date")
-
-    def _parse(self, value):
+    def parse(self, value):
         """Parse a date & time string into datetime object.
 
         :param value: Value
@@ -494,25 +489,19 @@ class DateParser(FormatChecker):
         :rtype: datetime.datetime
         """
         try:
-            return datetime.datetime.strptime(value, "%Y-%m-%d")
+            return datetime_parser.parse(value)
         except Exception as exception:
             raise ValueParserError(
                 value,
-                u"Value '{0}' is not a correct date: it does not match '%Y-%m-%d' pattern".format(
-                    encode(value)
-                ),
+                u"Value '{0}' is not a correct date".format(encode(value)),
                 exception,
             )
 
 
-class DateTimeParser(FormatChecker):
+class DateTimeParser(StringParser):
     """Date & time parser."""
 
-    def __init__(self):
-        """Initialize a new instance of DateTimeParser class."""
-        super(DateTimeParser, self).__init__("date-time")
-
-    def _parse(self, value):
+    def parse(self, value):
         """Parse a date & time string into datetime object.
 
         :param value: Value
@@ -522,14 +511,12 @@ class DateTimeParser(FormatChecker):
         :rtype: datetime.datetime
         """
         try:
-            timestamp = strict_rfc3339.rfc3339_to_timestamp(value)
-
-            return datetime.datetime.utcfromtimestamp(timestamp)
+            return datetime_parser.parse(value)
         except Exception as exception:
             raise ValueParserError(
                 value,
-                u"Value '{0}' is not correct date & time value: "
-                u"it does not comply with RFC 3339 date & time formatting rules".format(
+                u"Value '{0}' is not a correct date & time value: "
+                u"it does not comply with ISO 8601 date & time formatting rules".format(
                     encode(value)
                 ),
                 exception,
