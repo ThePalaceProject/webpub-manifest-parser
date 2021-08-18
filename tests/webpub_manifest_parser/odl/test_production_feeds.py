@@ -1,3 +1,4 @@
+import csv
 import logging
 from unittest import TestCase, skip
 
@@ -5,7 +6,9 @@ from parameterized import parameterized
 from requests.auth import HTTPBasicAuth
 
 from webpub_manifest_parser.core import ManifestParserResult
+from webpub_manifest_parser.core.analyzer import NodeFinder
 from webpub_manifest_parser.odl import ODLFeedParserFactory
+from webpub_manifest_parser.opds2.ast import OPDS2Publication
 from webpub_manifest_parser.utils import first_or_default
 
 
@@ -23,17 +26,41 @@ class ODLFeedParserIntegrationTest(TestCase):
         :param feed_parsing_result: Parsing result
         :type feed_parsing_result: ManifestParserResult
         """
-        if feed_parsing_result.errors:
-            print(
-                "Feed '{0}' located at '{1}' contains the following errors:".format(
-                    feed_name, feed_url
-                )
-            )
+        node_finder = NodeFinder()
+        fieldnames = ['feed_name', 'feed_url', 'publication_id', "publication_title", "error"]
 
-            for index, error in enumerate(feed_parsing_result.errors):
-                print("{0}. {1}".format(index + 1, error.error_message))
+        with open('error.csv', 'a') as output:
+            writer = csv.DictWriter(output, fieldnames=fieldnames)
 
-            print("")
+            writer.writeheader()
+
+            if feed_parsing_result.errors:
+                for index, error in enumerate(feed_parsing_result.errors):
+                    publication = node_finder.find_parent_or_self(
+                        feed_parsing_result.root, error.node, OPDS2Publication
+                    )
+
+                    if publication:
+                        writer.writerow(
+                            {
+                                "feed_name": feed_name,
+                                "feed_url": feed_url,
+                                "publication_id": publication.metadata.identifier,
+                                "publication_title": publication.metadata.title,
+                                "error": error.error_message
+                            }
+                        )
+                    else:
+                        writer.writerow(
+                            {
+                                "feed_name": feed_name,
+                                "feed_url": feed_url,
+                                "publication_id": publication.metadata.identifier,
+                                "publication_title": publication.metadata.title,
+                                "error": error.error_message
+                            }
+                        )
+                    # print("{0}. {1}".format(index + 1, error.error_message))
 
     @parameterized.expand(
         [
