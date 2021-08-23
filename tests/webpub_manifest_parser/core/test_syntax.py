@@ -1,6 +1,7 @@
 import datetime
 from unittest import TestCase
 
+from dateutil.tz import tzutc
 from parameterized import parameterized
 
 from tests.webpub_manifest_parser.core.test_analyzer import AnalyzerTest
@@ -32,7 +33,7 @@ class SyntaxAnalyzerTest(AnalyzerTest):
                 {"metadata": {"modified": "2021-01-01T00:00:00Z"}},
                 Manifestlike(
                     metadata=PresentationMetadata(
-                        modified=datetime.datetime(2021, 1, 1),
+                        modified=datetime.datetime(2021, 1, 1, tzinfo=tzutc()),
                         languages=[],
                         authors=[],
                         translators=[],
@@ -59,7 +60,7 @@ class SyntaxAnalyzerTest(AnalyzerTest):
             #    and continues parsing other nested properties (`subtitle`, etc.).
             (
                 "incorrect_metadata_modified_property",
-                {"metadata": {"subtitle": "Subtitle", "modified": "2021"}},
+                {"metadata": {"subtitle": "Subtitle", "modified": "202X"}},
                 Manifestlike(
                     metadata=PresentationMetadata(
                         subtitle="Subtitle",
@@ -87,7 +88,8 @@ class SyntaxAnalyzerTest(AnalyzerTest):
                     SyntaxAnalyzerError(
                         PresentationMetadata(),
                         Metadata.modified,
-                        u"'2021' is not a 'date-time'",
+                        u"Value '202X' is not a correct date & time value: "
+                        u"it does not comply with ISO 8601 date & time formatting rules",
                     ),
                 ],
             ),
@@ -99,7 +101,7 @@ class SyntaxAnalyzerTest(AnalyzerTest):
                     "metadata": {
                         "title": "Title",
                         "subtitle": "Subtitle",
-                        "modified": "2021",
+                        "modified": "202X",
                     }
                 },
                 Manifestlike(
@@ -129,7 +131,8 @@ class SyntaxAnalyzerTest(AnalyzerTest):
                     SyntaxAnalyzerError(
                         PresentationMetadata(),
                         Metadata.modified,
-                        u"'2021' is not a 'date-time'",
+                        u"Value '202X' is not a correct date & time value: "
+                        u"it does not comply with ISO 8601 date & time formatting rules",
                     ),
                 ],
             ),

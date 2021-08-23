@@ -2,6 +2,7 @@ import datetime
 from unittest import TestCase
 
 import six
+from dateutil.tz import tzutc
 from parameterized import parameterized
 
 from webpub_manifest_parser.core import ManifestParser
@@ -522,7 +523,7 @@ class RWPMSyntaxAnalyzerTest(TestCase):
             (
                 "when_metadata_modified_property_has_incorrect_format",
                 RWPM_MANIFEST_WITH_INCORRECT_METADATA_MODIFIED_PROPERTY,
-                "'2015-09-29T17:00:00Z---' is not a 'date-time'",
+                "Value '2015-09-29T17:00:00Z---' is not a correct date & time value: it does not comply with ISO 8601 date & time formatting rules",
             ),
             (
                 "when_metadata_modified_language_has_incorrect_format",
@@ -640,7 +641,8 @@ class RWPMSyntaxAnalyzerTest(TestCase):
         self.assertEqual("urn:isbn:978031600000X", manifest.metadata.identifier)
         self.assertEqual(["en"], manifest.metadata.languages)
         self.assertEqual(
-            datetime.datetime(2015, 9, 29, 17, 0, 0), manifest.metadata.modified
+            datetime.datetime(2015, 9, 29, 17, 0, 0, tzinfo=tzutc()),
+            manifest.metadata.modified,
         )
 
         self.assertIsInstance(manifest.links, list)

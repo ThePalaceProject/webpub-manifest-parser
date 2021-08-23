@@ -334,6 +334,8 @@ class NodeFinderTest(TestCase):
     def test(self, _, root, target_node, target_parent_class, expected_parent_node):
         node_finder = NodeFinder()
 
-        parent_node = node_finder.find_parent_or_self(root, target_node, target_parent_class)
+        parent_node = node_finder.find_parent_or_self(
+            root, target_node, target_parent_class
+        )
 
         self.assertEqual(expected_parent_node, parent_node)

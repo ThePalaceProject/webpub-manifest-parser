@@ -2,6 +2,8 @@ import datetime
 import os
 from unittest import TestCase
 
+from dateutil.tz import tzutc
+
 from webpub_manifest_parser.core import ManifestParserResult
 from webpub_manifest_parser.core.ast import (
     CompactCollection,
@@ -67,7 +69,8 @@ class OPDS2ParserTest(TestCase):
         self.assertEqual("urn:isbn:978-3-16-148410-0", publication.metadata.identifier)
         self.assertEqual(["en"], publication.metadata.languages)
         self.assertEqual(
-            datetime.datetime(2015, 9, 29, 17, 0, 0), publication.metadata.modified
+            datetime.datetime(2015, 9, 29, 17, 0, tzinfo=tzutc()),
+            publication.metadata.modified,
         )
 
         self.assertIsInstance(publication.links, list)
@@ -146,10 +149,12 @@ class OPDS2ParserTest(TestCase):
         self.assertEqual("urn:isbn:978-3-16-148410-0", publication.metadata.identifier)
         self.assertEqual(["eng", "fre"], publication.metadata.languages)
         self.assertEqual(
-            datetime.datetime(2015, 9, 29, 0, 0, 0), publication.metadata.published
+            datetime.datetime(2015, 9, 29, 0, 0, tzinfo=tzutc()),
+            publication.metadata.published,
         )
         self.assertEqual(
-            datetime.datetime(2015, 9, 29, 17, 0, 0), publication.metadata.modified
+            datetime.datetime(2015, 9, 29, 17, 0, 0, tzinfo=tzutc()),
+            publication.metadata.modified,
         )
 
         self.assertIsInstance(publication.links, list)

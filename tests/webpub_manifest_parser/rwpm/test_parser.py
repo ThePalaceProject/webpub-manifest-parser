@@ -2,6 +2,8 @@ import datetime
 import os
 from unittest import TestCase
 
+from dateutil.tz import tzutc
+
 from webpub_manifest_parser.core import ManifestParserResult
 from webpub_manifest_parser.core.ast import (
     CompactCollection,
@@ -52,7 +54,8 @@ class RWPMManifestParserTest(TestCase):
         self.assertEqual("urn:isbn:978031600000X", manifest.metadata.identifier)
         self.assertEqual(["en"], manifest.metadata.languages)
         self.assertEqual(
-            datetime.datetime(2015, 9, 29, 17, 0, 0), manifest.metadata.modified
+            datetime.datetime(2015, 9, 29, 17, 0, 0, tzinfo=tzutc()),
+            manifest.metadata.modified,
         )
 
         self.assertIsInstance(manifest.links, list)
