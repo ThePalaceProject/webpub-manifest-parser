@@ -479,6 +479,13 @@ class URIReferenceParser(FormatChecker):
 class DateParser(StringParser):
     """Date parser."""
 
+    def _raise_error(self, value, inner_exception=None):
+        raise ValueParserError(
+            value,
+            u"Value '{0}' is not a correct date".format(encode(value)),
+            inner_exception,
+        )
+
     def parse(self, value):
         """Parse a date & time string into datetime object.
 
@@ -488,14 +495,24 @@ class DateParser(StringParser):
         :return: Parsed date object
         :rtype: datetime.datetime
         """
+        value = super(DateParser, self).parse(value)
+        result = None
+
         try:
-            return datetime_parser.parse(value)
-        except Exception as exception:
-            raise ValueParserError(
-                value,
-                u"Value '{0}' is not a correct date".format(encode(value)),
-                exception,
-            )
+            result = datetime_parser.isoparse(value)
+        except Exception as exception:  # pylint: disable=broad-except
+            self._raise_error(value, exception)
+
+        if result and (  # pylint: disable=too-many-boolean-expressions
+            result.hour
+            or result.minute
+            or result.second
+            or result.microsecond
+            or result.tzinfo
+        ):
+            self._raise_error(value)
+
+        return result
 
 
 class DateTimeParser(StringParser):
@@ -510,8 +527,10 @@ class DateTimeParser(StringParser):
         :return: Parsed date & time object
         :rtype: datetime.datetime
         """
+        value = super(DateTimeParser, self).parse(value)
+
         try:
-            return datetime_parser.parse(value)
+            return datetime_parser.isoparse(value)
         except Exception as exception:
             raise ValueParserError(
                 value,
