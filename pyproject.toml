@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "palace_webpub_manifest_parser"
-version = "2.0.3"
+version = "2.0.4"
 description = "A parser for the Readium Web Publication Manifest, OPDS 2.0 and ODL formats."
 license = "Apache-2.0"
 authors = ["Viacheslav Bessonov <viacheslav.bessonov@hilbertteam.com>"]
