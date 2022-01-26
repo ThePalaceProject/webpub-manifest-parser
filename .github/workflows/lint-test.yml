@@ -36,7 +36,7 @@ jobs:
       - name: Run Tests
         run: |
           poetry run python --version
-          poetry run tox
+          tox
 
   lint:
     name: Lint
