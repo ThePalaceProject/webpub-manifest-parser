@@ -3,7 +3,7 @@
 
 all: install lint build
 
-POETRY_VERSION = 1.1.5
+POETRY_VERSION = 1.1.12
 
 PROJECT = python-webpub-manifest-parser
 PACKAGE = palace_webpub_manifest_parser
@@ -15,7 +15,7 @@ init:
 	# poetry config virtualenvs.create false #This changes global configs
 
 install:
-	poetry install -vvv
+	poetry install -vvv --no-root
 
 build:
 	poetry build
