@@ -1,4 +1,4 @@
-import collections
+from collections.abc import MutableMapping
 
 
 class RegistryItem(object):
@@ -22,7 +22,7 @@ class RegistryItem(object):
         return self._key
 
 
-class Registry(collections.MutableMapping):
+class Registry(MutableMapping):
     """Collection of registry items with a particular type (collection roles, media types, etc.)."""
 
     def __init__(self, items=None):

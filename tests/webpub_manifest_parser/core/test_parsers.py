@@ -4,7 +4,6 @@ from unittest import TestCase
 
 import pytz
 import six
-from nose.tools import assert_raises
 from parameterized import parameterized
 
 from webpub_manifest_parser.core.ast import (
@@ -39,7 +38,7 @@ class ParserTest(object):
         parser = self._create_parser()
 
         if expected_error:
-            with assert_raises(expected_error.__class__) as error_context:
+            with self.assertRaises(expected_error.__class__) as error_context:
                 parser.parse(value)
 
             self.assertEqual(

@@ -12,7 +12,7 @@ init:
 	python -m pip install -U pip
 	pip uninstall -y enum34  # This line is required for Python versions greater than 2.7 to work correctly
 	python -m pip install poetry==${POETRY_VERSION}
-	poetry config virtualenvs.create false
+	# poetry config virtualenvs.create false #This changes global configs
 
 install:
 	poetry install -vvv
@@ -44,5 +44,11 @@ test-py37:
 test-py38:
 	tox -e py38
 
+test-py39:
+	tox -e py39
+
+test-py310:
+	tox -e py310
+
 test:
-	tox -e py27,py36,py37,py38
+	tox -e py27,py36,py37,py38,py39,py310
