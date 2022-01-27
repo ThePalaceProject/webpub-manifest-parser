@@ -64,14 +64,14 @@ make lint
 make test-<python-version>
 ```
 where `<python-version>` is one of supported python versions:
-- py27
-- py36
 - py37
 - py38
+- py39
+- py310
 
-For example, to run the unit test using Python 2.7 run the following command:
+For example, to run the unit test using Python 3.9 run the following command:
 ```bash
-make test-py27
+make test-py39
 ```
 
 # Releasing
