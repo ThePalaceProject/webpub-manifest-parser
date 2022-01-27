@@ -4,7 +4,7 @@ import logging
 from abc import ABCMeta, abstractmethod
 from io import StringIO
 
-import requests  # noqa: I201
+import requests
 
 from webpub_manifest_parser.core.analyzer import AnalyzerContext
 
@@ -98,9 +98,7 @@ class ManifestParser:
 
         return self._parse(manifest_json)
 
-    def parse_url(
-        self, url, encoding="utf-8", params=None, auth=None, proxies=None
-    ):  # pylint: disable=too-many-arguments
+    def parse_url(self, url, encoding="utf-8", params=None, auth=None, proxies=None):
         """Fetch the content pointed by the URL, parse it and return the result: root AST object and a list of errors.
 
         :param url: URL pointing to the RWPM-compatible document

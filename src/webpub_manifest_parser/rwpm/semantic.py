@@ -47,8 +47,8 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
 
         self._logger = logging.getLogger(__name__)
 
-    @dispatch(Manifestlike)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(Manifestlike)
+    def visit(self, node):
         """Perform semantic analysis of the manifest node.
 
         :param node: Manifest's metadata
@@ -71,8 +71,8 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
                             node=link, node_property=Link.type
                         )
 
-    @dispatch(Metadata)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(Metadata)
+    def visit(self, node):
         """Perform semantic analysis of the manifest's metadata.
 
         :param node: Manifest's metadata
@@ -80,8 +80,8 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
         """
         super().visit(node)
 
-    @dispatch(LinkList)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(LinkList)
+    def visit(self, node):
         """Perform semantic analysis of the list of links.
 
         :param node: Manifest's metadata
@@ -89,8 +89,8 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
         """
         super().visit(node)
 
-    @dispatch(Link)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(Link)
+    def visit(self, node):
         """Perform semantic analysis of the link node.
 
         :param node: Link node
@@ -98,8 +98,8 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
         """
         super().visit(node)
 
-    @dispatch(CollectionList)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(CollectionList)
+    def visit(self, node):
         """Perform semantic analysis of the list of sub-collections.
 
         :param node: CollectionList node
@@ -107,8 +107,8 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
         """
         super().visit(node)
 
-    @dispatch(CompactCollection)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(CompactCollection)
+    def visit(self, node):
         """Perform semantic analysis of the compact collection node.
 
         :param node: Collection node
@@ -116,8 +116,8 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
         """
         super().visit(node)
 
-    @dispatch(Collection)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(Collection)
+    def visit(self, node):
         """Perform semantic analysis of the collection node.
 
         :param node: Collection node

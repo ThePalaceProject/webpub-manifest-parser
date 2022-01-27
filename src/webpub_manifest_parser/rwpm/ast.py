@@ -9,7 +9,7 @@ class RWPMManifest(Manifestlike):
     # https://github.com/readium/webpub-manifest#22-metadata
     DEFAULT_CONTEXT = "https://readium.org/webpub-manifest/context.jsonld"
 
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         metadata=None,
         links=None,

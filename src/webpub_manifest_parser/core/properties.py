@@ -263,7 +263,7 @@ class ParsableProperty(Property, metaclass=ABCMeta):
 class IntegerProperty(Property):
     """Property allowing only integer values."""
 
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         key,
         required,
@@ -307,7 +307,7 @@ class IntegerProperty(Property):
 class NumberProperty(Property):
     """Property allowing only float values."""
 
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         key,
         required,
@@ -423,9 +423,7 @@ class DateOrTimeProperty(ParsableProperty):
 class BaseArrayProperty(Property):
     """Property containing a list of items."""
 
-    def __init__(
-        self, key, required, parser, list_type=list, default_value=None
-    ):  # pylint: disable=R0913
+    def __init__(self, key, required, parser, list_type=list, default_value=None):
         """Initialize a new instance of ListProperty class.
 
         :param key: Property's key
@@ -477,7 +475,7 @@ class BaseArrayProperty(Property):
 class ArrayProperty(BaseArrayProperty):
     """Property containing an array of items."""
 
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         key,
         required,
@@ -525,7 +523,7 @@ class ArrayProperty(BaseArrayProperty):
 class ArrayOfStringsProperty(BaseArrayProperty):
     """Property allowing either a string or array of strings as its values."""
 
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self, key, required, unique_items=False, list_type=list, default_value=None
     ):
         """Initialize a new instance of ArrayOfStringsProperty class.
@@ -568,7 +566,7 @@ class ListOfLanguagesProperty(BaseArrayProperty):
           ]
     """
 
-    def __init__(self, key, required):  # pylint: disable=R0913
+    def __init__(self, key, required):
         """Initialize a new instance of ListOfLanguagesProperty class.
 
         :param key: Property's key

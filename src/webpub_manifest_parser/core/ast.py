@@ -156,7 +156,7 @@ class Link(Node):
         item_parser=TypeParser("webpub_manifest_parser.core.ast.Link"),
     )
 
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         href=None,
         templated=None,
@@ -394,7 +394,7 @@ class Contributor(Node):
     position = NumberProperty("position", required=False)
     links = ArrayOfLinksProperty("links", required=False)
 
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         name=None,
         identifier=None,
@@ -644,7 +644,7 @@ class Metadata(Node):
     )
     belongs_to = TypeProperty("belongsTo", required=False, nested_type=Owner)
 
-    def __init__(  # pylint: disable=R0913, R0914
+    def __init__(
         self,
         title=None,
         identifier=None,

@@ -321,7 +321,7 @@ class OPDS2FeedMetadata(Node):
     current_page = IntegerProperty("currentPage", required=False, exclusive_minimum=0)
     number_of_items = IntegerProperty("numberOfItems", required=False, minimum=0)
 
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         title=None,
         _type=None,
@@ -464,7 +464,7 @@ class OPDS2Feed(Manifestlike):
         collection_type=OPDS2Group,
     )
 
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         metadata=None,
         links=None,

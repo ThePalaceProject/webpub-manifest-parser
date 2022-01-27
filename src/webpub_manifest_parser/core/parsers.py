@@ -3,10 +3,10 @@ import re
 from abc import ABCMeta, abstractmethod
 from pydoc import locate
 
-import jsonschema  # noqa: I201
-from dateutil import parser as datetime_parser  # noqa: I201, I100
-from jsonschema import FormatError  # noqa: I201, I100
-from uritemplate import URITemplate  # noqa: I201
+import jsonschema
+from dateutil import parser as datetime_parser
+from jsonschema import FormatError
+from uritemplate import URITemplate
 
 from webpub_manifest_parser.errors import BaseError
 from webpub_manifest_parser.utils import encode, is_string
@@ -488,10 +488,10 @@ class DateParser(StringParser):
 
         try:
             result = datetime_parser.isoparse(value)
-        except Exception as exception:  # pylint: disable=broad-except
+        except Exception as exception:
             self._raise_error(value, exception)
 
-        if result and (  # pylint: disable=too-many-boolean-expressions
+        if result and (
             result.hour
             or result.minute
             or result.second
@@ -639,7 +639,7 @@ class ObjectParser(ValueParser):
 class LocalizableStringParser(ObjectParser):
     """Parser for localizable strings represented as a dictionary with keys equal to language codes."""
 
-    LANGUAGE_PATTERN = "^((?P<grandfathered>(en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)|(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang))|((?P<language>([A-Za-z]{2,3}(-(?P<extlang>[A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-(?P<script>[A-Za-z]{4}))?(-(?P<region>[A-Za-z]{2}|[0-9]{3}))?(-(?P<variant>[A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-(?P<extension>[0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(?P<privateUse>x(-[A-Za-z0-9]{1,8})+))?)|(?P<privateUse2>x(-[A-Za-z0-9]{1,8})+))$"  # noqa: E501, pylint: disable=C0301
+    LANGUAGE_PATTERN = "^((?P<grandfathered>(en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)|(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang))|((?P<language>([A-Za-z]{2,3}(-(?P<extlang>[A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-(?P<script>[A-Za-z]{4}))?(-(?P<region>[A-Za-z]{2}|[0-9]{3}))?(-(?P<variant>[A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-(?P<extension>[0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(?P<privateUse>x(-[A-Za-z0-9]{1,8})+))?)|(?P<privateUse2>x(-[A-Za-z0-9]{1,8})+))$"
 
     def __init__(self):
         """Initialize a new instance of LocalizableStringValidator class."""

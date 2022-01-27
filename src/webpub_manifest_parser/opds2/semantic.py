@@ -65,8 +65,8 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
 
         self._logger = logging.getLogger(__name__)
 
-    @dispatch(Manifestlike)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(Manifestlike)
+    def visit(self, node):
         """Perform semantic analysis of the manifest node.
 
         :param node: Manifest's metadata
@@ -98,16 +98,16 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
 
         self._logger.debug(f"Finished processing {encode(node)}")
 
-    @dispatch(OPDS2FeedMetadata)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(OPDS2FeedMetadata)
+    def visit(self, node):
         """Perform semantic analysis of the feed's metadata.
 
         :param node: Feed's metadata
         :type node: OPDS2FeedMetadata
         """
 
-    @dispatch(Metadata)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(Metadata)
+    def visit(self, node):
         """Perform semantic analysis of the publication's metadata.
 
         :param node: Publication's metadata
@@ -115,8 +115,8 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         """
         super().visit(node)
 
-    @dispatch(LinkList)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(LinkList)
+    def visit(self, node):
         """Perform semantic analysis of the list of links.
 
         :param node: Manifest's metadata
@@ -124,8 +124,8 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         """
         super().visit(node)
 
-    @dispatch(Link)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(Link)
+    def visit(self, node):
         """Perform semantic analysis of the link node.
 
         :param node: Link node
@@ -133,8 +133,8 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         """
         super().visit(node)
 
-    @dispatch(CollectionList)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(CollectionList)
+    def visit(self, node):
         """Perform semantic analysis of the list of sub-collections.
 
         :param node: CollectionList node
@@ -142,8 +142,8 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         """
         super().visit(node)
 
-    @dispatch(OPDS2Publication)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(OPDS2Publication)
+    def visit(self, node):
         """Perform semantic analysis of the OPDS 2.0 publication.
 
         :param node: OPDS 2.0 publication
@@ -172,8 +172,8 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
 
         self._logger.debug(f"Finished processing {encode(node)}")
 
-    @dispatch(OPDS2Group)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(OPDS2Group)
+    def visit(self, node):
         """Perform semantic analysis of the OPDS 2.0 group.
 
         :param node: OPDS 2.0 group
@@ -205,8 +205,8 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
 
         self._logger.debug(f"Finished processing {encode(node)}")
 
-    @dispatch(OPDS2Navigation)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(OPDS2Navigation)
+    def visit(self, node):
         """Perform semantic analysis of the OPDS 2.0 navigation.
 
         :param node: OPDS 2.0 navigation
@@ -226,8 +226,8 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
 
         self._logger.debug(f"Finished processing {encode(node)}")
 
-    @dispatch(CompactCollection)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(CompactCollection)
+    def visit(self, node):
         """Perform semantic analysis of the compact collection node.
 
         :param node: Collection node
@@ -235,8 +235,8 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         """
         super().visit(node)
 
-    @dispatch(Collection)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(Collection)
+    def visit(self, node):
         """Perform semantic analysis of the collection node.
 
         :param node: Collection node
