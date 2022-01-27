@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9, 3.10.2]
+        python-version: [3.7, 3.8, 3.9, "3.10"]
 
     # We want to run on external PRs, but not on our own internal PRs as they'll be run
     # by the push to the branch. This prevents duplicated runs on internal PRs.
@@ -24,13 +24,12 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Setup Poetry 🔧
-        run: |
-          make init
-          make install
+        uses: ./.github/actions/poetry
 
       - name: Install dependencies
         run: |
           pip install --upgrade pip
+          poetry install --no-root
           pip install tox tox-gh-actions
 
       - name: Run Tests

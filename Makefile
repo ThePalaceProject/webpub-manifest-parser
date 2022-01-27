@@ -32,12 +32,6 @@ reformat:
 lint:
 	tox -e isort,black,flake8,pylint
 
-test-py27:
-	tox -e py27
-
-test-py36:
-	tox -e py36
-
 test-py37:
 	tox -e py37
 
@@ -51,4 +45,4 @@ test-py310:
 	tox -e py310
 
 test:
-	tox -e py27,py36,py37,py38,py39,py310
+	tox -e py37,py38,py39,py310
