@@ -1,4 +1,4 @@
-.PHONY: init install build publish clean reformat lint test-py27 test-py36 test-py37 test-py38 test
+.PHONY: init install build publish clean reformat lint test-py37 test-py38 test
 .DEFAULT_GOAL := all
 
 all: install lint build
@@ -15,7 +15,7 @@ init:
 	# poetry config virtualenvs.create false #This changes global configs
 
 install:
-	poetry install -vvv --no-root
+	poetry install -vvv
 
 build:
 	poetry build
