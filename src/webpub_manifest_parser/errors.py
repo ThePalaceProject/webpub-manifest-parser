@@ -33,7 +33,7 @@ class BaseError(Exception):
         :return: Description of the error
         :rtype: str
         """
-        return str(str(self))
+        return str(self)
 
     def __eq__(self, other):
         """Compare two BaseError objects.
