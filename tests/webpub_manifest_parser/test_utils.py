@@ -1,6 +1,5 @@
 from unittest import TestCase
 
-from nose.tools import eq_
 from parameterized import parameterized
 
 from webpub_manifest_parser.core.ast import (
@@ -29,7 +28,7 @@ class UtilsTest(TestCase):
     def test_first_or_default(self, _, collection, expected_result, default_value=None):
         result = first_or_default(collection, default_value)
 
-        eq_(result, expected_result)
+        assert result == expected_result
 
     def test_cast(self):
         # Arrange

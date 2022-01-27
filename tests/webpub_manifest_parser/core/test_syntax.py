@@ -18,12 +18,12 @@ from webpub_manifest_parser.core.syntax import (
 )
 
 
-class TestSyntaxAnalyzer(SyntaxAnalyzer):
+class SyntaxAnalyzerTest(SyntaxAnalyzer):
     def _create_manifest(self):
         return Manifestlike()
 
 
-class SyntaxAnalyzerTest(AnalyzerTest):
+class TestSyntaxAnalyzerTest(AnalyzerTest):
     @parameterized.expand(
         [
             # 1. Ensure that the syntax analyzer correctly restores
@@ -151,7 +151,7 @@ class SyntaxAnalyzerTest(AnalyzerTest):
         :type expected_errors: List[webpub_manifest_parser.core.analyzer.BaseAnalyzerError]
         """
         # Arrange
-        analyzer = TestSyntaxAnalyzer()
+        analyzer = SyntaxAnalyzerTest()
         manifest_ast = analyzer.analyze(raw_manifest)
 
         # Act

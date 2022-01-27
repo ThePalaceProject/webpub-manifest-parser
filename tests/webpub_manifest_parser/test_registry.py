@@ -1,7 +1,5 @@
 from unittest import TestCase
 
-from nose.tools import assert_raises, eq_
-
 from webpub_manifest_parser.core.registry import Registry, RegistryItem
 
 
@@ -13,7 +11,7 @@ class RegistryTest(TestCase):
         new_registry_item = "dummy"
 
         # Act, assert
-        with assert_raises(ValueError):
+        with self.assertRaises(ValueError):
             Registry(new_registry_item)
 
     def test_registry_allows_to_add_registry_items_through_constructor(self):
@@ -25,14 +23,14 @@ class RegistryTest(TestCase):
         registry = Registry([registry_item])
 
         # Assert
-        eq_(registry_item_key in registry, True)
+        self.assertEqual(registry_item_key in registry, True)
 
     def test_registry_does_not_allow_to_add_non_registry_item_objects(self):
         # Arrange
         registry = Registry()
 
         # Act, assert
-        with assert_raises(ValueError):
+        with self.assertRaises(ValueError):
             registry["NEW_REGISTRY_ITEM_KEY"] = "dummy"
 
     def test_registry_allows_to_add_registry_item_objects(self):
@@ -45,7 +43,7 @@ class RegistryTest(TestCase):
         registry[registry_item_key] = registry_item
 
         # Assert
-        eq_(registry_item_key in registry, True)
+        self.assertEqual(registry_item_key in registry, True)
 
     def test_registry_allows_to_delete_item(self):
         # Arrange
@@ -57,7 +55,7 @@ class RegistryTest(TestCase):
         del registry[registry_item_key]
 
         # Assert
-        eq_(registry_item_key in registry, False)
+        self.assertEqual(registry_item_key in registry, False)
 
     def test_registry_returns_correct_number_of_items(self):
         # Arrange
@@ -69,4 +67,4 @@ class RegistryTest(TestCase):
         result = len(registry)
 
         # Assert
-        eq_(result, 1)
+        self.assertEqual(result, 1)
