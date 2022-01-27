@@ -3,7 +3,6 @@ from abc import ABCMeta
 from unittest import TestCase
 
 import pytz
-import six
 from parameterized import parameterized
 
 from webpub_manifest_parser.core.ast import (
@@ -26,8 +25,7 @@ from webpub_manifest_parser.core.parsers import (
 )
 
 
-@six.add_metaclass(ABCMeta)
-class ParserTest(object):
+class ParserTest(metaclass=ABCMeta):
     PARSER_CLASS = ValueParser
 
     def _create_parser(self):
@@ -60,14 +58,12 @@ class NumberParserTest(ParserTest, TestCase):
                 "incorrect_number",
                 "abc",
                 None,
-                ValueParserError("abc", "could not convert string to float: 'abc'")
-                if six.PY3
-                else ValueParserError("abc", "could not convert string to float: abc"),
+                ValueParserError("abc", "could not convert string to float: 'abc'"),
             ),
         ]
     )
     def test(self, _, value, expected_result, expected_error_class=None):
-        super(NumberParserTest, self).test(
+        super().test(
             _, value, expected_result, expected_error_class
         )
 
@@ -87,7 +83,7 @@ class URIParserTest(ParserTest, TestCase):
         ]
     )
     def test(self, _, value, expected_result, expected_error_class=None):
-        super(URIParserTest, self).test(_, value, expected_result, expected_error_class)
+        super().test(_, value, expected_result, expected_error_class)
 
 
 class DateParserTest(ParserTest, TestCase):
@@ -150,7 +146,7 @@ class DateParserTest(ParserTest, TestCase):
         ]
     )
     def test(self, _, value, expected_result, expected_error_class=None):
-        super(DateParserTest, self).test(
+        super().test(
             _, value, expected_result, expected_error_class
         )
 
@@ -214,7 +210,7 @@ class DateTimeParserTest(ParserTest, TestCase):
         ]
     )
     def test(self, _, value, expected_result, expected_error_class=None):
-        super(DateTimeParserTest, self).test(
+        super().test(
             _, value, expected_result, expected_error_class
         )
 

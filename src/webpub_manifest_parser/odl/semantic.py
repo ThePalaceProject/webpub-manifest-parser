@@ -46,7 +46,7 @@ class ODLPublicationSemanticError(SemanticAnalyzerError):
         """
         if not isinstance(node, ODLPublication):
             raise ValueError(
-                "Argument 'node' must be an instance of {0}".format(ODLPublication)
+                f"Argument 'node' must be an instance of {ODLPublication}"
             )
 
         if node.metadata:
@@ -81,7 +81,7 @@ class ODLLicenseSemanticError(SemanticAnalyzerError):
         """
         if not isinstance(node, ODLLicense):
             raise ValueError(
-                "Argument 'node' must be an instance of {0} class".format(ODLLicense)
+                f"Argument 'node' must be an instance of {ODLLicense} class"
             )
 
         if node.metadata:
@@ -137,7 +137,7 @@ class ODLSemanticAnalyzer(SemanticAnalyzer):
         :param node: Manifest-like node
         :type node: Manifestlike
         """
-        super(ODLSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
         if not node.publications:
             with self._record_errors():
@@ -186,7 +186,7 @@ class ODLSemanticAnalyzer(SemanticAnalyzer):
         :param node: Feed's metadata
         :type node: Metadata
         """
-        super(ODLSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
     @dispatch(ODLPublication)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -195,7 +195,7 @@ class ODLSemanticAnalyzer(SemanticAnalyzer):
         :param node: ODL 2.0 publication
         :type node: ODLPublication
         """
-        self._logger.debug(u"Started processing {0}".format(encode(node)))
+        self._logger.debug(f"Started processing {encode(node)}")
 
         if (not node.licenses or len(node.licenses) == 0) and (
             (not node.licenses or len(node.links) == 0)
@@ -208,7 +208,7 @@ class ODLSemanticAnalyzer(SemanticAnalyzer):
         elif node.licenses:
             node.licenses.accept(self)
 
-        self._logger.debug(u"Finished processing {0}".format(encode(node)))
+        self._logger.debug(f"Finished processing {encode(node)}")
 
     @dispatch(LinkList)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -217,7 +217,7 @@ class ODLSemanticAnalyzer(SemanticAnalyzer):
         :param node: Manifest's metadata
         :type node: LinkList
         """
-        super(ODLSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
     @dispatch(Link)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -226,7 +226,7 @@ class ODLSemanticAnalyzer(SemanticAnalyzer):
         :param node: Link node
         :type node: Link
         """
-        super(ODLSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
     @dispatch(CollectionList)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -235,7 +235,7 @@ class ODLSemanticAnalyzer(SemanticAnalyzer):
         :param node: CollectionList node
         :type node: CollectionList
         """
-        super(ODLSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
     @dispatch(CompactCollection)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -244,7 +244,7 @@ class ODLSemanticAnalyzer(SemanticAnalyzer):
         :param node: Collection node
         :type node: CompactCollection
         """
-        super(ODLSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
     @dispatch(Collection)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -253,7 +253,7 @@ class ODLSemanticAnalyzer(SemanticAnalyzer):
         :param node: Collection node
         :type node: Collection
         """
-        super(ODLSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
     @dispatch(ODLLicense)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102

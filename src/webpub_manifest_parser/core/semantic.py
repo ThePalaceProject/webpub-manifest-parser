@@ -44,7 +44,7 @@ class SemanticAnalyzerError(BaseAnalyzerError):
         """
         message = self._format_message(node, node_property, message, inner_exception)
 
-        super(SemanticAnalyzerError, self).__init__(
+        super().__init__(
             node, node_property, message, inner_exception
         )
 
@@ -95,7 +95,7 @@ class ManifestSemanticError(SemanticAnalyzerError):
         """
         if not isinstance(node, Manifestlike):
             raise ValueError(
-                "Argument 'node' must be an instance of {0}".format(Manifestlike)
+                f"Argument 'node' must be an instance of {Manifestlike}"
             )
 
         if node.metadata:
@@ -129,7 +129,7 @@ class LinkSemanticError(SemanticAnalyzerError):
         :type inner_exception: Optional[Exception]
         """
         if not isinstance(node, Link):
-            raise ValueError("Argument 'node' must be an instance of {0}".format(Link))
+            raise ValueError(f"Argument 'node' must be an instance of {Link}")
 
         message = message.format(node.href)
 
@@ -164,11 +164,11 @@ class CollectionWrongFormatError(SemanticAnalyzerError):
         :param inner_exception: (Optional) inner exception
         :type inner_exception: Optional[Exception]
         """
-        message = "Collection {0} must be {1} but it is not".format(
+        message = "Collection {} must be {} but it is not".format(
             collection.role.key, "compact" if collection.role.compact else "full"
         )
 
-        super(CollectionWrongFormatError, self).__init__(
+        super().__init__(
             collection, None, message, inner_exception
         )
 
@@ -201,7 +201,7 @@ class SemanticAnalyzer(BaseAnalyzer, Visitor):
         :param collection_roles_registry: Collections roles registry
         :type collection_roles_registry: webpub_manifest_parser.core.registry.Registry
         """
-        super(SemanticAnalyzer, self).__init__()
+        super().__init__()
 
         self._media_types_registry = media_types_registry
         self._link_relations_registry = link_relations_registry
@@ -244,7 +244,7 @@ class SemanticAnalyzer(BaseAnalyzer, Visitor):
         :param node: Manifest-like node
         :type node: Manifestlike
         """
-        self._logger.debug(u"Started processing {0}".format(encode(node)))
+        self._logger.debug(f"Started processing {encode(node)}")
 
         self.context.reset()
 
@@ -260,7 +260,7 @@ class SemanticAnalyzer(BaseAnalyzer, Visitor):
         with self._record_errors():
             node.sub_collections.accept(self)
 
-        self._logger.debug(u"Finished processing {0}".format(encode(node)))
+        self._logger.debug(f"Finished processing {encode(node)}")
 
     @dispatch(Metadata)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -269,9 +269,9 @@ class SemanticAnalyzer(BaseAnalyzer, Visitor):
         :param node: Manifest's metadata
         :type node: Metadata
         """
-        self._logger.debug(u"Started processing {0}".format(encode(node)))
+        self._logger.debug(f"Started processing {encode(node)}")
 
-        self._logger.debug(u"Finished processing {0}".format(encode(node)))
+        self._logger.debug(f"Finished processing {encode(node)}")
 
     @dispatch(LinkList)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -280,13 +280,13 @@ class SemanticAnalyzer(BaseAnalyzer, Visitor):
         :param node: Manifest's metadata
         :type node: LinkList
         """
-        self._logger.debug(u"Started processing {0}".format(encode(node)))
+        self._logger.debug(f"Started processing {encode(node)}")
 
         for link in node:
             with self._record_errors():
                 link.accept(self)
 
-        self._logger.debug(u"Finished processing {0}".format(encode(node)))
+        self._logger.debug(f"Finished processing {encode(node)}")
 
     @dispatch(Link)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -295,13 +295,13 @@ class SemanticAnalyzer(BaseAnalyzer, Visitor):
         :param node: Link node
         :type node: Link
         """
-        self._logger.debug(u"Started processing {0}".format(encode(node)))
+        self._logger.debug(f"Started processing {encode(node)}")
 
         if not node.templated:
             parser = URIReferenceParser()
             parser.parse(node.href)
 
-        self._logger.debug(u"Finished processing {0}".format(encode(node)))
+        self._logger.debug(f"Finished processing {encode(node)}")
 
     @dispatch(CollectionList)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -310,13 +310,13 @@ class SemanticAnalyzer(BaseAnalyzer, Visitor):
         :param node: CollectionList node
         :type node: CollectionList
         """
-        self._logger.debug(u"Started processing {0}".format(encode(node)))
+        self._logger.debug(f"Started processing {encode(node)}")
 
         for collection in node:
             with self._record_errors():
                 collection.accept(self)
 
-        self._logger.debug(u"Finished processing {0}".format(encode(node)))
+        self._logger.debug(f"Finished processing {encode(node)}")
 
     @dispatch(CompactCollection)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -325,12 +325,12 @@ class SemanticAnalyzer(BaseAnalyzer, Visitor):
         :param node: Collection node
         :type node: CompactCollection
         """
-        self._logger.debug(u"Started processing {0}".format(encode(node)))
+        self._logger.debug(f"Started processing {encode(node)}")
 
         with self._record_errors():
             node.links.accept(self)
 
-        self._logger.debug(u"Finished processing {0}".format(encode(node)))
+        self._logger.debug(f"Finished processing {encode(node)}")
 
     @dispatch(Collection)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -339,7 +339,7 @@ class SemanticAnalyzer(BaseAnalyzer, Visitor):
         :param node: Collection node
         :type node: Collection
         """
-        self._logger.debug(u"Started processing {0}".format(encode(node)))
+        self._logger.debug(f"Started processing {encode(node)}")
 
         with self._record_errors():
             node.metadata.accept(self)
@@ -350,4 +350,4 @@ class SemanticAnalyzer(BaseAnalyzer, Visitor):
         with self._record_errors():
             node.sub_collections.accept(self)
 
-        self._logger.debug(u"Finished processing {0}".format(encode(node)))
+        self._logger.debug(f"Finished processing {encode(node)}")

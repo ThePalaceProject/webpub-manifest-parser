@@ -1,7 +1,7 @@
 import datetime
+from io import StringIO
 from unittest import TestCase
 
-import six
 from dateutil.tz import tzutc
 from parameterized import parameterized
 
@@ -494,7 +494,7 @@ class RWPMSyntaxAnalyzerTest(TestCase):
     ):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
-        input_steam = six.StringIO(rwpm_manifest_content)
+        input_steam = StringIO(rwpm_manifest_content)
         manifest_json = ManifestParser.get_manifest_json(input_steam)
 
         # Act
@@ -547,7 +547,7 @@ class RWPMSyntaxAnalyzerTest(TestCase):
     ):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
-        input_steam = six.StringIO(rwpm_manifest_content)
+        input_steam = StringIO(rwpm_manifest_content)
         manifest_json = ManifestParser.get_manifest_json(input_steam)
 
         # Act
@@ -559,7 +559,7 @@ class RWPMSyntaxAnalyzerTest(TestCase):
         self.assertIsNotNone(error)
         self.assertEqual(
             expected_error_message,
-            six.text_type(error).strip("u"),
+            str(error).strip("u"),
         )
 
     @parameterized.expand(
@@ -605,7 +605,7 @@ class RWPMSyntaxAnalyzerTest(TestCase):
     ):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
-        input_steam = six.StringIO(rwpm_manifest_content)
+        input_steam = StringIO(rwpm_manifest_content)
         manifest_json = ManifestParser.get_manifest_json(input_steam)
 
         # Act
@@ -617,7 +617,7 @@ class RWPMSyntaxAnalyzerTest(TestCase):
     def test_syntax_analyzer_returns_ast(self):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
-        input_steam = six.StringIO(RWPM_MANIFEST)
+        input_steam = StringIO(RWPM_MANIFEST)
         manifest_json = ManifestParser.get_manifest_json(input_steam)
 
         # Act

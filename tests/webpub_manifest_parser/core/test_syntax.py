@@ -88,8 +88,8 @@ class TestSyntaxAnalyzerTest(AnalyzerTest):
                     SyntaxAnalyzerError(
                         PresentationMetadata(),
                         Metadata.modified,
-                        u"Value '202X' is not a correct date & time value: "
-                        u"it does not comply with ISO 8601 date & time formatting rules",
+                        "Value '202X' is not a correct date & time value: "
+                        "it does not comply with ISO 8601 date & time formatting rules",
                     ),
                 ],
             ),
@@ -131,8 +131,8 @@ class TestSyntaxAnalyzerTest(AnalyzerTest):
                     SyntaxAnalyzerError(
                         PresentationMetadata(),
                         Metadata.modified,
-                        u"Value '202X' is not a correct date & time value: "
-                        u"it does not comply with ISO 8601 date & time formatting rules",
+                        "Value '202X' is not a correct date & time value: "
+                        "it does not comply with ISO 8601 date & time formatting rules",
                     ),
                 ],
             ),

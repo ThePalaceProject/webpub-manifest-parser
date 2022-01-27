@@ -28,7 +28,7 @@ class RWPMCollectionRolesRegistry(Registry):
 
     def __init__(self):
         """Initialize a new instance of RWPMCollectionRolesRegistry class."""
-        super(RWPMCollectionRolesRegistry, self).__init__(
+        super().__init__(
             self.CORE_ROLES + self.EXTENSIONS
         )
 
@@ -53,7 +53,7 @@ class RWPMLinkRelationsRegistry(LinkRelationsRegistry):
 
     def __init__(self):
         """Initialize a new instance of RWPMLinkRelationsRegistry class."""
-        super(RWPMLinkRelationsRegistry, self).__init__(self.CORE_LINK_RELATIONS)
+        super().__init__(self.CORE_LINK_RELATIONS)
 
 
 class RWPMMediaTypesRegistry(Registry):
@@ -94,4 +94,4 @@ class RWPMMediaTypesRegistry(Registry):
 
     def __init__(self):
         """Initialize a new instance of RWPMMediaTypesRegistry class."""
-        super(RWPMMediaTypesRegistry, self).__init__(self.CORE_TYPES)
+        super().__init__(self.CORE_TYPES)

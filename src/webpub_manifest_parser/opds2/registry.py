@@ -19,7 +19,7 @@ class OPDS2MediaTypesRegistry(RWPMMediaTypesRegistry):
 
     def __init__(self):
         """Initialize a new instance of OPDS2MediaTypesRegistry class."""
-        super(OPDS2MediaTypesRegistry, self).__init__()
+        super().__init__()
 
         self._add_items(self.OPDS_MEDIA_TYPES)
 
@@ -47,7 +47,7 @@ class OPDS2LinkRelationsRegistry(RWPMLinkRelationsRegistry):
 
     def __init__(self):
         """Initialize a new instance of OPDS2LinkRelationsRegistry class."""
-        super(OPDS2LinkRelationsRegistry, self).__init__()
+        super().__init__()
 
         self._add_items(self.CORE_LINK_RELATIONS)
 
@@ -65,6 +65,6 @@ class OPDS2CollectionRolesRegistry(RWPMCollectionRolesRegistry):
 
     def __init__(self):
         """Initialize a new instance of OPDS2CollectionRolesRegistry class."""
-        super(OPDS2CollectionRolesRegistry, self).__init__()
+        super().__init__()
 
         self._add_items(self.OPDS_2_0_ROLES)

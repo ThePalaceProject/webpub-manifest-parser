@@ -1,7 +1,5 @@
 from abc import ABCMeta, abstractmethod
 
-import six
-
 from webpub_manifest_parser.core.parsers import (
     AnyOfParser,
     ArrayParser,
@@ -31,8 +29,7 @@ from webpub_manifest_parser.core.registry import CollectionRole
 from webpub_manifest_parser.utils import encode
 
 
-@six.add_metaclass(ABCMeta)
-class Visitor(object):
+class Visitor(metaclass=ABCMeta):
     """Interface for visitors walking through abstract syntax trees (AST)."""
 
     @abstractmethod
@@ -45,8 +42,7 @@ class Visitor(object):
         raise NotImplementedError()
 
 
-@six.add_metaclass(ABCMeta)
-class Visitable(object):
+class Visitable(metaclass=ABCMeta):
     """Interface for objects walkable by AST visitors."""
 
     @abstractmethod
@@ -59,8 +55,7 @@ class Visitable(object):
         raise NotImplementedError()
 
 
-@six.add_metaclass(ABCMeta)
-class Extendable(object):
+class Extendable(metaclass=ABCMeta):
     """Abstract class adding ability to extend classes.
 
     For example, RWPM link properties can be extended by EPUB link properties and OPDS 2.0 link properties.
@@ -131,7 +126,7 @@ class LinkProperties(Node):
         :return: String representation
         :rtype: str
         """
-        return u"<LinkProperties(clipped={0}, fit={1}, orientation={2}, page={3}, spread={4})>".format(
+        return "<LinkProperties(clipped={}, fit={}, orientation={}, page={}, spread={})>".format(
             self.clipped, self.fit, self.orientation, self.page, self.spread
         )
 
@@ -218,7 +213,7 @@ class Link(Node):
         :param children: Resources that are children of the linked resource, in the context of a given collection role
         :type children: List[Link]
         """
-        super(Link, self).__init__()
+        super().__init__()
 
         self.href = href
         self.templated = templated
@@ -295,20 +290,20 @@ class Link(Node):
         :rtype: str
         """
         return (
-            u"<Link("
-            u"href={0}, "
-            u"templated={1}, "
-            u"type={2}, "
-            u"title={3}, "
-            u"rels={4}, "
-            u"properties={5}, "
-            u"height={6}, "
-            u"width={7}, "
-            u"duration={8}, "
-            u"bitrate={9}, "
-            u"languages={10}, "
-            u"alternates={11}, "
-            u"children={12}".format(
+            "<Link("
+            "href={}, "
+            "templated={}, "
+            "type={}, "
+            "title={}, "
+            "rels={}, "
+            "properties={}, "
+            "height={}, "
+            "width={}, "
+            "duration={}, "
+            "bitrate={}, "
+            "languages={}, "
+            "alternates={}, "
+            "children={}".format(
                 self.href,
                 self.templated,
                 self.type,
@@ -335,12 +330,12 @@ class LinkList(Node, list):
         :param items: (Optional) Items to be added to the list
         :type items: Optional[List]
         """
-        super(LinkList, self).__init__()
+        super().__init__()
 
         if items is not None:
             if not isinstance(items, list):
                 raise ValueError(
-                    "Argument 'items' must be an instance of {0}".format(list)
+                    f"Argument 'items' must be an instance of {list}"
                 )
 
             self.extend(items)
@@ -388,7 +383,7 @@ class ArrayOfLinksProperty(BaseArrayProperty):
         :param required: Boolean value indicating whether the property is required or not
         :type required: bool
         """
-        super(ArrayOfLinksProperty, self).__init__(
+        super().__init__(
             key, required, ArrayParser(TypeParser(Link), True), LinkList
         )
 
@@ -413,7 +408,7 @@ class Contributor(Node):
         links=None,
     ):
         """Initialize a new instance of Contributor class."""
-        super(Contributor, self).__init__()
+        super().__init__()
 
         self.name = name
         self.identifier = identifier
@@ -466,7 +461,7 @@ class Contributor(Node):
         :return: String representation
         :rtype: str
         """
-        return u"<Contributor(name={0}, identifier={1}, sort_as={2}, roles={3}, position={4}, links={5})>".format(
+        return "<Contributor(name={}, identifier={}, sort_as={}, roles={}, position={}, links={})>".format(
             encode(self.name),
             self.identifier,
             self.sort_as,
@@ -515,7 +510,7 @@ class ArrayOfContributorsProperty(BaseArrayProperty):
         :param required: Boolean value indicating whether the property is required or not
         :type required: bool
         """
-        super(ArrayOfContributorsProperty, self).__init__(
+        super().__init__(
             key, required, self.PARSER, list, []
         )
 
@@ -546,7 +541,7 @@ class Subject(Node, PropertiesGrouping):
         :rtype: str
         """
         return (
-            u"<Subject(name={0}, sort_as={1}, code={2}, scheme={3}, links={4})>".format(
+            "<Subject(name={}, sort_as={}, code={}, scheme={}, links={})>".format(
                 self.name, self.sort_as, self.code, self.scheme, self.links
             )
         )
@@ -591,7 +586,7 @@ class ArrayOfSubjectsProperty(BaseArrayProperty):
         :param required: Boolean value indicating whether the property is required or not
         :type required: bool
         """
-        super(ArrayOfSubjectsProperty, self).__init__(
+        super().__init__(
             key, required, self.PARSER, list, []
         )
 
@@ -616,7 +611,7 @@ class Owner(Node, PropertiesGrouping):
         :return: String representation
         :rtype: str
         """
-        return u"<Owner(collection={0}, series={1})>".format(
+        return "<Owner(collection={}, series={})>".format(
             encode(self.collection), encode(self.series)
         )
 
@@ -688,7 +683,7 @@ class Metadata(Node):
         belongs_to=None,
     ):
         """Initialize a new instance of Metadata class."""
-        super(Metadata, self).__init__()
+        super().__init__()
         self.title = title
         self.identifier = identifier
         self.title = title
@@ -816,7 +811,7 @@ class PresentationMetadata(Metadata):
         :return: Boolean value indicating whether two items are equal
         :rtype: bool
         """
-        if not super(PresentationMetadata, self).__eq__(other):
+        if not super().__eq__(other):
             return False
 
         if not isinstance(other, PresentationMetadata):
@@ -839,7 +834,7 @@ class PresentationMetadata(Metadata):
         """
         return hash(
             (
-                super(PresentationMetadata, self).__hash__(),
+                super().__hash__(),
                 self.clipped,
                 self.continuous,
                 self.fit,
@@ -864,7 +859,7 @@ class CompactCollection(Node):
         :param links: Collection's links
         :type links: Optional[LinksList]
         """
-        super(CompactCollection, self).__init__()
+        super().__init__()
 
         self._role = role
         self.links = links
@@ -920,7 +915,7 @@ class Collection(CompactCollection):
         :param metadata: Collection's metadata
         :type metadata: Optional[Metadata]
         """
-        super(Collection, self).__init__(role, links)
+        super().__init__(role, links)
 
         self._role = role
         self._sub_collections = CollectionList()
@@ -935,7 +930,7 @@ class Collection(CompactCollection):
         :return: Boolean value indicating whether two items are equal
         :rtype: bool
         """
-        if not super(Collection, self).__eq__(other):
+        if not super().__eq__(other):
             return False
 
         if not isinstance(other, Collection):
@@ -952,7 +947,7 @@ class Collection(CompactCollection):
         :return: Hash
         :rtype: int
         """
-        return hash((super(Collection, self).__hash__(), self.metadata))
+        return hash((super().__hash__(), self.metadata))
 
     @property
     def sub_collections(self):
@@ -991,12 +986,12 @@ class CollectionList(Node, list):
         :param items: (Optional) Items to be added to the list
         :type items: Optional[List]
         """
-        super(CollectionList, self).__init__()
+        super().__init__()
 
         if items is not None:
             if not isinstance(items, list):
                 raise ValueError(
-                    "Argument 'items' must be an instance of {0}".format(list)
+                    f"Argument 'items' must be an instance of {list}"
                 )
 
             self.extend(items)
@@ -1038,16 +1033,16 @@ class CompactCollectionProperty(Property):
         """
         if not isinstance(role, CollectionRole):
             raise ValueError(
-                "Argument 'role' must be an instance of {0}".format(CollectionRole)
+                f"Argument 'role' must be an instance of {CollectionRole}"
             )
         if not issubclass(collection_class, CompactCollection):
             raise ValueError(
-                "Argument 'collection_class' must be a subclass of {0}".format(
+                "Argument 'collection_class' must be a subclass of {}".format(
                     CompactCollection
                 )
             )
 
-        super(CompactCollectionProperty, self).__init__(
+        super().__init__(
             key, required, TypeParser(collection_class)
         )
 
@@ -1080,16 +1075,16 @@ class ArrayOfCollectionsProperty(BaseArrayProperty):
         """
         if not isinstance(role, CollectionRole):
             raise ValueError(
-                "Argument 'role' must be an instance of {0}".format(CollectionRole)
+                f"Argument 'role' must be an instance of {CollectionRole}"
             )
         if not issubclass(collection_type, Collection):
             raise ValueError(
-                "Argument 'collection_type' must be a subclass of {0}".format(
+                "Argument 'collection_type' must be a subclass of {}".format(
                     Collection
                 )
             )
 
-        super(ArrayOfCollectionsProperty, self).__init__(
+        super().__init__(
             key,
             required,
             ArrayParser(TypeParser(collection_type), True),

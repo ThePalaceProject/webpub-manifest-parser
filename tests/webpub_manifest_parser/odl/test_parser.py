@@ -60,8 +60,8 @@ class ODLParserTest(TestCase):
 
         self.assertEqual(
             [
-                u"application/vnd.adobe.adept+xml",
-                u"application/vnd.readium.lcp.license.v1.0+json",
+                "application/vnd.adobe.adept+xml",
+                "application/vnd.readium.lcp.license.v1.0+json",
             ],
             license.metadata.protection.formats,
         )

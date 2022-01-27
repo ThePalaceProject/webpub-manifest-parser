@@ -1,4 +1,3 @@
-import six
 
 
 def first_or_default(collection, default=None):
@@ -38,7 +37,7 @@ def is_string(value):
     :return: Boolean value indicating whether the value is a string or not
     :rtype: bool
     """
-    return isinstance(value, six.string_types)
+    return isinstance(value, str)
 
 
 def encode(value):
@@ -51,7 +50,7 @@ def encode(value):
     :rtype: Any
     """
     if isinstance(value, list):
-        return u"list({0}, ...)".format(first_or_default(value))
+        return f"list({first_or_default(value)}, ...)"
 
     return value if is_string(value) else value
 
@@ -70,7 +69,7 @@ def cast(value, klass):
     """
     if not isinstance(value, klass):
         raise ValueError(
-            "Value must be a transitive instance of {0} class".format(klass)
+            f"Value must be a transitive instance of {klass} class"
         )
 
     value.__class__ = klass

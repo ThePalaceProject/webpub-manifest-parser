@@ -59,7 +59,7 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         :param collection_roles_registry: Collections roles registry
         :type collection_roles_registry: python_rwpm_parser.registry.Registry
         """
-        super(OPDS2SemanticAnalyzer, self).__init__(
+        super().__init__(
             media_types_registry, link_relations_registry, collection_roles_registry
         )
 
@@ -72,9 +72,9 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         :param node: Manifest's metadata
         :type node: OPDS2Feed
         """
-        self._logger.debug(u"Started processing {0}".format(encode(node)))
+        self._logger.debug(f"Started processing {encode(node)}")
 
-        super(OPDS2SemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
         if (
             node.publications is None
@@ -96,7 +96,7 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
             with self._record_errors():
                 node.groups.accept(self)
 
-        self._logger.debug(u"Finished processing {0}".format(encode(node)))
+        self._logger.debug(f"Finished processing {encode(node)}")
 
     @dispatch(OPDS2FeedMetadata)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -113,7 +113,7 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         :param node: Publication's metadata
         :type node: Metadata
         """
-        super(OPDS2SemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
     @dispatch(LinkList)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -122,7 +122,7 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         :param node: Manifest's metadata
         :type node: LinkList
         """
-        super(OPDS2SemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
     @dispatch(Link)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -131,7 +131,7 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         :param node: Link node
         :type node: Link
         """
-        super(OPDS2SemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
     @dispatch(CollectionList)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -140,7 +140,7 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         :param node: CollectionList node
         :type node: CollectionList
         """
-        super(OPDS2SemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
     @dispatch(OPDS2Publication)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -149,9 +149,9 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         :param node: OPDS 2.0 publication
         :type node: OPDS2Publication
         """
-        self._logger.debug(u"Started processing {0}".format(encode(node)))
+        self._logger.debug(f"Started processing {encode(node)}")
 
-        super(OPDS2SemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
         acquisition_links = [
             OPDS2LinkRelationsRegistry.PREVIEW.key,
@@ -170,7 +170,7 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
             with self._record_errors():
                 raise MISSING_ACQUISITION_LINK(node=node, node_property=None)
 
-        self._logger.debug(u"Finished processing {0}".format(encode(node)))
+        self._logger.debug(f"Finished processing {encode(node)}")
 
     @dispatch(OPDS2Group)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -179,7 +179,7 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         :param node: OPDS 2.0 group
         :type node: OPDS2Group
         """
-        self._logger.debug(u"Started processing {0}".format(encode(node)))
+        self._logger.debug(f"Started processing {encode(node)}")
 
         # FIXME: It seems that group definition relaxes requirements for having metadata
         # It means we have to override default behaviour
@@ -203,7 +203,7 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
             with self._record_errors():
                 node.links.accept(self)
 
-        self._logger.debug(u"Finished processing {0}".format(encode(node)))
+        self._logger.debug(f"Finished processing {encode(node)}")
 
     @dispatch(OPDS2Navigation)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -212,7 +212,7 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         :param node: OPDS 2.0 navigation
         :type node: OPDS2Navigation
         """
-        self._logger.debug(u"Started processing {0}".format(encode(node)))
+        self._logger.debug(f"Started processing {encode(node)}")
 
         with self._record_errors():
             self.visit(cast(node, CompactCollection))
@@ -224,7 +224,7 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
                         node=link, node_property=Link.title
                     )
 
-        self._logger.debug(u"Finished processing {0}".format(encode(node)))
+        self._logger.debug(f"Finished processing {encode(node)}")
 
     @dispatch(CompactCollection)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -233,7 +233,7 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         :param node: Collection node
         :type node: CompactCollection
         """
-        super(OPDS2SemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
     @dispatch(Collection)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -242,4 +242,4 @@ class OPDS2SemanticAnalyzer(SemanticAnalyzer):
         :param node: Collection node
         :type node: Collection
         """
-        super(OPDS2SemanticAnalyzer, self).visit(node)
+        super().visit(node)

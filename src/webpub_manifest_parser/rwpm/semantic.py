@@ -41,7 +41,7 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
         :param collection_roles_registry: Collections roles registry
         :type collection_roles_registry: python_rwpm_parser.registry.Registry
         """
-        super(RWPMSemanticAnalyzer, self).__init__(
+        super().__init__(
             media_types_registry, link_relations_registry, collection_roles_registry
         )
 
@@ -54,7 +54,7 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
         :param node: Manifest's metadata
         :type node: RWPMManifest
         """
-        super(RWPMSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
         for link in node.reading_order.links:
             with self._record_errors():
@@ -78,7 +78,7 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
         :param node: Manifest's metadata
         :type node: Metadata
         """
-        super(RWPMSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
     @dispatch(LinkList)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -87,7 +87,7 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
         :param node: Manifest's metadata
         :type node: LinkList
         """
-        super(RWPMSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
     @dispatch(Link)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -96,7 +96,7 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
         :param node: Link node
         :type node: Link
         """
-        super(RWPMSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
     @dispatch(CollectionList)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -105,7 +105,7 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
         :param node: CollectionList node
         :type node: CollectionList
         """
-        super(RWPMSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
     @dispatch(CompactCollection)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -114,7 +114,7 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
         :param node: Collection node
         :type node: CompactCollection
         """
-        super(RWPMSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
     @dispatch(Collection)  # noqa: F811
     def visit(self, node):  # pylint: disable=E0102
@@ -123,4 +123,4 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
         :param node: Collection node
         :type node: Collection
         """
-        super(RWPMSemanticAnalyzer, self).visit(node)
+        super().visit(node)

@@ -1,4 +1,3 @@
-import six
 
 
 class BaseError(Exception):
@@ -16,7 +15,7 @@ class BaseError(Exception):
         if inner_exception and not message:
             message = inner_exception.error_message
 
-        super(BaseError, self).__init__(message)
+        super().__init__(message)
 
         self._inner_exception = inner_exception
 
@@ -36,7 +35,7 @@ class BaseError(Exception):
         :return: Description of the error
         :rtype: str
         """
-        return six.text_type(str(self))
+        return str(str(self))
 
     def __eq__(self, other):
         """Compare two BaseError objects.
@@ -58,6 +57,6 @@ class BaseError(Exception):
         :return: Error's string representation
         :rtype: str
         """
-        return u"<BaseError(message={0}, inner_exception={1})>".format(
+        return "<BaseError(message={}, inner_exception={})>".format(
             self.error_message, self.inner_exception
         )

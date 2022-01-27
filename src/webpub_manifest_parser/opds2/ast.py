@@ -333,7 +333,7 @@ class OPDS2FeedMetadata(Node):
         number_of_items=None,
     ):
         """Initialize a new instance of OPDS2FeedMetadata class."""
-        super(OPDS2FeedMetadata, self).__init__()
+        super().__init__()
 
         self.title = title
         self.type = _type
@@ -354,21 +354,21 @@ class OPDS2Publication(Collection):
 
     def __init__(self, metadata=None, links=None, images=None):
         """Initialize a new instance of OPDS2Publication class."""
-        super(OPDS2Publication, self).__init__()
+        super().__init__()
 
         if metadata and not isinstance(metadata, PresentationMetadata):
             raise ValueError(
-                "Argument 'metadata' must be an instance of {0}".format(
+                "Argument 'metadata' must be an instance of {}".format(
                     PresentationMetadata
                 )
             )
         if links and not isinstance(links, LinkList):
             raise ValueError(
-                "Argument 'links' must be an instance of {0}".format(LinkList)
+                f"Argument 'links' must be an instance of {LinkList}"
             )
         if images and not isinstance(images, LinkList):
             raise ValueError(
-                "Argument 'images' must be an instance of {0}".format(LinkList)
+                f"Argument 'images' must be an instance of {LinkList}"
             )
 
         self.metadata = metadata
@@ -381,7 +381,7 @@ class OPDS2Publication(Collection):
         :return: Hash
         :rtype: int
         """
-        return hash((super(OPDS2Publication, self).__hash__(), self.images))
+        return hash((super().__hash__(), self.images))
 
 
 class OPDS2Facet(Collection):
@@ -413,23 +413,23 @@ class OPDS2Group(Collection):
 
     def __init__(self, metadata=None, publications=None, navigation=None):
         """Initialize a new instance of OPDS2Group class."""
-        super(OPDS2Group, self).__init__()
+        super().__init__()
 
         if metadata and not isinstance(metadata, OPDS2FeedMetadata):
             raise ValueError(
-                "Argument 'metadata' must be an instance of {0}".format(
+                "Argument 'metadata' must be an instance of {}".format(
                     OPDS2FeedMetadata
                 )
             )
         if publications and not isinstance(publications, CollectionList):
             raise ValueError(
-                "Argument 'publications' must be an instance of {0}".format(
+                "Argument 'publications' must be an instance of {}".format(
                     CollectionList
                 )
             )
         if navigation and not isinstance(navigation, OPDS2Navigation):
             raise ValueError(
-                "Argument 'navigation' must be an instance of {0}".format(
+                "Argument 'navigation' must be an instance of {}".format(
                     OPDS2Navigation
                 )
             )
@@ -478,37 +478,37 @@ class OPDS2Feed(Manifestlike):
         groups=None,
     ):
         """Initialize a new instance of OPDS2Feed class."""
-        super(OPDS2Feed, self).__init__()
+        super().__init__()
 
         if metadata and not isinstance(metadata, OPDS2FeedMetadata):
             raise ValueError(
-                "Argument 'metadata' must be an instance of {0}".format(
+                "Argument 'metadata' must be an instance of {}".format(
                     OPDS2FeedMetadata
                 )
             )
         if links and not isinstance(links, LinkList):
             raise ValueError(
-                "Argument 'links' must be an instance of {0}".format(LinkList)
+                f"Argument 'links' must be an instance of {LinkList}"
             )
         if publications and not isinstance(publications, CollectionList):
             raise ValueError(
-                "Argument 'publications' must be an instance of {0}".format(
+                "Argument 'publications' must be an instance of {}".format(
                     CollectionList
                 )
             )
         if navigation and not isinstance(navigation, OPDS2Navigation):
             raise ValueError(
-                "Argument 'navigation' must be an instance of {0}".format(
+                "Argument 'navigation' must be an instance of {}".format(
                     OPDS2Navigation
                 )
             )
         if facets and not isinstance(facets, CollectionList):
             raise ValueError(
-                "Argument 'facets' must be an instance of {0}".format(CollectionList)
+                f"Argument 'facets' must be an instance of {CollectionList}"
             )
         if groups and not isinstance(groups, CollectionList):
             raise ValueError(
-                "Argument 'groups' must be an instance of {0}".format(CollectionList)
+                f"Argument 'groups' must be an instance of {CollectionList}"
             )
 
         self.metadata = metadata

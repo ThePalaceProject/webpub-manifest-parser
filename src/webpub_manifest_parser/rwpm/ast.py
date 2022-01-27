@@ -38,7 +38,7 @@ class RWPMManifest(Manifestlike):
         :param toc: (Optional) TOC sub-collection
         :type toc: webpub_manifest_parser.core.ast.CompactCollection
         """
-        super(RWPMManifest, self).__init__()
+        super().__init__()
 
         self.metadata = metadata
         self.links = links
