@@ -29,7 +29,7 @@ repository = "https://github.com/ThePalaceProject/webpub-manifest-parser"
 version = "0" # This version number is automatically set by github actions when releasing
 
 [tool.poetry.dependencies]
-jsonschema = "^3.2.0"
+jsonschema = ">=3.2,<5.0"
 multipledispatch = "^0.6.0"
 pyrsistent = "0.18.1"
 python = ">=3.7,<4"
