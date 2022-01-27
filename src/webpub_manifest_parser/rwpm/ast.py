@@ -9,7 +9,7 @@ class RWPMManifest(Manifestlike):
     # https://github.com/readium/webpub-manifest#22-metadata
     DEFAULT_CONTEXT = "https://readium.org/webpub-manifest/context.jsonld"
 
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         metadata=None,
         links=None,
@@ -38,7 +38,7 @@ class RWPMManifest(Manifestlike):
         :param toc: (Optional) TOC sub-collection
         :type toc: webpub_manifest_parser.core.ast.CompactCollection
         """
-        super(RWPMManifest, self).__init__()
+        super().__init__()
 
         self.metadata = metadata
         self.links = links

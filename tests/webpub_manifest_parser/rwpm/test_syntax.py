@@ -1,7 +1,7 @@
 import datetime
+from io import StringIO
 from unittest import TestCase
 
-import six
 from dateutil.tz import tzutc
 from parameterized import parameterized
 
@@ -28,7 +28,7 @@ RWPM_MANIFEST_WITHOUT_METADATA = """
     "links": [
         {"rel": "self", "href": "https://example.com/manifest.json", "type": "application/webpub+json"}
     ],
-    
+
     "readingOrder": [
         {"href": "https://example.com/c001.html", "type": "text/html", "title": "Chapter 1"}
     ]
@@ -44,11 +44,11 @@ RWPM_MANIFEST_WITH_MISSING_METADATA_TITLE_PROPERTY = """
         "language": "en",
         "modified": "2015-09-29T17:00:00Z"
     },
-    
+
     "links": [
         {"rel": "self", "href": "https://example.com/manifest.json", "type": "application/webpub+json"}
     ],
-    
+
     "readingOrder": [
         {"href": "https://example.com/c001.html", "type": "text/html", "title": "Chapter 1"}
     ]
@@ -109,7 +109,7 @@ RWPM_MANIFEST_WITHOUT_LINKS = """
         "language": "en",
         "modified": "2015-09-29T17:00:00Z"
     },
-    
+
     "readingOrder": [
         {"href": "https://example.com/c001.html", "type": "text/html", "title": "Chapter 1"}
     ]
@@ -132,7 +132,7 @@ RWPM_MANIFEST_WITH_MISSING_LINK_HREF_PROPERTY = """
     "links": [
         {"rel": "self", "type": "application/webpub+json"}
     ],
-    
+
     "readingOrder": [
         {"href": "https://example.com/c001.html", "type": "text/html", "title": "Chapter 1"}
     ]
@@ -494,7 +494,7 @@ class RWPMSyntaxAnalyzerTest(TestCase):
     ):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
-        input_steam = six.StringIO(rwpm_manifest_content)
+        input_steam = StringIO(rwpm_manifest_content)
         manifest_json = ManifestParser.get_manifest_json(input_steam)
 
         # Act
@@ -547,7 +547,7 @@ class RWPMSyntaxAnalyzerTest(TestCase):
     ):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
-        input_steam = six.StringIO(rwpm_manifest_content)
+        input_steam = StringIO(rwpm_manifest_content)
         manifest_json = ManifestParser.get_manifest_json(input_steam)
 
         # Act
@@ -559,7 +559,7 @@ class RWPMSyntaxAnalyzerTest(TestCase):
         self.assertIsNotNone(error)
         self.assertEqual(
             expected_error_message,
-            six.text_type(error).strip("u"),
+            str(error).strip("u"),
         )
 
     @parameterized.expand(
@@ -605,7 +605,7 @@ class RWPMSyntaxAnalyzerTest(TestCase):
     ):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
-        input_steam = six.StringIO(rwpm_manifest_content)
+        input_steam = StringIO(rwpm_manifest_content)
         manifest_json = ManifestParser.get_manifest_json(input_steam)
 
         # Act
@@ -617,7 +617,7 @@ class RWPMSyntaxAnalyzerTest(TestCase):
     def test_syntax_analyzer_returns_ast(self):
         # Arrange
         syntax_analyzer = RWPMSyntaxAnalyzer()
-        input_steam = six.StringIO(RWPM_MANIFEST)
+        input_steam = StringIO(RWPM_MANIFEST)
         manifest_json = ManifestParser.get_manifest_json(input_steam)
 
         # Act

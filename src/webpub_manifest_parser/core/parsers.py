@@ -3,11 +3,10 @@ import re
 from abc import ABCMeta, abstractmethod
 from pydoc import locate
 
-import jsonschema  # noqa: I201
-import six  # noqa: I201
-from dateutil import parser as datetime_parser  # noqa: I201, I100
-from jsonschema import FormatError  # noqa: I201, I100
-from uritemplate import URITemplate  # noqa: I201
+import jsonschema
+from dateutil import parser as datetime_parser
+from jsonschema import FormatError
+from uritemplate import URITemplate
 
 from webpub_manifest_parser.errors import BaseError
 from webpub_manifest_parser.utils import encode, is_string
@@ -28,7 +27,7 @@ class ValueParserError(BaseError):
         :param inner_exception: (Optional) Inner exception
         :type inner_exception: Optional[Exception]
         """
-        super(ValueParserError, self).__init__(message, inner_exception)
+        super().__init__(message, inner_exception)
 
         self._value = value
 
@@ -42,8 +41,7 @@ class ValueParserError(BaseError):
         return self._value
 
 
-@six.add_metaclass(ABCMeta)
-class ValueParser(object):
+class ValueParser(metaclass=ABCMeta):
     """Base parser class."""
 
     @abstractmethod
@@ -96,29 +94,26 @@ class AnyOfParser(ValueParser):
         first_validation_error = None
 
         for parser in self._inner_parsers:
-            self._logger.debug(u"Running {0} parser".format(parser))
+            self._logger.debug(f"Running {parser} parser")
 
             try:
                 result = parser.parse(value)
 
-                self._logger.debug(
-                    u"Parser {0} succeeded: {1}".format(parser, encode(result))
-                )
+                self._logger.debug(f"Parser {parser} succeeded: {encode(result)}")
 
                 return result
             except ValueParserError as error:
-                self._logger.debug(u"Parser {0} failed".format(encode(parser)))
+                self._logger.debug(f"Parser {encode(parser)} failed")
 
                 if first_validation_error is None:
                     first_validation_error = error
 
-        self._logger.debug(u"All parsers failed")
+        self._logger.debug("All parsers failed")
 
         raise first_validation_error
 
 
-@six.add_metaclass(ABCMeta)
-class NumericParser(ValueParser):
+class NumericParser(ValueParser, metaclass=ABCMeta):
     """Numeric parser."""
 
     def __init__(
@@ -173,28 +168,26 @@ class NumericParser(ValueParser):
         if self._minimum is not None and value < self._minimum:
             raise ValueParserError(
                 value,
-                u"Value {0} is less than the minimum ({1})".format(
-                    value, self._minimum
-                ),
+                "Value {} is less than the minimum ({})".format(value, self._minimum),
             )
         if self._exclusive_minimum is not None and value <= self._exclusive_minimum:
             raise ValueParserError(
                 value,
-                u"Value {0} is less or equal than the exclusive minimum ({1})".format(
+                "Value {} is less or equal than the exclusive minimum ({})".format(
                     value, self._exclusive_minimum
                 ),
             )
         if self._maximum is not None and value > self._maximum:
             raise ValueParserError(
                 value,
-                u"Value {0} is greater than the maximum ({1})".format(
+                "Value {} is greater than the maximum ({})".format(
                     value, self._maximum
                 ),
             )
         if self._exclusive_maximum is not None and value >= self._exclusive_maximum:
             raise ValueParserError(
                 value,
-                u"Value {0} is greater or equal than the exclusive maximum ({1})".format(
+                "Value {} is greater or equal than the exclusive maximum ({})".format(
                     value, self._exclusive_maximum
                 ),
             )
@@ -219,7 +212,7 @@ class IntegerParser(NumericParser):
         try:
             return int(value)
         except ValueError as error:
-            raise ValueParserError(value, six.u(str(error)), error)
+            raise ValueParserError(value, str(error), error)
 
 
 class NumberParser(NumericParser):
@@ -239,7 +232,7 @@ class NumberParser(NumericParser):
         try:
             return float(value)
         except ValueError as error:
-            raise ValueParserError(value, six.u(str(error)), error)
+            raise ValueParserError(value, str(error), error)
 
 
 class BooleanParser(ValueParser):
@@ -266,9 +259,7 @@ class BooleanParser(ValueParser):
             if value == "true":
                 return True
 
-        raise ValueParserError(
-            value, u"Value '{0}' must be boolean".format(encode(value))
-        )
+        raise ValueParserError(value, f"Value '{encode(value)}' must be boolean")
 
 
 class StringParser(ValueParser):
@@ -286,9 +277,7 @@ class StringParser(ValueParser):
         :raise: ValidationError
         """
         if not is_string(value):
-            raise ValueParserError(
-                value, u"Value '{0}' must be a string".format(encode(value))
-            )
+            raise ValueParserError(value, f"Value '{encode(value)}' must be a string")
 
         return value
 
@@ -319,12 +308,12 @@ class StringPatternParser(StringParser):
 
         :raise: ValidationError
         """
-        value = super(StringPatternParser, self).parse(value)
+        value = super().parse(value)
 
         if not self._regex.match(value):
             raise ValueParserError(
                 value,
-                u"String value '{0}' does not match regular expression {1}".format(
+                "String value '{}' does not match regular expression {}".format(
                     encode(value), self._pattern
                 ),
             )
@@ -354,19 +343,18 @@ class EnumParser(StringParser):
 
         :raise: ValidationError
         """
-        value = super(EnumParser, self).parse(value)
+        value = super().parse(value)
 
         if value not in self._items:
             raise ValueParserError(
                 value,
-                u"Value '{0}' is not among {1}".format(encode(value), self._items),
+                f"Value '{encode(value)}' is not among {self._items}",
             )
 
         return value
 
 
-@six.add_metaclass(ABCMeta)
-class FormatChecker(StringParser):
+class FormatChecker(StringParser, metaclass=ABCMeta):
     """Base class for all parsers using jsonschema FormatChecker."""
 
     def __init__(self, json_schema_format):
@@ -389,7 +377,7 @@ class FormatChecker(StringParser):
         try:
             self._format_checker.check(value, self._json_schema_format)
         except FormatError as error:
-            raise ValueParserError(value, six.u(str(error)), error)
+            raise ValueParserError(value, str(error), error)
 
     def _parse(self, value):
         """Parse the value into an appropriate Python type.
@@ -426,7 +414,7 @@ class URIParser(FormatChecker):
 
     def __init__(self):
         """Initialize a new instance of URIParser class."""
-        super(URIParser, self).__init__("uri")
+        super().__init__("uri")
 
     def _parse(self, value):
         """Parse the URI into a Python dictionary containing URI's subcomponents.
@@ -462,7 +450,7 @@ class URIReferenceParser(FormatChecker):
 
     def __init__(self):
         """Initialize a new instance of URIReferenceParser class."""
-        super(URIReferenceParser, self).__init__("uri-reference")
+        super().__init__("uri-reference")
 
     def _parse(self, value):
         """Parse the URI-reference into a Python dictionary containing URI's subcomponents.
@@ -482,7 +470,7 @@ class DateParser(StringParser):
     def _raise_error(self, value, inner_exception=None):
         raise ValueParserError(
             value,
-            u"Value '{0}' is not a correct date".format(encode(value)),
+            f"Value '{encode(value)}' is not a correct date",
             inner_exception,
         )
 
@@ -495,15 +483,15 @@ class DateParser(StringParser):
         :return: Parsed date object
         :rtype: datetime.datetime
         """
-        value = super(DateParser, self).parse(value)
+        value = super().parse(value)
         result = None
 
         try:
             result = datetime_parser.isoparse(value)
-        except Exception as exception:  # pylint: disable=broad-except
+        except Exception as exception:
             self._raise_error(value, exception)
 
-        if result and (  # pylint: disable=too-many-boolean-expressions
+        if result and (
             result.hour
             or result.minute
             or result.second
@@ -527,15 +515,15 @@ class DateTimeParser(StringParser):
         :return: Parsed date & time object
         :rtype: datetime.datetime
         """
-        value = super(DateTimeParser, self).parse(value)
+        value = super().parse(value)
 
         try:
             return datetime_parser.isoparse(value)
         except Exception as exception:
             raise ValueParserError(
                 value,
-                u"Value '{0}' is not a correct date & time value: "
-                u"it does not comply with ISO 8601 date & time formatting rules".format(
+                "Value '{}' is not a correct date & time value: "
+                "it does not comply with ISO 8601 date & time formatting rules".format(
                     encode(value)
                 ),
                 exception,
@@ -579,9 +567,7 @@ class ArrayParser(ValueParser):
         :raise: ValidationError
         """
         if not isinstance(value, list):
-            raise ValueParserError(
-                value, u"Value '{0}' must be a list".format(encode(value))
-            )
+            raise ValueParserError(value, f"Value '{encode(value)}' must be a list")
 
         result = []
         seen = set()
@@ -590,9 +576,7 @@ class ArrayParser(ValueParser):
             item = self._item_parser.parse(item)
 
             if self._unique_items and item in seen:
-                raise ValueParserError(
-                    value, u"Item '{0}' is not unique".format(encode(item))
-                )
+                raise ValueParserError(value, f"Item '{encode(item)}' is not unique")
 
             result.append(item)
             seen.add(item)
@@ -629,20 +613,18 @@ class ObjectParser(ValueParser):
         :raise: ValidationError
         """
         if not isinstance(value, dict):
-            raise ValueParserError(value, u"Value must be a dictionary")
+            raise ValueParserError(value, "Value must be a dictionary")
 
         result = {}
 
-        for key, item in value.items():
+        for key, item in list(value.items()):
             if not isinstance(key, str):
-                raise ValueParserError(
-                    value, u"Key '{0}' must be a string".format(encode(key))
-                )
+                raise ValueParserError(value, f"Key '{encode(key)}' must be a string")
 
             if self._properties_regex and not self._properties_regex.match(key):
                 raise ValueParserError(
                     value,
-                    u"Key '{0}' does not match the pattern '{1}'".format(
+                    "Key '{}' does not match the pattern '{}'".format(
                         encode(key), self._properties_regex
                     ),
                 )
@@ -657,13 +639,11 @@ class ObjectParser(ValueParser):
 class LocalizableStringParser(ObjectParser):
     """Parser for localizable strings represented as a dictionary with keys equal to language codes."""
 
-    LANGUAGE_PATTERN = "^((?P<grandfathered>(en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)|(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang))|((?P<language>([A-Za-z]{2,3}(-(?P<extlang>[A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-(?P<script>[A-Za-z]{4}))?(-(?P<region>[A-Za-z]{2}|[0-9]{3}))?(-(?P<variant>[A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-(?P<extension>[0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(?P<privateUse>x(-[A-Za-z0-9]{1,8})+))?)|(?P<privateUse2>x(-[A-Za-z0-9]{1,8})+))$"  # noqa: E501, pylint: disable=C0301
+    LANGUAGE_PATTERN = "^((?P<grandfathered>(en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)|(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang))|((?P<language>([A-Za-z]{2,3}(-(?P<extlang>[A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-(?P<script>[A-Za-z]{4}))?(-(?P<region>[A-Za-z]{2}|[0-9]{3}))?(-(?P<variant>[A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-(?P<extension>[0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(?P<privateUse>x(-[A-Za-z0-9]{1,8})+))?)|(?P<privateUse2>x(-[A-Za-z0-9]{1,8})+))$"
 
     def __init__(self):
         """Initialize a new instance of LocalizableStringValidator class."""
-        super(LocalizableStringParser, self).__init__(
-            StringParser(), self.LANGUAGE_PATTERN
-        )
+        super().__init__(StringParser(), self.LANGUAGE_PATTERN)
 
 
 class TypeParser(ValueParser):
@@ -688,7 +668,7 @@ class TypeParser(ValueParser):
             self._type = locate(self._type)
 
             if self._type is None:
-                raise ValueError(u"Unknown type {0}".format(self._type))
+                raise ValueError(f"Unknown type {self._type}")
 
         return self._type
 
@@ -706,7 +686,7 @@ class TypeParser(ValueParser):
         if not isinstance(value, self._type):
             raise ValueParserError(
                 value,
-                u"Value '{0}' must be an instance of '{1}'".format(
+                "Value '{}' must be an instance of '{}'".format(
                     encode(value), self._type
                 ),
             )

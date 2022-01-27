@@ -35,11 +35,11 @@ class MissingPropertyError(SyntaxAnalyzerError):
         :type inner_exception: Optional[Exception]
         """
         if message is None:
-            message = "{0}'s required property {1} is missing".format(
+            message = "{}'s required property {} is missing".format(
                 node.__class__, node_property.key
             )
 
-        super(MissingPropertyError, self).__init__(
+        super().__init__(
             node,
             node_property,
             message,
@@ -57,7 +57,7 @@ class SyntaxAnalyzer(BaseAnalyzer):
 
     def __init__(self):
         """Initialize a new instance of SyntaxParser class."""
-        super(SyntaxAnalyzer, self).__init__()
+        super().__init__()
 
         self._logger = logging.getLogger(__name__)
 
@@ -82,7 +82,7 @@ class SyntaxAnalyzer(BaseAnalyzer):
         :return: Property's value
         :rtype: Any
         """
-        self._logger.debug(u"Started extracting {0} property".format(object_property))
+        self._logger.debug(f"Started extracting {object_property} property")
 
         if isinstance(json_content, dict):
             property_value = json_content.get(object_property.key, None)
@@ -90,7 +90,7 @@ class SyntaxAnalyzer(BaseAnalyzer):
             property_value = json_content
 
         self._logger.debug(
-            u"Finished extracting {0} property: {1}".format(
+            "Finished extracting {} property: {}".format(
                 object_property, encode(property_value)
             )
         )
@@ -112,15 +112,11 @@ class SyntaxAnalyzer(BaseAnalyzer):
         if property_value is None:
             return property_value
 
-        self._logger.debug(
-            u"Started looking for nested property {0}".format(object_property)
-        )
+        self._logger.debug(f"Started looking for nested property {object_property}")
 
         type_parsers_result = find_parser(object_property.parser, TypeParser)
 
-        self._logger.debug(
-            u"Found the following type parsers: {0}".format(type_parsers_result)
-        )
+        self._logger.debug(f"Found the following type parsers: {type_parsers_result}")
 
         found = False
 
@@ -148,12 +144,12 @@ class SyntaxAnalyzer(BaseAnalyzer):
 
         if found:
             self._logger.debug(
-                u"Finished parsing nested property {0}: {1}".format(
+                "Finished parsing nested property {}: {}".format(
                     object_property, encode(property_value)
                 )
             )
         else:
-            self._logger.debug(u"Property {0} is not nested".format(object_property))
+            self._logger.debug(f"Property {object_property} is not nested")
 
         return property_value
 
@@ -194,7 +190,7 @@ class SyntaxAnalyzer(BaseAnalyzer):
             raise SyntaxAnalyzerError(
                 ast_object,
                 None,
-                u"There are {0} required properties in {1} but only a single value ({2}) was provided".format(
+                "There are {} required properties in {} but only a single value ({}) was provided".format(
                     len(required_object_properties),
                     encode(ast_object),
                     json_content,
@@ -268,7 +264,7 @@ class SyntaxAnalyzer(BaseAnalyzer):
         :type property_value: Any
         """
         self._logger.debug(
-            u"Property '{0}' has the following value: {1}".format(
+            "Property '{}' has the following value: {}".format(
                 object_property.key, encode(property_value)
             )
         )
@@ -303,7 +299,7 @@ class SyntaxAnalyzer(BaseAnalyzer):
         :return: Node object
         :rtype: Node
         """
-        self._logger.debug(u"Started parsing {0} object".format(cls))
+        self._logger.debug(f"Started parsing {cls} object")
 
         extended_cls = cls.get_extension()
         ast_object = extended_cls()
@@ -314,7 +310,7 @@ class SyntaxAnalyzer(BaseAnalyzer):
             elif isinstance(json_content, (list, dict)):
                 self._set_non_scalar_value(json_content, ast_object)
 
-        self._logger.debug(u"Finished parsing {0} object: {1}".format(cls, ast_object))
+        self._logger.debug(f"Finished parsing {cls} object: {ast_object}")
 
         return ast_object
 
@@ -327,15 +323,13 @@ class SyntaxAnalyzer(BaseAnalyzer):
         :return: RWPM AST
         :rtype: ManifestLike
         """
-        self._logger.debug(u"Started analyzing {0}".format(manifest_json))
+        self._logger.debug(f"Started analyzing {manifest_json}")
 
         self.context.reset()
 
         manifest = self._create_manifest()
         manifest = self._parse_object(manifest_json, manifest.__class__)
 
-        self._logger.debug(
-            u"Finished analyzing {0}: {1}".format(manifest_json, manifest)
-        )
+        self._logger.debug(f"Finished analyzing {manifest_json}: {manifest}")
 
         return manifest

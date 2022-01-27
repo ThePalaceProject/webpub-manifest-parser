@@ -4,8 +4,7 @@ import logging
 from abc import ABCMeta, abstractmethod
 from io import StringIO
 
-import requests  # noqa: I201
-import six  # noqa: I201
+import requests
 
 from webpub_manifest_parser.core.analyzer import AnalyzerContext
 
@@ -19,7 +18,7 @@ class ManifestParserResult(AnalyzerContext):
         :param root: Root AST node
         :type root: webpub_manifest_parser.core.ast.Node
         """
-        super(ManifestParserResult, self).__init__()
+        super().__init__()
 
         self._root = root
 
@@ -33,7 +32,7 @@ class ManifestParserResult(AnalyzerContext):
         return self._root
 
 
-class ManifestParser(object):
+class ManifestParser:
     """Base class for RWPM-compatible parsers."""
 
     def __init__(self, syntax_analyzer, semantic_analyzer):
@@ -81,7 +80,7 @@ class ManifestParser(object):
         :return: Parser result
         :rtype: ManifestParserResult
         """
-        with io.open(input_file_path, "r", encoding=encoding) as input_file:
+        with open(input_file_path, "r", encoding=encoding) as input_file:
             manifest_json = self.get_manifest_json(input_file)
 
             return self._parse(manifest_json)
@@ -90,7 +89,7 @@ class ManifestParser(object):
         """Parse the input file and return the result: root AST object and a list of errors.
 
         :param input_stream: Full path to the file containing RWPM-compatible document
-        :type input_stream: six.StringIO
+        :type input_stream: io.StringIO
 
         :return: Parser result
         :rtype: ManifestParserResult
@@ -99,9 +98,7 @@ class ManifestParser(object):
 
         return self._parse(manifest_json)
 
-    def parse_url(
-        self, url, encoding="utf-8", params=None, auth=None, proxies=None
-    ):  # pylint: disable=too-many-arguments
+    def parse_url(self, url, encoding="utf-8", params=None, auth=None, proxies=None):
         """Fetch the content pointed by the URL, parse it and return the result: root AST object and a list of errors.
 
         :param url: URL pointing to the RWPM-compatible document
@@ -123,7 +120,7 @@ class ManifestParser(object):
         :rtype: ManifestParserResult
         """
         response = requests.get(url, params=params, auth=auth, proxies=proxies)
-        input_stream = StringIO(six.text_type(response.content, encoding))
+        input_stream = StringIO(str(response.content, encoding))
         manifest_json = self.get_manifest_json(input_stream)
 
         return self._parse(manifest_json)
@@ -144,7 +141,7 @@ class ManifestParser(object):
         """Parse the input stream into a JSON document containing an RWPM-compatible manifest.
 
         :param input_stream: Input stream containing JSON document with an RWPM-compatible manifest
-        :type input_stream: Union[six.StringIO, six.BinaryIO]
+        :type input_stream: Union[io.StringIO, io.BinaryIO]
 
         :return: JSON document containing an RWPM-compatible manifest
         :rtype: Dict
@@ -160,8 +157,7 @@ class ManifestParser(object):
         return manifest_json
 
 
-@six.add_metaclass(ABCMeta)
-class ManifestParserFactory(object):
+class ManifestParserFactory(metaclass=ABCMeta):
     """Base class for factories creating parsers for particular RWPM-compatible standards (for example, OPDS 2.0)."""
 
     @abstractmethod

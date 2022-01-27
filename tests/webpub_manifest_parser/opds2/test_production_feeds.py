@@ -67,7 +67,7 @@ class OPDS2FeedParserIntegrationTest(TestCase):
             params = {"page": page, "hitsPerPage": items_per_page}
 
             try:
-                print("Started downloading page # {0}/{1}".format(page, pages))
+                print(f"Started downloading page # {page}/{pages}")
 
                 response = requests.get(
                     "https://ebookcentral.proquest.com/lib/nyulibrary-ebooks/BooksCatalog",
@@ -75,16 +75,16 @@ class OPDS2FeedParserIntegrationTest(TestCase):
                     proxies=proxies,
                 )
 
-                print("Finished downloading page # {0}/{1}".format(page, pages))
+                print(f"Finished downloading page # {page}/{pages}")
 
                 json_response = response.json()
                 json_manifest = json_response["opdsFeed"]
 
-                print("Started parsing page # {0}/{1}".format(page, pages))
+                print(f"Started parsing page # {page}/{pages}")
 
                 result = parser.parse_json(json_manifest)
 
-                print("Finished parsing page # {0}/{1}".format(page, pages))
+                print(f"Finished parsing page # {page}/{pages}")
 
                 # Assert
                 self.assertIsInstance(result, ManifestParserResult)

@@ -1,4 +1,5 @@
-from mock import MagicMock, call
+from unittest.mock import MagicMock, call
+
 from parameterized import parameterized
 
 from tests.webpub_manifest_parser.core.test_analyzer import AnalyzerTest

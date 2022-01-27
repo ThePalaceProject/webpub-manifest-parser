@@ -81,7 +81,7 @@ class AnalyzerTest(TestCase):
                     break
             else:
                 self.fail(
-                    "Expected error for {0} node's property '{1}' with error message \"{2}\" wasn't raised".format(
+                    "Expected error for {} node's property '{}' with error message \"{}\" wasn't raised".format(
                         expected_error.node.__class__,
                         expected_error.node_property.key
                         if expected_error.node_property

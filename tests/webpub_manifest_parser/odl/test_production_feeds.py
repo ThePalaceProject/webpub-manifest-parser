@@ -25,13 +25,13 @@ class ODLFeedParserIntegrationTest(TestCase):
         """
         if feed_parsing_result.errors:
             print(
-                "Feed '{0}' located at '{1}' contains the following errors:".format(
+                "Feed '{}' located at '{}' contains the following errors:".format(
                     feed_name, feed_url
                 )
             )
 
             for index, error in enumerate(feed_parsing_result.errors):
-                print("{0}. {1}".format(index + 1, error.error_message))
+                print(f"{index + 1}. {error.error_message}")
 
             print("")
 
@@ -78,7 +78,7 @@ class ODLFeedParserIntegrationTest(TestCase):
                 result = parser.parse_url(feed_url, feed_encoding, auth=feed_auth)
             except Exception as exception:
                 logging.exception(
-                    "Unexpected exception occurred during parsing {0}".format(feed_name)
+                    f"Unexpected exception occurred during parsing {feed_name}"
                 )
                 raise
 

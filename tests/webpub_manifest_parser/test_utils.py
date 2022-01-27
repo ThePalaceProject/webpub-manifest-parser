@@ -2,12 +2,7 @@ from unittest import TestCase
 
 from parameterized import parameterized
 
-from webpub_manifest_parser.core.ast import (
-    Collection,
-    CompactCollection,
-    Link,
-    LinkList,
-)
+from webpub_manifest_parser.core.ast import CompactCollection, Link, LinkList
 from webpub_manifest_parser.opds2.ast import OPDS2Navigation
 from webpub_manifest_parser.utils import cast, first_or_default
 

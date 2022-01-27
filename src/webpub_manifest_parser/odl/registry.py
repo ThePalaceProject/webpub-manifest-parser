@@ -23,6 +23,6 @@ class ODLCollectionRolesRegistry(OPDS2CollectionRolesRegistry):
 
     def __init__(self):
         """Initialize a new instance of OPDS2CollectionRolesRegistry class."""
-        super(ODLCollectionRolesRegistry, self).__init__()
+        super().__init__()
 
         self._add_items(self.ODL_ROLES)

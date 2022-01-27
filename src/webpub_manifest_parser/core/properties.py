@@ -1,8 +1,6 @@
 import inspect
 from abc import ABCMeta, abstractmethod
 
-import six
-
 from webpub_manifest_parser.core.parsers import (
     AnyOfParser,
     ArrayParser,
@@ -24,8 +22,7 @@ from webpub_manifest_parser.core.parsers import (
 from webpub_manifest_parser.utils import is_string
 
 
-@six.add_metaclass(ABCMeta)
-class HasProperties(object):
+class HasProperties(metaclass=ABCMeta):
     """Interface representing class containing ObjectProperty meta-properties."""
 
     @abstractmethod
@@ -56,7 +53,7 @@ class HasProperties(object):
         raise NotImplementedError()
 
 
-class Property(object):
+class Property:
     """Class representing object property, storing property's metadata and its value."""
 
     _counter = 0
@@ -81,9 +78,7 @@ class Property(object):
         if not isinstance(required, bool):
             raise ValueError("Argument 'required' must be boolean")
         if not isinstance(parser, ValueParser):
-            raise ValueError(
-                "Argument 'parser' must be an instance of {0}".format(ValueParser)
-            )
+            raise ValueError(f"Argument 'parser' must be an instance of {ValueParser}")
 
         self._key = key
         self._required = required
@@ -110,7 +105,7 @@ class Property(object):
 
         if not isinstance(owner_instance, HasProperties):
             raise ValueError(
-                "Argument 'owner_instance' must be an instance of {0}".format(
+                "Argument 'owner_instance' must be an instance of {}".format(
                     HasProperties
                 )
             )
@@ -128,7 +123,7 @@ class Property(object):
         """
         if not isinstance(owner_instance, HasProperties):
             raise ValueError(
-                "Argument 'owner_instance' must be an instance of {0}".format(
+                "Argument 'owner_instance' must be an instance of {}".format(
                     HasProperties
                 )
             )
@@ -141,10 +136,8 @@ class Property(object):
         :return: String representation
         :rtype: str
         """
-        return (
-            u"<Property(key={0}, required={1}, parser={2}, default_value={3})>".format(
-                self.key, self.required, self.parser, self.default_value
-            )
+        return "<Property(key={}, required={}, parser={}, default_value={})>".format(
+            self.key, self.required, self.parser, self.default_value
         )
 
     @property
@@ -247,8 +240,7 @@ class PropertiesGrouping(HasProperties):
         return required_class_properties
 
 
-@six.add_metaclass(ABCMeta)
-class ParsableProperty(Property):
+class ParsableProperty(Property, metaclass=ABCMeta):
     """Base class for all property classes having predefined parsers."""
 
     PARSER = object()
@@ -265,15 +257,13 @@ class ParsableProperty(Property):
         :param default_value: Property's default value
         :type default_value: Any
         """
-        super(ParsableProperty, self).__init__(
-            key, required, self.PARSER, default_value
-        )
+        super().__init__(key, required, self.PARSER, default_value)
 
 
 class IntegerProperty(Property):
     """Property allowing only integer values."""
 
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         key,
         required,
@@ -306,7 +296,7 @@ class IntegerProperty(Property):
         :param default_value: Property's default value
         :type default_value: Any
         """
-        super(IntegerProperty, self).__init__(
+        super().__init__(
             key,
             required,
             IntegerParser(minimum, exclusive_minimum, maximum, exclusive_maximum),
@@ -317,7 +307,7 @@ class IntegerProperty(Property):
 class NumberProperty(Property):
     """Property allowing only float values."""
 
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         key,
         required,
@@ -350,7 +340,7 @@ class NumberProperty(Property):
         :param default_value: Property's default value
         :type default_value: Any
         """
-        super(NumberProperty, self).__init__(
+        super().__init__(
             key,
             required,
             NumberParser(minimum, exclusive_minimum, maximum, exclusive_maximum),
@@ -389,11 +379,9 @@ class EnumProperty(Property):
         :type default_value: Any
         """
         if not isinstance(items, list):
-            raise ValueError("Argument 'items' must be an instance of {0}".format(list))
+            raise ValueError(f"Argument 'items' must be an instance of {list}")
 
-        super(EnumProperty, self).__init__(
-            key, required, EnumParser(items), default_value
-        )
+        super().__init__(key, required, EnumParser(items), default_value)
 
 
 class URIProperty(ParsableProperty):
@@ -435,9 +423,7 @@ class DateOrTimeProperty(ParsableProperty):
 class BaseArrayProperty(Property):
     """Property containing a list of items."""
 
-    def __init__(
-        self, key, required, parser, list_type=list, default_value=None
-    ):  # pylint: disable=R0913
+    def __init__(self, key, required, parser, list_type=list, default_value=None):
         """Initialize a new instance of ListProperty class.
 
         :param key: Property's key
@@ -456,11 +442,9 @@ class BaseArrayProperty(Property):
         :type default_value: Any
         """
         if not issubclass(list_type, list):
-            raise ValueError(
-                "Argument 'list_type' must be a subclass of {0}".format(list)
-            )
+            raise ValueError(f"Argument 'list_type' must be a subclass of {list}")
 
-        super(BaseArrayProperty, self).__init__(key, required, parser, default_value)
+        super().__init__(key, required, parser, default_value)
 
         self._list_type = list_type
 
@@ -474,11 +458,9 @@ class BaseArrayProperty(Property):
         :type value: Any
         """
         if value is not None and not isinstance(value, self._list_type):
-            raise ValueError(
-                "Value must be a subclass of {0} class".format(self._list_type)
-            )
+            raise ValueError(f"Value must be a subclass of {self._list_type} class")
 
-        super(BaseArrayProperty, self).__set__(owner_instance, value)
+        super().__set__(owner_instance, value)
 
     @property
     def list_type(self):
@@ -493,7 +475,7 @@ class BaseArrayProperty(Property):
 class ArrayProperty(BaseArrayProperty):
     """Property containing an array of items."""
 
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         key,
         required,
@@ -524,12 +506,12 @@ class ArrayProperty(BaseArrayProperty):
         """
         if not isinstance(item_parser, ValueParser):
             raise ValueError(
-                "Argument 'item_parser' must be an instance of {0}".format(ValueParser)
+                f"Argument 'item_parser' must be an instance of {ValueParser}"
             )
         if not isinstance(unique_items, bool):
             raise ValueError("Argument 'unique_items' must be boolean")
 
-        super(ArrayProperty, self).__init__(
+        super().__init__(
             key,
             required,
             ArrayParser(item_parser, unique_items),
@@ -541,7 +523,7 @@ class ArrayProperty(BaseArrayProperty):
 class ArrayOfStringsProperty(BaseArrayProperty):
     """Property allowing either a string or array of strings as its values."""
 
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self, key, required, unique_items=False, list_type=list, default_value=None
     ):
         """Initialize a new instance of ArrayOfStringsProperty class.
@@ -564,7 +546,7 @@ class ArrayOfStringsProperty(BaseArrayProperty):
         if not isinstance(unique_items, bool):
             raise ValueError("Argument 'unique_items' must be boolean")
 
-        super(ArrayOfStringsProperty, self).__init__(
+        super().__init__(
             key,
             required,
             AnyOfParser([ArrayParser(StringParser(), unique_items), StringParser()]),
@@ -584,7 +566,7 @@ class ListOfLanguagesProperty(BaseArrayProperty):
           ]
     """
 
-    def __init__(self, key, required):  # pylint: disable=R0913
+    def __init__(self, key, required):
         """Initialize a new instance of ListOfLanguagesProperty class.
 
         :param key: Property's key
@@ -593,7 +575,7 @@ class ListOfLanguagesProperty(BaseArrayProperty):
         :param required: Boolean value indicating whether the property is required or not
         :type required: bool
         """
-        super(ListOfLanguagesProperty, self).__init__(
+        super().__init__(
             key,
             required,
             AnyOfParser(
@@ -641,6 +623,4 @@ class TypeProperty(Property):
         :param default_value: Property's default value
         :type default_value: Any
         """
-        super(TypeProperty, self).__init__(
-            key, required, TypeParser(nested_type), default_value
-        )
+        super().__init__(key, required, TypeParser(nested_type), default_value)

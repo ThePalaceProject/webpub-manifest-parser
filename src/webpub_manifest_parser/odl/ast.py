@@ -75,7 +75,7 @@ class ODLLicenseMetadata(Node):
         :param created: Time when the license was created
         :type created: datetime.datetime
         """
-        super(ODLLicenseMetadata, self).__init__()
+        super().__init__()
 
         if identifier and not is_string(identifier):
             raise ValueError("Argument 'identifier' must be a string")
@@ -83,9 +83,7 @@ class ODLLicenseMetadata(Node):
             raise ValueError("Argument 'formats' must be a list")
         if created and not isinstance(created, datetime.datetime):
             raise ValueError(
-                "Argument 'created' must be an instance of {0}".format(
-                    datetime.datetime
-                )
+                "Argument 'created' must be an instance of {}".format(datetime.datetime)
             )
 
         self.identifier = identifier
@@ -133,11 +131,11 @@ class ODLPublication(OPDS2Publication):
         :param licenses: List of publication's licenses
         :type licenses: LinkList
         """
-        super(ODLPublication, self).__init__(metadata, links, images)
+        super().__init__(metadata, links, images)
 
         if licenses and not isinstance(licenses, CollectionList):
             raise ValueError(
-                "Argument 'licenses' must be an instance of {0}".format(CollectionList)
+                f"Argument 'licenses' must be an instance of {CollectionList}"
             )
 
         self.licenses = licenses
@@ -148,7 +146,7 @@ class ODLPublication(OPDS2Publication):
         :return: Hash
         :rtype: int
         """
-        return hash((super(ODLPublication, self).__hash__(), self.licenses))
+        return hash((super().__hash__(), self.licenses))
 
 
 class ODLFeed(OPDS2Feed):

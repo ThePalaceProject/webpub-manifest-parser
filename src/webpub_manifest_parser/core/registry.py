@@ -1,7 +1,7 @@
 from collections.abc import MutableMapping
 
 
-class RegistryItem(object):
+class RegistryItem:
     """Single metadata registry item (collection role, media type, etc.)."""
 
     def __init__(self, key):
@@ -75,7 +75,7 @@ class Registry(MutableMapping):
         :return: Iterator of the registry items
         :rtype: Iterator[RegistryItem]
         """
-        return iter(self._items.values())
+        return iter(list(self._items.values()))
 
     def __len__(self):
         """Return a number of items in the registry.
@@ -124,7 +124,7 @@ class CollectionRole(RegistryItem):
         :param multi: Boolean value indicating whether there can be multiple collections with this role
         :type multi: bool
         """
-        super(CollectionRole, self).__init__(key)
+        super().__init__(key)
 
         self._compact = compact
         self._required = required
@@ -171,6 +171,4 @@ class LinkRelationsRegistry(Registry):
         :param items: (Optional) collection of registry items. Note that all items have to be RegistryItem descendants
         :type items: List[RegistryItems]
         """
-        super(LinkRelationsRegistry, self).__init__(
-            self.CORE_LINK_RELATIONS if not items else items
-        )
+        super().__init__(self.CORE_LINK_RELATIONS if not items else items)

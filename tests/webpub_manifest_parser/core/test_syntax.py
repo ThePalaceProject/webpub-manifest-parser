@@ -1,16 +1,10 @@
 import datetime
-from unittest import TestCase
 
 from dateutil.tz import tzutc
 from parameterized import parameterized
 
 from tests.webpub_manifest_parser.core.test_analyzer import AnalyzerTest
-from webpub_manifest_parser.core.ast import (
-    Manifestlike,
-    Metadata,
-    Node,
-    PresentationMetadata,
-)
+from webpub_manifest_parser.core.ast import Manifestlike, Metadata, PresentationMetadata
 from webpub_manifest_parser.core.syntax import (
     MissingPropertyError,
     SyntaxAnalyzer,
@@ -88,8 +82,8 @@ class TestSyntaxAnalyzerTest(AnalyzerTest):
                     SyntaxAnalyzerError(
                         PresentationMetadata(),
                         Metadata.modified,
-                        u"Value '202X' is not a correct date & time value: "
-                        u"it does not comply with ISO 8601 date & time formatting rules",
+                        "Value '202X' is not a correct date & time value: "
+                        "it does not comply with ISO 8601 date & time formatting rules",
                     ),
                 ],
             ),
@@ -131,8 +125,8 @@ class TestSyntaxAnalyzerTest(AnalyzerTest):
                     SyntaxAnalyzerError(
                         PresentationMetadata(),
                         Metadata.modified,
-                        u"Value '202X' is not a correct date & time value: "
-                        u"it does not comply with ISO 8601 date & time formatting rules",
+                        "Value '202X' is not a correct date & time value: "
+                        "it does not comply with ISO 8601 date & time formatting rules",
                     ),
                 ],
             ),

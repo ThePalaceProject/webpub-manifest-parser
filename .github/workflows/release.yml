@@ -5,31 +5,39 @@ on:
   release:
     types: [published]
 
+env:
+  PYTHON_VERSION: 3.9
+  DUNAMAI_VERSION: 1.8.0
+
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
-
-    - uses: actions/checkout@v2
+    - name: Checkout Source 🐑
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Install Python 💻
       uses: actions/setup-python@v2
       with:
-        python-version: 3.8
+        python-version: ${{ env.PYTHON_VERSION }}
 
     - name: Setup Poetry 🔧
-      run: make init
+      uses: ThePalaceProject/circulation/.github/actions/poetry@main
 
-    - name: Check if version matches 🪄
-      run: |
-        export RELEASE_VERSION="${{ github.event.release.tag_name }}"
-        export PROJECT_VERSION="v$(poetry version -s)"
-        echo $RELEASE_VERSION
-        echo $PROJECT_VERSION
-        if [[ "$RELEASE_VERSION" != "$PROJECT_VERSION" ]]; then exit 1; fi
+    - name: Install Dunamai 🏗
+      run: pip install dunamai==${{ env.DUNAMAI_VERSION }}
 
     - name: Build & Publish 📚
-      run: make publish
+      run: |
+        VERSION="$(dunamai from git)"
+        echo "Publishing version: $VERSION"
+        poetry version "$VERSION"
+        echo "__version__ = '$VERSION'" >> src/webpub_manifest_parser/_version.py
+        poetry publish --build
       env:
         POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}

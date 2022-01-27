@@ -45,9 +45,7 @@ class ODLPublicationSemanticError(SemanticAnalyzerError):
         :type inner_exception: Optional[Exception]
         """
         if not isinstance(node, ODLPublication):
-            raise ValueError(
-                "Argument 'node' must be an instance of {0}".format(ODLPublication)
-            )
+            raise ValueError(f"Argument 'node' must be an instance of {ODLPublication}")
 
         if node.metadata:
             if node.metadata.title:
@@ -81,7 +79,7 @@ class ODLLicenseSemanticError(SemanticAnalyzerError):
         """
         if not isinstance(node, ODLLicense):
             raise ValueError(
-                "Argument 'node' must be an instance of {0} class".format(ODLLicense)
+                f"Argument 'node' must be an instance of {ODLLicense} class"
             )
 
         if node.metadata:
@@ -137,7 +135,7 @@ class ODLSemanticAnalyzer(SemanticAnalyzer):
         :param node: Manifest-like node
         :type node: Manifestlike
         """
-        super(ODLSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
         if not node.publications:
             with self._record_errors():
@@ -170,8 +168,8 @@ class ODLSemanticAnalyzer(SemanticAnalyzer):
             with self._record_errors():
                 node.publications.accept(self)
 
-    @dispatch(OPDS2FeedMetadata)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(OPDS2FeedMetadata)
+    def visit(self, node):
         """Perform semantic analysis of the feed's metadata.
 
         :param node: Feed's metadata
@@ -179,23 +177,23 @@ class ODLSemanticAnalyzer(SemanticAnalyzer):
         """
         # super(ODLSemanticAnalyzer, self).visit(node)
 
-    @dispatch(Metadata)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(Metadata)
+    def visit(self, node):
         """Perform semantic analysis of the feed's metadata.
 
         :param node: Feed's metadata
         :type node: Metadata
         """
-        super(ODLSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
-    @dispatch(ODLPublication)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(ODLPublication)
+    def visit(self, node):
         """Perform semantic analysis of the OPDS 2.0 publication.
 
         :param node: ODL 2.0 publication
         :type node: ODLPublication
         """
-        self._logger.debug(u"Started processing {0}".format(encode(node)))
+        self._logger.debug(f"Started processing {encode(node)}")
 
         if (not node.licenses or len(node.licenses) == 0) and (
             (not node.licenses or len(node.links) == 0)
@@ -208,55 +206,55 @@ class ODLSemanticAnalyzer(SemanticAnalyzer):
         elif node.licenses:
             node.licenses.accept(self)
 
-        self._logger.debug(u"Finished processing {0}".format(encode(node)))
+        self._logger.debug(f"Finished processing {encode(node)}")
 
-    @dispatch(LinkList)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(LinkList)
+    def visit(self, node):
         """Perform semantic analysis of the list of links.
 
         :param node: Manifest's metadata
         :type node: LinkList
         """
-        super(ODLSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
-    @dispatch(Link)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(Link)
+    def visit(self, node):
         """Perform semantic analysis of the link node.
 
         :param node: Link node
         :type node: Link
         """
-        super(ODLSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
-    @dispatch(CollectionList)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(CollectionList)
+    def visit(self, node):
         """Perform semantic analysis of the list of sub-collections.
 
         :param node: CollectionList node
         :type node: CollectionList
         """
-        super(ODLSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
-    @dispatch(CompactCollection)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(CompactCollection)
+    def visit(self, node):
         """Perform semantic analysis of the compact collection node.
 
         :param node: Collection node
         :type node: CompactCollection
         """
-        super(ODLSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
-    @dispatch(Collection)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(Collection)
+    def visit(self, node):
         """Perform semantic analysis of the collection node.
 
         :param node: Collection node
         :type node: Collection
         """
-        super(ODLSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
-    @dispatch(ODLLicense)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(ODLLicense)
+    def visit(self, node):
         """Perform semantic analysis of the ODL license node.
 
         :param node: ODLLicense node

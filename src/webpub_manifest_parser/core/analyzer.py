@@ -1,8 +1,6 @@
 from abc import ABCMeta
 from contextlib import contextmanager
 
-import six
-
 from webpub_manifest_parser.core.properties import BaseArrayProperty, PropertiesGrouping
 from webpub_manifest_parser.errors import BaseError
 
@@ -25,7 +23,7 @@ class BaseAnalyzerError(BaseError):
         :param inner_exception: (Optional) Inner exception
         :type inner_exception: Optional[Exception]
         """
-        super(BaseAnalyzerError, self).__init__(message, inner_exception)
+        super().__init__(message, inner_exception)
 
         self._node = node
         self._node_property = node_property
@@ -49,7 +47,7 @@ class BaseAnalyzerError(BaseError):
         return self._node_property
 
 
-class AnalyzerContext(object):
+class AnalyzerContext:
     """Class containing the current analyzer's context."""
 
     def __init__(self):
@@ -70,8 +68,7 @@ class AnalyzerContext(object):
         self._errors = []
 
 
-@six.add_metaclass(ABCMeta)
-class BaseAnalyzer(object):
+class BaseAnalyzer(metaclass=ABCMeta):
     """Base class for all analyzers (syntax and semantic)."""
 
     def __init__(self):
@@ -99,7 +96,7 @@ class BaseAnalyzer(object):
             self.context.errors.append(error)
 
 
-class NodeFinder(object):
+class NodeFinder:
     """Used for traversing the AST."""
 
     def _find_parent_or_self(

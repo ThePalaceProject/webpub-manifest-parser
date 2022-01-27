@@ -41,20 +41,20 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
         :param collection_roles_registry: Collections roles registry
         :type collection_roles_registry: python_rwpm_parser.registry.Registry
         """
-        super(RWPMSemanticAnalyzer, self).__init__(
+        super().__init__(
             media_types_registry, link_relations_registry, collection_roles_registry
         )
 
         self._logger = logging.getLogger(__name__)
 
-    @dispatch(Manifestlike)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(Manifestlike)
+    def visit(self, node):
         """Perform semantic analysis of the manifest node.
 
         :param node: Manifest's metadata
         :type node: RWPMManifest
         """
-        super(RWPMSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
         for link in node.reading_order.links:
             with self._record_errors():
@@ -71,56 +71,56 @@ class RWPMSemanticAnalyzer(SemanticAnalyzer):
                             node=link, node_property=Link.type
                         )
 
-    @dispatch(Metadata)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(Metadata)
+    def visit(self, node):
         """Perform semantic analysis of the manifest's metadata.
 
         :param node: Manifest's metadata
         :type node: Metadata
         """
-        super(RWPMSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
-    @dispatch(LinkList)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(LinkList)
+    def visit(self, node):
         """Perform semantic analysis of the list of links.
 
         :param node: Manifest's metadata
         :type node: LinkList
         """
-        super(RWPMSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
-    @dispatch(Link)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(Link)
+    def visit(self, node):
         """Perform semantic analysis of the link node.
 
         :param node: Link node
         :type node: Link
         """
-        super(RWPMSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
-    @dispatch(CollectionList)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(CollectionList)
+    def visit(self, node):
         """Perform semantic analysis of the list of sub-collections.
 
         :param node: CollectionList node
         :type node: CollectionList
         """
-        super(RWPMSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
-    @dispatch(CompactCollection)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(CompactCollection)
+    def visit(self, node):
         """Perform semantic analysis of the compact collection node.
 
         :param node: Collection node
         :type node: CompactCollection
         """
-        super(RWPMSemanticAnalyzer, self).visit(node)
+        super().visit(node)
 
-    @dispatch(Collection)  # noqa: F811
-    def visit(self, node):  # pylint: disable=E0102
+    @dispatch(Collection)
+    def visit(self, node):
         """Perform semantic analysis of the collection node.
 
         :param node: Collection node
         :type node: Collection
         """
-        super(RWPMSemanticAnalyzer, self).visit(node)
+        super().visit(node)

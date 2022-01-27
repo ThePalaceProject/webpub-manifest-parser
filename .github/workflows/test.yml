@@ -1,0 +1,37 @@
+name: Run Tests
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
+
+    # We want to run on external PRs, but not on our own internal PRs as they'll be run
+    # by the push to the branch. This prevents duplicated runs on internal PRs.
+    # Some discussion of this here:
+    # https://github.community/t/duplicate-checks-on-push-and-pull-request-simultaneous-event/18012
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Setup Poetry 🔧
+        uses: ThePalaceProject/circulation/.github/actions/poetry@main
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install tox tox-gh-actions
+
+      - name: Run Tests
+        run: tox
