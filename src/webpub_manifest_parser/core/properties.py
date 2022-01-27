@@ -78,9 +78,7 @@ class Property:
         if not isinstance(required, bool):
             raise ValueError("Argument 'required' must be boolean")
         if not isinstance(parser, ValueParser):
-            raise ValueError(
-                f"Argument 'parser' must be an instance of {ValueParser}"
-            )
+            raise ValueError(f"Argument 'parser' must be an instance of {ValueParser}")
 
         self._key = key
         self._required = required
@@ -138,10 +136,8 @@ class Property:
         :return: String representation
         :rtype: str
         """
-        return (
-            "<Property(key={}, required={}, parser={}, default_value={})>".format(
-                self.key, self.required, self.parser, self.default_value
-            )
+        return "<Property(key={}, required={}, parser={}, default_value={})>".format(
+            self.key, self.required, self.parser, self.default_value
         )
 
     @property
@@ -261,9 +257,7 @@ class ParsableProperty(Property, metaclass=ABCMeta):
         :param default_value: Property's default value
         :type default_value: Any
         """
-        super().__init__(
-            key, required, self.PARSER, default_value
-        )
+        super().__init__(key, required, self.PARSER, default_value)
 
 
 class IntegerProperty(Property):
@@ -387,9 +381,7 @@ class EnumProperty(Property):
         if not isinstance(items, list):
             raise ValueError(f"Argument 'items' must be an instance of {list}")
 
-        super().__init__(
-            key, required, EnumParser(items), default_value
-        )
+        super().__init__(key, required, EnumParser(items), default_value)
 
 
 class URIProperty(ParsableProperty):
@@ -452,9 +444,7 @@ class BaseArrayProperty(Property):
         :type default_value: Any
         """
         if not issubclass(list_type, list):
-            raise ValueError(
-                f"Argument 'list_type' must be a subclass of {list}"
-            )
+            raise ValueError(f"Argument 'list_type' must be a subclass of {list}")
 
         super().__init__(key, required, parser, default_value)
 
@@ -470,9 +460,7 @@ class BaseArrayProperty(Property):
         :type value: Any
         """
         if value is not None and not isinstance(value, self._list_type):
-            raise ValueError(
-                f"Value must be a subclass of {self._list_type} class"
-            )
+            raise ValueError(f"Value must be a subclass of {self._list_type} class")
 
         super().__set__(owner_instance, value)
 
@@ -637,6 +625,4 @@ class TypeProperty(Property):
         :param default_value: Property's default value
         :type default_value: Any
         """
-        super().__init__(
-            key, required, TypeParser(nested_type), default_value
-        )
+        super().__init__(key, required, TypeParser(nested_type), default_value)

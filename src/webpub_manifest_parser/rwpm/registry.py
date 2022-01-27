@@ -28,9 +28,7 @@ class RWPMCollectionRolesRegistry(Registry):
 
     def __init__(self):
         """Initialize a new instance of RWPMCollectionRolesRegistry class."""
-        super().__init__(
-            self.CORE_ROLES + self.EXTENSIONS
-        )
+        super().__init__(self.CORE_ROLES + self.EXTENSIONS)
 
 
 class RWPMLinkRelationsRegistry(LinkRelationsRegistry):

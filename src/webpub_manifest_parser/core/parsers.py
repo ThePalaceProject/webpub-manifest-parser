@@ -99,9 +99,7 @@ class AnyOfParser(ValueParser):
             try:
                 result = parser.parse(value)
 
-                self._logger.debug(
-                    f"Parser {parser} succeeded: {encode(result)}"
-                )
+                self._logger.debug(f"Parser {parser} succeeded: {encode(result)}")
 
                 return result
             except ValueParserError as error:
@@ -170,9 +168,7 @@ class NumericParser(ValueParser, metaclass=ABCMeta):
         if self._minimum is not None and value < self._minimum:
             raise ValueParserError(
                 value,
-                "Value {} is less than the minimum ({})".format(
-                    value, self._minimum
-                ),
+                "Value {} is less than the minimum ({})".format(value, self._minimum),
             )
         if self._exclusive_minimum is not None and value <= self._exclusive_minimum:
             raise ValueParserError(
@@ -263,9 +259,7 @@ class BooleanParser(ValueParser):
             if value == "true":
                 return True
 
-        raise ValueParserError(
-            value, f"Value '{encode(value)}' must be boolean"
-        )
+        raise ValueParserError(value, f"Value '{encode(value)}' must be boolean")
 
 
 class StringParser(ValueParser):
@@ -283,9 +277,7 @@ class StringParser(ValueParser):
         :raise: ValidationError
         """
         if not is_string(value):
-            raise ValueParserError(
-                value, f"Value '{encode(value)}' must be a string"
-            )
+            raise ValueParserError(value, f"Value '{encode(value)}' must be a string")
 
         return value
 
@@ -575,9 +567,7 @@ class ArrayParser(ValueParser):
         :raise: ValidationError
         """
         if not isinstance(value, list):
-            raise ValueParserError(
-                value, f"Value '{encode(value)}' must be a list"
-            )
+            raise ValueParserError(value, f"Value '{encode(value)}' must be a list")
 
         result = []
         seen = set()
@@ -586,9 +576,7 @@ class ArrayParser(ValueParser):
             item = self._item_parser.parse(item)
 
             if self._unique_items and item in seen:
-                raise ValueParserError(
-                    value, f"Item '{encode(item)}' is not unique"
-                )
+                raise ValueParserError(value, f"Item '{encode(item)}' is not unique")
 
             result.append(item)
             seen.add(item)
@@ -631,9 +619,7 @@ class ObjectParser(ValueParser):
 
         for key, item in list(value.items()):
             if not isinstance(key, str):
-                raise ValueParserError(
-                    value, f"Key '{encode(key)}' must be a string"
-                )
+                raise ValueParserError(value, f"Key '{encode(key)}' must be a string")
 
             if self._properties_regex and not self._properties_regex.match(key):
                 raise ValueParserError(
@@ -657,9 +643,7 @@ class LocalizableStringParser(ObjectParser):
 
     def __init__(self):
         """Initialize a new instance of LocalizableStringValidator class."""
-        super().__init__(
-            StringParser(), self.LANGUAGE_PATTERN
-        )
+        super().__init__(StringParser(), self.LANGUAGE_PATTERN)
 
 
 class TypeParser(ValueParser):

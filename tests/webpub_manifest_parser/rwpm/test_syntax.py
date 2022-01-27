@@ -28,7 +28,7 @@ RWPM_MANIFEST_WITHOUT_METADATA = """
     "links": [
         {"rel": "self", "href": "https://example.com/manifest.json", "type": "application/webpub+json"}
     ],
-    
+
     "readingOrder": [
         {"href": "https://example.com/c001.html", "type": "text/html", "title": "Chapter 1"}
     ]
@@ -44,11 +44,11 @@ RWPM_MANIFEST_WITH_MISSING_METADATA_TITLE_PROPERTY = """
         "language": "en",
         "modified": "2015-09-29T17:00:00Z"
     },
-    
+
     "links": [
         {"rel": "self", "href": "https://example.com/manifest.json", "type": "application/webpub+json"}
     ],
-    
+
     "readingOrder": [
         {"href": "https://example.com/c001.html", "type": "text/html", "title": "Chapter 1"}
     ]
@@ -109,7 +109,7 @@ RWPM_MANIFEST_WITHOUT_LINKS = """
         "language": "en",
         "modified": "2015-09-29T17:00:00Z"
     },
-    
+
     "readingOrder": [
         {"href": "https://example.com/c001.html", "type": "text/html", "title": "Chapter 1"}
     ]
@@ -132,7 +132,7 @@ RWPM_MANIFEST_WITH_MISSING_LINK_HREF_PROPERTY = """
     "links": [
         {"rel": "self", "type": "application/webpub+json"}
     ],
-    
+
     "readingOrder": [
         {"href": "https://example.com/c001.html", "type": "text/html", "title": "Chapter 1"}
     ]

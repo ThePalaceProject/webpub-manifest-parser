@@ -1,5 +1,3 @@
-
-
 class BaseError(Exception):
     """Base class for all errors."""
 

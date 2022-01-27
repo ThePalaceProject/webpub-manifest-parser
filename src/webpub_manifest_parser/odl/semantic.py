@@ -45,9 +45,7 @@ class ODLPublicationSemanticError(SemanticAnalyzerError):
         :type inner_exception: Optional[Exception]
         """
         if not isinstance(node, ODLPublication):
-            raise ValueError(
-                f"Argument 'node' must be an instance of {ODLPublication}"
-            )
+            raise ValueError(f"Argument 'node' must be an instance of {ODLPublication}")
 
         if node.metadata:
             if node.metadata.title:

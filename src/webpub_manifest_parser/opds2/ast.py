@@ -363,13 +363,9 @@ class OPDS2Publication(Collection):
                 )
             )
         if links and not isinstance(links, LinkList):
-            raise ValueError(
-                f"Argument 'links' must be an instance of {LinkList}"
-            )
+            raise ValueError(f"Argument 'links' must be an instance of {LinkList}")
         if images and not isinstance(images, LinkList):
-            raise ValueError(
-                f"Argument 'images' must be an instance of {LinkList}"
-            )
+            raise ValueError(f"Argument 'images' must be an instance of {LinkList}")
 
         self.metadata = metadata
         self.links = links
@@ -487,9 +483,7 @@ class OPDS2Feed(Manifestlike):
                 )
             )
         if links and not isinstance(links, LinkList):
-            raise ValueError(
-                f"Argument 'links' must be an instance of {LinkList}"
-            )
+            raise ValueError(f"Argument 'links' must be an instance of {LinkList}")
         if publications and not isinstance(publications, CollectionList):
             raise ValueError(
                 "Argument 'publications' must be an instance of {}".format(

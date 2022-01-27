@@ -1,5 +1,3 @@
-
-
 def first_or_default(collection, default=None):
     """Return first element of the specified collection or the default value if the collection is empty.
 
@@ -68,9 +66,7 @@ def cast(value, klass):
     :rtype: object
     """
     if not isinstance(value, klass):
-        raise ValueError(
-            f"Value must be a transitive instance of {klass} class"
-        )
+        raise ValueError(f"Value must be a transitive instance of {klass} class")
 
     value.__class__ = klass
 

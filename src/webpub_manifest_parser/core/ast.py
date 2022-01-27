@@ -334,9 +334,7 @@ class LinkList(Node, list):
 
         if items is not None:
             if not isinstance(items, list):
-                raise ValueError(
-                    f"Argument 'items' must be an instance of {list}"
-                )
+                raise ValueError(f"Argument 'items' must be an instance of {list}")
 
             self.extend(items)
 
@@ -383,9 +381,7 @@ class ArrayOfLinksProperty(BaseArrayProperty):
         :param required: Boolean value indicating whether the property is required or not
         :type required: bool
         """
-        super().__init__(
-            key, required, ArrayParser(TypeParser(Link), True), LinkList
-        )
+        super().__init__(key, required, ArrayParser(TypeParser(Link), True), LinkList)
 
 
 class Contributor(Node):
@@ -510,9 +506,7 @@ class ArrayOfContributorsProperty(BaseArrayProperty):
         :param required: Boolean value indicating whether the property is required or not
         :type required: bool
         """
-        super().__init__(
-            key, required, self.PARSER, list, []
-        )
+        super().__init__(key, required, self.PARSER, list, [])
 
 
 class Subject(Node, PropertiesGrouping):
@@ -540,10 +534,8 @@ class Subject(Node, PropertiesGrouping):
         :return: String representation
         :rtype: str
         """
-        return (
-            "<Subject(name={}, sort_as={}, code={}, scheme={}, links={})>".format(
-                self.name, self.sort_as, self.code, self.scheme, self.links
-            )
+        return "<Subject(name={}, sort_as={}, code={}, scheme={}, links={})>".format(
+            self.name, self.sort_as, self.code, self.scheme, self.links
         )
 
 
@@ -586,9 +578,7 @@ class ArrayOfSubjectsProperty(BaseArrayProperty):
         :param required: Boolean value indicating whether the property is required or not
         :type required: bool
         """
-        super().__init__(
-            key, required, self.PARSER, list, []
-        )
+        super().__init__(key, required, self.PARSER, list, [])
 
 
 class Owner(Node, PropertiesGrouping):
@@ -990,9 +980,7 @@ class CollectionList(Node, list):
 
         if items is not None:
             if not isinstance(items, list):
-                raise ValueError(
-                    f"Argument 'items' must be an instance of {list}"
-                )
+                raise ValueError(f"Argument 'items' must be an instance of {list}")
 
             self.extend(items)
 
@@ -1032,9 +1020,7 @@ class CompactCollectionProperty(Property):
         :type role: CollectionRole
         """
         if not isinstance(role, CollectionRole):
-            raise ValueError(
-                f"Argument 'role' must be an instance of {CollectionRole}"
-            )
+            raise ValueError(f"Argument 'role' must be an instance of {CollectionRole}")
         if not issubclass(collection_class, CompactCollection):
             raise ValueError(
                 "Argument 'collection_class' must be a subclass of {}".format(
@@ -1042,9 +1028,7 @@ class CompactCollectionProperty(Property):
                 )
             )
 
-        super().__init__(
-            key, required, TypeParser(collection_class)
-        )
+        super().__init__(key, required, TypeParser(collection_class))
 
         self._role = role
 
@@ -1074,14 +1058,10 @@ class ArrayOfCollectionsProperty(BaseArrayProperty):
         :type role: CollectionRole
         """
         if not isinstance(role, CollectionRole):
-            raise ValueError(
-                f"Argument 'role' must be an instance of {CollectionRole}"
-            )
+            raise ValueError(f"Argument 'role' must be an instance of {CollectionRole}")
         if not issubclass(collection_type, Collection):
             raise ValueError(
-                "Argument 'collection_type' must be a subclass of {}".format(
-                    Collection
-                )
+                "Argument 'collection_type' must be a subclass of {}".format(Collection)
             )
 
         super().__init__(

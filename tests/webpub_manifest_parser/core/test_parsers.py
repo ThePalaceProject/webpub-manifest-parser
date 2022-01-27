@@ -63,9 +63,7 @@ class NumberParserTest(ParserTest, TestCase):
         ]
     )
     def test(self, _, value, expected_result, expected_error_class=None):
-        super().test(
-            _, value, expected_result, expected_error_class
-        )
+        super().test(_, value, expected_result, expected_error_class)
 
 
 class URIParserTest(ParserTest, TestCase):
@@ -146,9 +144,7 @@ class DateParserTest(ParserTest, TestCase):
         ]
     )
     def test(self, _, value, expected_result, expected_error_class=None):
-        super().test(
-            _, value, expected_result, expected_error_class
-        )
+        super().test(_, value, expected_result, expected_error_class)
 
 
 class DateTimeParserTest(ParserTest, TestCase):
@@ -210,9 +206,7 @@ class DateTimeParserTest(ParserTest, TestCase):
         ]
     )
     def test(self, _, value, expected_result, expected_error_class=None):
-        super().test(
-            _, value, expected_result, expected_error_class
-        )
+        super().test(_, value, expected_result, expected_error_class)
 
 
 class FunctionsTest(TestCase):

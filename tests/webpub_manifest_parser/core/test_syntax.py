@@ -1,16 +1,10 @@
 import datetime
-from unittest import TestCase
 
 from dateutil.tz import tzutc
 from parameterized import parameterized
 
 from tests.webpub_manifest_parser.core.test_analyzer import AnalyzerTest
-from webpub_manifest_parser.core.ast import (
-    Manifestlike,
-    Metadata,
-    Node,
-    PresentationMetadata,
-)
+from webpub_manifest_parser.core.ast import Manifestlike, Metadata, PresentationMetadata
 from webpub_manifest_parser.core.syntax import (
     MissingPropertyError,
     SyntaxAnalyzer,

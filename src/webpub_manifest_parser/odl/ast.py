@@ -83,9 +83,7 @@ class ODLLicenseMetadata(Node):
             raise ValueError("Argument 'formats' must be a list")
         if created and not isinstance(created, datetime.datetime):
             raise ValueError(
-                "Argument 'created' must be an instance of {}".format(
-                    datetime.datetime
-                )
+                "Argument 'created' must be an instance of {}".format(datetime.datetime)
             )
 
         self.identifier = identifier

@@ -112,15 +112,11 @@ class SyntaxAnalyzer(BaseAnalyzer):
         if property_value is None:
             return property_value
 
-        self._logger.debug(
-            f"Started looking for nested property {object_property}"
-        )
+        self._logger.debug(f"Started looking for nested property {object_property}")
 
         type_parsers_result = find_parser(object_property.parser, TypeParser)
 
-        self._logger.debug(
-            f"Found the following type parsers: {type_parsers_result}"
-        )
+        self._logger.debug(f"Found the following type parsers: {type_parsers_result}")
 
         found = False
 
@@ -334,8 +330,6 @@ class SyntaxAnalyzer(BaseAnalyzer):
         manifest = self._create_manifest()
         manifest = self._parse_object(manifest_json, manifest.__class__)
 
-        self._logger.debug(
-            f"Finished analyzing {manifest_json}: {manifest}"
-        )
+        self._logger.debug(f"Finished analyzing {manifest_json}: {manifest}")
 
         return manifest

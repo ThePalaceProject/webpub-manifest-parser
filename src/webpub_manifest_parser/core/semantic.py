@@ -44,9 +44,7 @@ class SemanticAnalyzerError(BaseAnalyzerError):
         """
         message = self._format_message(node, node_property, message, inner_exception)
 
-        super().__init__(
-            node, node_property, message, inner_exception
-        )
+        super().__init__(node, node_property, message, inner_exception)
 
     def _format_message(
         self,
@@ -94,9 +92,7 @@ class ManifestSemanticError(SemanticAnalyzerError):
         :type inner_exception: Optional[Exception]
         """
         if not isinstance(node, Manifestlike):
-            raise ValueError(
-                f"Argument 'node' must be an instance of {Manifestlike}"
-            )
+            raise ValueError(f"Argument 'node' must be an instance of {Manifestlike}")
 
         if node.metadata:
             if node.metadata.title:
@@ -168,9 +164,7 @@ class CollectionWrongFormatError(SemanticAnalyzerError):
             collection.role.key, "compact" if collection.role.compact else "full"
         )
 
-        super().__init__(
-            collection, None, message, inner_exception
-        )
+        super().__init__(collection, None, message, inner_exception)
 
         self._collection = collection
 

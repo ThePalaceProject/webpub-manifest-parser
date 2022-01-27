@@ -171,6 +171,4 @@ class LinkRelationsRegistry(Registry):
         :param items: (Optional) collection of registry items. Note that all items have to be RegistryItem descendants
         :type items: List[RegistryItems]
         """
-        super().__init__(
-            self.CORE_LINK_RELATIONS if not items else items
-        )
+        super().__init__(self.CORE_LINK_RELATIONS if not items else items)
