@@ -29,7 +29,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          poetry install --no-root
           pip install tox tox-gh-actions
 
       - name: Run Tests
