@@ -142,7 +142,7 @@ pyparsing = ">=2.0.2,<3.0.5 || >3.0.5"
 
 [[package]]
 name = "parameterized"
-version = "0.7.5"
+version = "0.8.1"
 description = "Parameterized testing with any Python test framework"
 category = "dev"
 optional = false
@@ -393,7 +393,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4"
-content-hash = "2332d3b2aa5ac50c8c2a017308a87a5b12c83217694d2a058e8696a958f2b2df"
+content-hash = "46c0dca909b3ac0728b6bc3290d9eb4838e916680728e1761a110ee90ffd01c0"
 
 [metadata.files]
 atomicwrites = [
@@ -450,8 +450,8 @@ packaging = [
     {file = "packaging-21.3.tar.gz", hash = "sha256:dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb"},
 ]
 parameterized = [
-    {file = "parameterized-0.7.5-py2.py3-none-any.whl", hash = "sha256:b36f709fcfd9e8c144c1374b16a40fc0b5984efe93e41d53e6d228ae2a1540c5"},
-    {file = "parameterized-0.7.5.tar.gz", hash = "sha256:b5e6af67b9e49485e30125b1c8f031ffa81a265ca08bfa73f31551bf03cf68c4"},
+    {file = "parameterized-0.8.1-py2.py3-none-any.whl", hash = "sha256:9cbb0b69a03e8695d68b3399a8a5825200976536fe1cb79db60ed6a4c8c9efe9"},
+    {file = "parameterized-0.8.1.tar.gz", hash = "sha256:41bbff37d6186430f77f900d777e5bb6a24928a1c46fb1de692f8b52b8833b5c"},
 ]
 platformdirs = [
     {file = "platformdirs-2.4.0-py3-none-any.whl", hash = "sha256:8868bbe3c3c80d42f20156f22e7131d2fb321f5bc86a2a345375c6481a67021d"},
