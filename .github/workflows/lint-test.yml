@@ -24,7 +24,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Setup Poetry 🔧
-        uses: ./.github/actions/poetry
+        uses: ThePalaceProject/circulation/.github/actions/poetry@main
 
       - name: Install dependencies
         run: |
