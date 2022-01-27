@@ -57,6 +57,9 @@ jobs:
         with:
           python-version: 3.7
 
+      - name: Setup Poetry 🔧
+        uses: ThePalaceProject/circulation/.github/actions/poetry@main
+
       - name: Install dependencies
         run: |
           pip install --upgrade pip
