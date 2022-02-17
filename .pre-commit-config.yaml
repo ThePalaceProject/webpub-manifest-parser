@@ -16,6 +16,15 @@ repos:
       - id: check-added-large-files
       - id: mixed-line-ending
 
+  - repo: https://github.com/myint/autoflake
+    rev: v1.4
+    hooks:
+      - id: autoflake
+        args:
+          - --in-place
+          - --remove-all-unused-imports
+          - --ignore-init-module-imports
+
   - repo: https://github.com/psf/black
     rev: 21.12b0
     hooks:
@@ -28,15 +37,6 @@ repos:
       - id: isort
         name: Run isort
 
-  - repo: https://github.com/myint/autoflake
-    rev: v1.4
-    hooks:
-      - id: autoflake
-        args:
-          - --in-place
-          - --remove-all-unused-imports
-          - --ignore-init-module-imports
-
   - repo: https://github.com/sirosen/check-jsonschema
     rev: 0.9.0
     hooks:
@@ -47,7 +47,8 @@ repos:
     rev: v0.19.0
     hooks:
       - id: toml-sort
-        args: [-aiI]
+        args: [--all, --in-place, --ignore-case]
+        files: pyproject.toml
 
   - repo: https://github.com/jackdewinter/pymarkdown
     rev: v0.9.3
