@@ -117,7 +117,7 @@ python-versions = "*"
 
 [[package]]
 name = "jsonschema"
-version = "4.4.0"
+version = "4.5.0"
 description = "An implementation of JSON Schema validation for Python"
 category = "main"
 optional = false
@@ -465,8 +465,8 @@ iniconfig = [
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
 jsonschema = [
-    {file = "jsonschema-4.4.0-py3-none-any.whl", hash = "sha256:77281a1f71684953ee8b3d488371b162419767973789272434bbc3f29d9c8823"},
-    {file = "jsonschema-4.4.0.tar.gz", hash = "sha256:636694eb41b3535ed608fe04129f26542b59ed99808b4f688aa32dcf55317a83"},
+    {file = "jsonschema-4.5.0-py3-none-any.whl", hash = "sha256:71440faf604ccc4958f0a54fad16fa24e4977256f9666a21e8ad59a5447bd0b0"},
+    {file = "jsonschema-4.5.0.tar.gz", hash = "sha256:19462141d4efb2d8046cd4a7076126c5bdb1dd04f6fb9129b46b4b8f7b0de355"},
 ]
 multipledispatch = [
     {file = "multipledispatch-0.6.0-py2-none-any.whl", hash = "sha256:407e6d8c5fa27075968ba07c4db3ef5f02bea4e871e959570eeb69ee39a6565b"},
