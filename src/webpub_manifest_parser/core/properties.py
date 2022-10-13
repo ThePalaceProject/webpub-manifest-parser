@@ -555,6 +555,41 @@ class ArrayOfStringsProperty(BaseArrayProperty):
         )
 
 
+class ArrayOfURIsProperty(BaseArrayProperty):
+    """Property allowing either a URI string or array of URI strings as its values."""
+
+    def __init__(
+        self, key, required, unique_items=False, list_type=list, default_value=None
+    ):
+        """Initialize a new instance of ArrayOfURIsProperty class.
+
+        :param key: Property's key
+        :type key: str
+
+        :param required: Boolean value indicating whether the property is required or not
+        :type required: bool
+
+        :param unique_items: Boolean value indicating whether the array should contain unique items
+        :type unique_items: bool
+
+        :param list_type: Class of a collection used to hold the items
+        :type list_type: Type
+
+        :param default_value: Property's default value
+        :type default_value: Any
+        """
+        if not isinstance(unique_items, bool):
+            raise ValueError("Argument 'unique_items' must be boolean")
+
+        super().__init__(
+            key,
+            required,
+            AnyOfParser([ArrayParser(URIParser(), unique_items), URIParser()]),
+            list_type,
+            default_value,
+        )
+
+
 class ListOfLanguagesProperty(BaseArrayProperty):
     """Property allowing localizable strings.
 

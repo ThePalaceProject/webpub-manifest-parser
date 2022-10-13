@@ -16,6 +16,12 @@
         "title": "Moby-Dick",
         "author": "Herman Melville",
         "identifier": "urn:isbn:978-3-16-148410-0",
+        "schema:isbn": [
+          "978-3-16-148410-0"
+        ],
+        "schema:identifier": [
+          "urn:isbn:978-3-16-148410-0"
+        ],
         "language": "en",
         "published": "2015-09-29T00:00:00Z",
         "modified": "2015-09-29T17:00:00Z",
