@@ -16,6 +16,13 @@ repos:
       - id: check-added-large-files
       - id: mixed-line-ending
 
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.3.1
+    hooks:
+      - id: pyupgrade
+        args:
+          - --py38-plus
+
   - repo: https://github.com/myint/autoflake
     rev: v2.0.0
     hooks:
@@ -26,19 +33,19 @@ repos:
           - --ignore-init-module-imports
 
   - repo: https://github.com/psf/black
-    rev: 22.12.0
+    rev: 22.10.0
     hooks:
       - id: black
         name: Run black
 
   - repo: https://github.com/PyCQA/isort
-    rev: 5.11.4
+    rev: 5.10.1
     hooks:
       - id: isort
         name: Run isort
 
   - repo: https://github.com/sirosen/check-jsonschema
-    rev: 0.20.0
+    rev: 0.19.2
     hooks:
       - id: check-github-workflows
       - id: check-github-actions
@@ -47,11 +54,14 @@ repos:
     rev: v0.22.1
     hooks:
       - id: toml-sort
-        args: [--all, --in-place, --ignore-case]
+        args: []
         files: pyproject.toml
 
   - repo: https://github.com/jackdewinter/pymarkdown
     rev: v0.9.8
     hooks:
       - id: pymarkdown
-        args: [--disable-version, -c, .pymarkdown.config.json, scan]
+        args:
+          - --config
+          - .pymarkdown.config.json
+          - scan
