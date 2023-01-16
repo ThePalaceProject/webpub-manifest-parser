@@ -168,7 +168,7 @@ class NumericParser(ValueParser, metaclass=ABCMeta):
         if self._minimum is not None and value < self._minimum:
             raise ValueParserError(
                 value,
-                "Value {} is less than the minimum ({})".format(value, self._minimum),
+                f"Value {value} is less than the minimum ({self._minimum})",
             )
         if self._exclusive_minimum is not None and value <= self._exclusive_minimum:
             raise ValueParserError(

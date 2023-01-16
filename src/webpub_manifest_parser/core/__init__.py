@@ -80,7 +80,7 @@ class ManifestParser:
         :return: Parser result
         :rtype: ManifestParserResult
         """
-        with open(input_file_path, "r", encoding=encoding) as input_file:
+        with open(input_file_path, encoding=encoding) as input_file:
             manifest_json = self.get_manifest_json(input_file)
 
             return self._parse(manifest_json)
