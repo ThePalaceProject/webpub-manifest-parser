@@ -5,7 +5,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
-![Python: 3.7,3.8,3.9,3.10](https://img.shields.io/badge/Python-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10-blue)
+![Python: 3.8,3.9,3.10,3.11](https://img.shields.io/badge/Python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue)
 
 A parser for the
 [Readium Web Publication Manifest (RWPM)](https://github.com/readium/webpub-manifest),
@@ -68,10 +68,10 @@ You can optionally install the python version to run the library with using pyen
     tox -e <python-version>
     ```
     where `<python-version>` is one of supported python versions:
-   - py37
    - py38
    - py39
    - py310
+   - py311
 
     For example, to run the unit test using Python 3.9 run the following command:
     ```bash

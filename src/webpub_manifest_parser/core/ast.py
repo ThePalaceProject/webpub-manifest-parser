@@ -1061,7 +1061,7 @@ class ArrayOfCollectionsProperty(BaseArrayProperty):
             raise ValueError(f"Argument 'role' must be an instance of {CollectionRole}")
         if not issubclass(collection_type, Collection):
             raise ValueError(
-                "Argument 'collection_type' must be a subclass of {}".format(Collection)
+                f"Argument 'collection_type' must be a subclass of {Collection}"
             )
 
         super().__init__(
