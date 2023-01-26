@@ -280,7 +280,8 @@ class SyntaxAnalyzer(BaseAnalyzer):
                 property_value = object_property.parser.parse(property_value)
             except ValueParserError as error:
                 # First, fallback to the default value for the property, then re-raise
-                setattr(ast_object, object_property_name, object_property.default_value)        
+                property_value = self._format_property_value(object_property.default_value, object_property)
+                setattr(ast_object, object_property_name, property_value)
                 raise SyntaxAnalyzerError(
                     ast_object, object_property, error.error_message, error
                 )
