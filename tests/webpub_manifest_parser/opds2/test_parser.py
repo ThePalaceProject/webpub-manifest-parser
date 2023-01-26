@@ -216,6 +216,6 @@ class OPDS2ParserTest(TestCase):
             feed = json.load(fp)
         feed["publications"][0]["metadata"]["language"] = "en uk"
         feed["publications"] = [feed["publications"][0]]
-        
+
         result = parser.parse_json(feed)
         assert [] == result.root.publications[0].metadata.languages
