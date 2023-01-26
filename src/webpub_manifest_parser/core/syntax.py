@@ -279,6 +279,9 @@ class SyntaxAnalyzer(BaseAnalyzer):
             try:
                 property_value = object_property.parser.parse(property_value)
             except ValueParserError as error:
+                self._logger.error(
+                    f"Error while parsing {property_value} for {object_property.key}, falling back to default"
+                )
                 # First, fallback to the default value for the property, then re-raise
                 property_value = self._format_property_value(
                     object_property.default_value, object_property

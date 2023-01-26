@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from abc import ABCMeta, abstractmethod
+from typing import TypeVar
 
 from webpub_manifest_parser.core.parsers import (
     AnyOfParser,
@@ -27,6 +30,13 @@ from webpub_manifest_parser.core.properties import (
 )
 from webpub_manifest_parser.core.registry import CollectionRole
 from webpub_manifest_parser.utils import encode
+
+T = TypeVar("T")
+
+
+def _safe_tuple(value: list[T] | T) -> tuple[T] | T:
+    """Convert a value to a tuple if it is a list only"""
+    return tuple(value) if isinstance(value, list) else value
 
 
 class Visitor(metaclass=ABCMeta):
@@ -269,17 +279,15 @@ class Link(Node):
                 self.templated,
                 self.type,
                 self.title,
-                tuple(self.rels),
+                _safe_tuple(self.rels),
                 self.properties,
                 self.height,
                 self.width,
                 self.duration,
                 self.bitrate,
-                tuple(self.languages)
-                if isinstance(self.languages, list)
-                else self.languages,
-                tuple(self.alternates),
-                tuple(self.children),
+                _safe_tuple(self.languages),
+                _safe_tuple(self.alternates),
+                _safe_tuple(self.children),
             )
         )
 
@@ -525,7 +533,7 @@ class Subject(Node, PropertiesGrouping):
         :rtype: int
         """
         return hash(
-            (self.name, self.sort_as, self.code, self.scheme, tuple(self.links))
+            (self.name, self.sort_as, self.code, self.scheme, _safe_tuple(self.links))
         )
 
     def __repr__(self):
@@ -593,7 +601,7 @@ class Owner(Node, PropertiesGrouping):
         :return: Hash
         :rtype: int
         """
-        return hash((tuple(self.collection), tuple(self.series)))
+        return hash((_safe_tuple(self.collection), _safe_tuple(self.series)))
 
     def __repr__(self):
         """Return a string representation of the object.
@@ -756,22 +764,22 @@ class Metadata(Node):
                 self.subtitle,
                 self.modified,
                 self.published,
-                tuple(self.languages),
+                _safe_tuple(self.languages),
                 self.sort_as,
-                tuple(self.authors),
-                tuple(self.translators),
-                tuple(self.editors),
-                tuple(self.artists),
-                tuple(self.illustrators),
-                tuple(self.letterers),
-                tuple(self.pencilers),
-                tuple(self.colorists),
-                tuple(self.inkers),
-                tuple(self.narrators),
-                tuple(self.contributors),
-                tuple(self.publishers),
-                tuple(self.imprints),
-                tuple(self.subjects),
+                _safe_tuple(self.authors),
+                _safe_tuple(self.translators),
+                _safe_tuple(self.editors),
+                _safe_tuple(self.artists),
+                _safe_tuple(self.illustrators),
+                _safe_tuple(self.letterers),
+                _safe_tuple(self.pencilers),
+                _safe_tuple(self.colorists),
+                _safe_tuple(self.inkers),
+                _safe_tuple(self.narrators),
+                _safe_tuple(self.contributors),
+                _safe_tuple(self.publishers),
+                _safe_tuple(self.imprints),
+                _safe_tuple(self.subjects),
                 self.description,
                 self.duration,
                 self.number_of_pages,
