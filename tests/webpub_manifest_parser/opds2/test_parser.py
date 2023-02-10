@@ -1,4 +1,5 @@
 import datetime
+import json
 import os
 from unittest import TestCase
 
@@ -203,3 +204,18 @@ class OPDS2ParserTest(TestCase):
         self.assertEqual(
             "application/epub+zip", indirect_acquisition_object.child[0].type
         )
+
+    def test_incorrect_language_fallback(self):
+        """Whenever an incorrectly formatted language code is encountered
+        the languages property should fallback to the default `[]`
+        and not be set to the unsupported NoneType value
+        """
+        parser_factory = OPDS2FeedParserFactory()
+        parser = parser_factory.create()
+        with open("tests/files/opds2/feed.json") as fp:
+            feed = json.load(fp)
+        feed["publications"][0]["metadata"]["language"] = "en uk"
+        feed["publications"] = [feed["publications"][0]]
+
+        result = parser.parse_json(feed)
+        assert [] == result.root.publications[0].metadata.languages
