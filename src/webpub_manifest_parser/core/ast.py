@@ -11,6 +11,7 @@ from webpub_manifest_parser.core.parsers import (
 )
 from webpub_manifest_parser.core.properties import (
     ArrayOfStringsProperty,
+    ArrayOfURIsProperty,
     ArrayProperty,
     BaseArrayProperty,
     BooleanProperty,
@@ -651,6 +652,9 @@ class Metadata(Node):
         "numberOfPages", required=False, exclusive_minimum=0
     )
     belongs_to = TypeProperty("belongsTo", required=False, nested_type=Owner)
+    isbns = ArrayOfStringsProperty("schema:isbn", required=False)
+    issns = ArrayOfStringsProperty("schema:issn", required=False)
+    reference_identifiers = ArrayOfURIsProperty("schema:identifier", required=False)
 
     def __init__(
         self,
@@ -679,6 +683,9 @@ class Metadata(Node):
         duration=None,
         number_of_pages=None,
         belongs_to=None,
+        isbns=None,
+        issns=None,
+        reference_identifiers=None,
     ):
         """Initialize a new instance of Metadata class."""
         super().__init__()
@@ -708,6 +715,9 @@ class Metadata(Node):
         self.duration = duration
         self.number_of_pages = number_of_pages
         self.belongs_to = belongs_to
+        self.isbns = isbns
+        self.issns = issns
+        self.reference_identifiers = reference_identifiers
 
     def __eq__(self, other):
         """Compare two Metadata objects.
@@ -748,6 +758,9 @@ class Metadata(Node):
             and self.duration == other.duration
             and self.number_of_pages == other.number_of_pages
             and self.belongs_to == other.belongs_to
+            and self.isbns == other.isbns
+            and self.issns == other.issns
+            and self.reference_identifiers == other.reference_identifiers
         )
 
     def __hash__(self):
@@ -784,6 +797,9 @@ class Metadata(Node):
                 self.duration,
                 self.number_of_pages,
                 self.belongs_to,
+                tuple(self.isbns),
+                tuple(self.issns),
+                tuple(self.reference_identifiers),
             )
         )
 

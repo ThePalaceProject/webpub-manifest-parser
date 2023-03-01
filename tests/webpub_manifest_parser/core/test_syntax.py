@@ -43,6 +43,9 @@ class TestSyntaxAnalyzerTest(AnalyzerTest):
                         publishers=[],
                         imprints=[],
                         subjects=[],
+                        isbns=[],
+                        issns=[],
+                        reference_identifiers=[],
                     )
                 ),
                 [
@@ -74,6 +77,9 @@ class TestSyntaxAnalyzerTest(AnalyzerTest):
                         publishers=[],
                         imprints=[],
                         subjects=[],
+                        isbns=[],
+                        issns=[],
+                        reference_identifiers=[],
                     )
                 ),
                 [
@@ -118,6 +124,9 @@ class TestSyntaxAnalyzerTest(AnalyzerTest):
                         publishers=[],
                         imprints=[],
                         subjects=[],
+                        isbns=[],
+                        issns=[],
+                        reference_identifiers=[],
                     )
                 ),
                 [

@@ -68,6 +68,10 @@ class OPDS2ParserTest(TestCase):
             publication.metadata.authors,
         )
         self.assertEqual("urn:isbn:978-3-16-148410-0", publication.metadata.identifier)
+        self.assertEqual(
+            ["urn:isbn:978-3-16-148410-0"], publication.metadata.reference_identifiers
+        )
+        self.assertEqual(["978-3-16-148410-0"], publication.metadata.isbns)
         self.assertEqual(["en"], publication.metadata.languages)
         self.assertEqual(
             datetime.datetime(2015, 9, 29, 17, 0, tzinfo=tzutc()),
