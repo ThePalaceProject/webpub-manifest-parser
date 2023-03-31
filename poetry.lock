@@ -448,14 +448,14 @@ files = [
 
 [[package]]
 name = "pyfakefs"
-version = "4.5.6"
+version = "5.2.0"
 description = "pyfakefs implements a fake file system that mocks the Python file system modules."
 category = "dev"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "pyfakefs-4.5.6-py3-none-any.whl", hash = "sha256:6bb4e27457b0bc90e3ebfe5aed4f1b8c32a18713ba44e925f304bb9b9816a03c"},
-    {file = "pyfakefs-4.5.6.tar.gz", hash = "sha256:914d7bf994406cfbefee0b4d45918f60c15b406afe93f8194a804da5a450a822"},
+    {file = "pyfakefs-5.2.0-py3-none-any.whl", hash = "sha256:cf465f90c9657018e381668b6fae38e034417d937ef596968ff8b2550ad158d7"},
+    {file = "pyfakefs-5.2.0.tar.gz", hash = "sha256:db570ae847f0abd44b5b67ab379f0b111e6bdcd35486eeece0ea2439c9e30766"},
 ]
 
 [[package]]
@@ -853,4 +853,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4"
-content-hash = "6c37847ff4b9be44282b237c2a88b577d2a21ca5e15e463d91bb39a02fe67e32"
+content-hash = "ff902b40a7ae5d274333ffcd8d2cf7db77754da5684d91a752469dbeaaf413fc"
