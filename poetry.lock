@@ -189,14 +189,14 @@ tls = ["cryptography (>=1.3.4)", "idna (>=2.0.0)", "pyOpenSSL (>=17.5.0)"]
 
 [[package]]
 name = "dunamai"
-version = "1.8.0"
+version = "1.17.0"
 description = "Dynamic version generation"
 category = "dev"
 optional = false
 python-versions = ">=3.5,<4.0"
 files = [
-    {file = "dunamai-1.8.0-py3-none-any.whl", hash = "sha256:846855e45d5969f6d11835d486bbf4d6ca175d4169a0ab11f619a5135cc86bdf"},
-    {file = "dunamai-1.8.0.tar.gz", hash = "sha256:ff1f958af3575ec612e72c84bf96367469f418d31b9685f8311a5de2eb754a85"},
+    {file = "dunamai-1.17.0-py3-none-any.whl", hash = "sha256:5aa4ac1085de10691269af021b10497261a5dd644f277e2a21822212604d877b"},
+    {file = "dunamai-1.17.0.tar.gz", hash = "sha256:459381b585a1e78e4070f0d38a6afb4d67de2ee95064bf6b0438ec620dde0820"},
 ]
 
 [package.dependencies]
@@ -853,4 +853,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4"
-content-hash = "6c37847ff4b9be44282b237c2a88b577d2a21ca5e15e463d91bb39a02fe67e32"
+content-hash = "bb89a315f385e342c8e10b07f91d9a3045dd0bb0d99c658ecbbf24da3421b948"
