@@ -29,27 +29,27 @@ repository = "https://github.com/ThePalaceProject/webpub-manifest-parser"
 version = "0"  # This version number is automatically set by github actions when releasing
 
 [tool.poetry.dependencies]
-jsonschema = "^4.19.1"
-multipledispatch = "^0.6.0"
-pyrsistent = "^0.19.3"
+jsonschema = "^4.19"
+multipledispatch = "^0.6"
+pyrsistent = "^0.19"
 python = ">=3.8,<4"
-python-dateutil = "^2.8.2"
+python-dateutil = "^2.8"
 pytz = "^2022.7"
-requests = "^2.27.1"
-rfc3987 = "^1.3.8"
-uritemplate = "^4.1.1"
+requests = "^2.27"
+rfc3987 = "^1.3"
+uritemplate = "^4.1"
 
 [tool.poetry.group.ci.dependencies]
-dunamai = "^1.19.0"
-pre-commit = "^3.4.0"
+dunamai = "^1.19"
+pre-commit = "^3.4"
 tox = "^4.4"
 tox-docker = "^4.1"
 tox-gh-actions = "^3.0"
 
 [tool.poetry.group.dev.dependencies]
-parameterized = "^0.8.1"
-pyfakefs = "^5.2.2"
-pytest = "^7.1.1"
+parameterized = "^0.9"
+pyfakefs = "^5.2"
+pytest = "^7.1"
 
 [tool.tomlsort]
 ignore_case = true
