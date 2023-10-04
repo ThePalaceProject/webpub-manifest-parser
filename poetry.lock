@@ -339,18 +339,14 @@ referencing = ">=0.28.0"
 
 [[package]]
 name = "multipledispatch"
-version = "0.6.0"
+version = "1.0.0"
 description = "Multiple dispatch"
 optional = false
 python-versions = "*"
 files = [
-    {file = "multipledispatch-0.6.0-py2-none-any.whl", hash = "sha256:407e6d8c5fa27075968ba07c4db3ef5f02bea4e871e959570eeb69ee39a6565b"},
-    {file = "multipledispatch-0.6.0-py3-none-any.whl", hash = "sha256:a55c512128fb3f7c2efd2533f2550accb93c35f1045242ef74645fc92a2c3cba"},
-    {file = "multipledispatch-0.6.0.tar.gz", hash = "sha256:a7ab1451fd0bf9b92cab3edbd7b205622fb767aeefb4fb536c2e3de9e0a38bea"},
+    {file = "multipledispatch-1.0.0-py3-none-any.whl", hash = "sha256:0c53cd8b077546da4e48869f49b13164bebafd0c2a5afceb6bb6a316e7fb46e4"},
+    {file = "multipledispatch-1.0.0.tar.gz", hash = "sha256:5c839915465c68206c3e9c473357908216c28383b425361e5d144594bf85a7e0"},
 ]
-
-[package.dependencies]
-six = "*"
 
 [[package]]
 name = "nodeenv"
@@ -977,4 +973,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4"
-content-hash = "6e655345dcebba206ad37593caab0c5894aff30b88a878e1a88e5502b1a55690"
+content-hash = "c9b3acda56a4f7805ae9de24eba61e73c8ccfff80ce1ed95f45fb2f2443ab99f"
