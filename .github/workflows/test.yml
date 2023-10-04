@@ -28,7 +28,7 @@ jobs:
       - name: Setup Poetry 🔧
         uses: ThePalaceProject/circulation/.github/actions/poetry@main
         with:
-          version: "1.3.2"
+          version: "1.6.1"
 
       - name: Install dependencies
         run: |
