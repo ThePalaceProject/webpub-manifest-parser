@@ -48,7 +48,7 @@ tox-gh-actions = "^2.10.0"
 
 [tool.poetry.group.dev.dependencies]
 parameterized = "^0.8.1"
-pyfakefs = "5.2.2"
+pyfakefs = "^5.2.2"
 pytest = "^7.1.1"
 
 [tool.tomlsort]
