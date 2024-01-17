@@ -187,6 +187,38 @@ class ODLSemanticAnalyzerTest(AnalyzerTest):
                 ],
             ),
             (
+                "when_publication_does_not_contain_licenses_and_has_a_oa_link",
+                ODLFeed(
+                    metadata=OPDS2FeedMetadata(title="test"),
+                    links=LinkList(
+                        [
+                            Link(
+                                href="http://example.com",
+                                rels=[LinkRelationsRegistry.SELF.key],
+                            )
+                        ]
+                    ),
+                    publications=CollectionList(
+                        [
+                            ODLPublication(
+                                metadata=PresentationMetadata(title="Publication 1"),
+                                links=LinkList(
+                                    [
+                                        Link(
+                                            href="http://example.com",
+                                            rels=[
+                                                OPDS2LinkRelationsRegistry.OPEN_ACCESS.key
+                                            ],
+                                        )
+                                    ]
+                                ),
+                            )
+                        ]
+                    ),
+                ),
+                [],
+            ),
+            (
                 "when_license_does_not_contain_self_link_and_borrow_link",
                 ODLFeed(
                     metadata=OPDS2FeedMetadata(title="test"),
