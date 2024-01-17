@@ -196,7 +196,7 @@ class ODLSemanticAnalyzer(SemanticAnalyzer):
         self._logger.debug(f"Started processing {encode(node)}")
 
         if (not node.licenses or len(node.licenses) == 0) and (
-            (not node.licenses or len(node.links) == 0)
+            (not node.links or len(node.links) == 0)
             or not node.links.get_by_rel(OPDS2LinkRelationsRegistry.OPEN_ACCESS.key)
         ):
             with self._record_errors():
