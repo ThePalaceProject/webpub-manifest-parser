@@ -127,7 +127,7 @@ class ODLSemanticAnalyzerTest(AnalyzerTest):
                 ],
             ),
             (
-                "when_publication_does_not_contain_licenses_and_has_a_oa_link",
+                "when_publication_does_not_contain_neither_licenses_nor_oa_link",
                 ODLFeed(
                     metadata=OPDS2FeedMetadata(title="test"),
                     links=LinkList(
@@ -187,7 +187,7 @@ class ODLSemanticAnalyzerTest(AnalyzerTest):
                 ],
             ),
             (
-                "when_publication_does_not_contain_neither_licenses_nor_oa_link",
+                "when_publication_does_not_contain_licenses_and_has_a_oa_link",
                 ODLFeed(
                     metadata=OPDS2FeedMetadata(title="test"),
                     links=LinkList(
