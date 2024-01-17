@@ -31,7 +31,7 @@ version = "0"  # This version number is automatically set by github actions when
 [tool.poetry.dependencies]
 jsonschema = "^4.19"
 multipledispatch = "^1.0"
-pyrsistent = "^0.19"
+pyrsistent = "^0.20"
 python = ">=3.8,<4"
 python-dateutil = "^2.8"
 pytz = "^2023.3"
