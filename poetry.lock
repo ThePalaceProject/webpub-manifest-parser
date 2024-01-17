@@ -448,13 +448,13 @@ virtualenv = ">=20.10.0"
 
 [[package]]
 name = "pyfakefs"
-version = "5.2.4"
+version = "5.3.2"
 description = "pyfakefs implements a fake file system that mocks the Python file system modules."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "pyfakefs-5.2.4-py3-none-any.whl", hash = "sha256:8eb95f1dd1c4b8bdce30448fe169875e3a4451c32d3f9c37799157bd4eb7b789"},
-    {file = "pyfakefs-5.2.4.tar.gz", hash = "sha256:3e040f3792086086a0dc2191b05fe709438e168aafe2e94fcdbef8e3859208d8"},
+    {file = "pyfakefs-5.3.2-py3-none-any.whl", hash = "sha256:5a62194cfa24542a3c9080b66ce65d78b2e977957edfd3cd6fe98e8349bcca32"},
+    {file = "pyfakefs-5.3.2.tar.gz", hash = "sha256:a83776a3c1046d4d103f2f530029aa6cdff5f0386dffd59c15ee16926135493c"},
 ]
 
 [[package]]
