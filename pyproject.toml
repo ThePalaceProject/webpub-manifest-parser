@@ -49,7 +49,7 @@ tox-gh-actions = "^3.0"
 [tool.poetry.group.dev.dependencies]
 parameterized = "^0.9"
 pyfakefs = "^5.2"
-pytest = "^7.1"
+pytest = "^8.0"
 
 [tool.tomlsort]
 ignore_case = true
