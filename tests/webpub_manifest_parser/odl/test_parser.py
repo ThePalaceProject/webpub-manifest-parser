@@ -2,11 +2,16 @@ import datetime
 import os
 from unittest import TestCase
 
-from dateutil.tz import tzoffset
+from dateutil.tz import tzoffset, tzutc
 
 from webpub_manifest_parser.core import ManifestParserResult
 from webpub_manifest_parser.odl import ODLFeedParserFactory
-from webpub_manifest_parser.opds2.ast import OPDS2FeedMetadata
+from webpub_manifest_parser.odl.ast import ODLPublicationMetadata
+from webpub_manifest_parser.opds2.ast import (
+    OPDS2AvailabilityInformation,
+    OPDS2AvailabilityType,
+    OPDS2FeedMetadata,
+)
 from webpub_manifest_parser.opds2.registry import OPDS2LinkRelationsRegistry
 from webpub_manifest_parser.utils import first_or_default
 
@@ -33,6 +38,15 @@ class ODLParserTest(TestCase):
 
         self.assertEqual(1, len(feed.publications))
         [publication] = feed.publications
+
+        self.assertIsInstance(publication.metadata, ODLPublicationMetadata)
+        self.assertIsInstance(
+            publication.metadata.availability, OPDS2AvailabilityInformation
+        )
+        self.assertEqual(
+            OPDS2AvailabilityType.AVAILABLE.value,
+            publication.metadata.availability.state,
+        )
 
         self.assertEqual(1, len(publication.licenses))
         [license] = publication.licenses
@@ -69,6 +83,21 @@ class ODLParserTest(TestCase):
         self.assertEqual(False, license.metadata.protection.copy_allowed)
         self.assertEqual(False, license.metadata.protection.print_allowed)
         self.assertEqual(False, license.metadata.protection.tts_allowed)
+
+        self.assertIsInstance(
+            license.metadata.availability, OPDS2AvailabilityInformation
+        )
+        self.assertEqual(
+            OPDS2AvailabilityType.UNAVAILABLE.value, license.metadata.availability.state
+        )
+        self.assertEqual(
+            datetime.datetime(2000, 5, 4, 3, 2, 1, tzinfo=tzutc()),
+            license.metadata.availability.until,
+        )
+        self.assertEqual("a detailed reason", license.metadata.availability.detail)
+        self.assertEqual(
+            "http://terms.example.org/unavailable", license.metadata.availability.reason
+        )
 
         self.assertEqual(2, len(license.links))
         borrow_link = first_or_default(

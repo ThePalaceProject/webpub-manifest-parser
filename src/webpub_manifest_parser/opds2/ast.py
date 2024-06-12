@@ -276,6 +276,8 @@ class OPDS2AvailabilityInformation(Node):
     )
     since = DateOrTimeProperty("since", required=False)
     until = DateOrTimeProperty("until", required=False)
+    reason = URIProperty("reason", required=False)
+    detail = StringProperty("detail", required=False)
 
 
 class OPDS2LinkProperties(LinkProperties):

@@ -15,6 +15,7 @@ from webpub_manifest_parser.core.ast import (
 from webpub_manifest_parser.opds2 import OPDS2FeedParserFactory
 from webpub_manifest_parser.opds2.ast import (
     OPDS2AcquisitionObject,
+    OPDS2AvailabilityInformation,
     OPDS2AvailabilityType,
     OPDS2Feed,
     OPDS2FeedMetadata,
@@ -178,9 +179,15 @@ class OPDS2ParserTest(TestCase):
         link_properties = publication_acquisition_link.properties
         self.assertIsInstance(link_properties, OPDS2LinkProperties)
 
+        availability = link_properties.availability
+        self.assertIsInstance(availability, OPDS2AvailabilityInformation)
+        self.assertEqual(OPDS2AvailabilityType.AVAILABLE.value, availability.state)
         self.assertEqual(
-            OPDS2AvailabilityType.AVAILABLE.value, link_properties.availability.state
+            datetime.datetime(2019, 9, 29, 1, 3, 2, tzinfo=tzutc()),
+            availability.until,
         )
+        self.assertEqual("a detailed reason", availability.detail)
+        self.assertEqual("http://terms.example.org/available", availability.reason)
 
         self.assertEqual(2, len(link_properties.indirect_acquisition))
 

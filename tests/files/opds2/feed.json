@@ -97,7 +97,10 @@
           "href": "http://montreal.pretnumerique.ca/v1/media/EDEN656014-9782404012711-epub/loans_activation.opds2?_resource_id=5f775a8c2357946dbe59f911",
           "properties": {
             "availability": {
-              "state": "available"
+              "state": "available",
+              "until": "2019-09-29T01:03:02Z",
+              "detail": "a detailed reason",
+              "reason": "http://terms.example.org/available"
             },
             "indirectAcquisition": [
               {

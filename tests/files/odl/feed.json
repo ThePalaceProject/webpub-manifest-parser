@@ -29,7 +29,10 @@
             "name": "Juvenile Fiction",
             "links": []
           }
-        ]
+        ],
+        "availability": {
+          "state": "available"
+        }
       },
       "links": [
         {
@@ -81,6 +84,12 @@
               "copy": false,
               "print": false,
               "tts": false
+            },
+            "availability": {
+              "state": "unavailable",
+              "until": "2000-05-04T03:02:01Z",
+              "detail": "a detailed reason",
+              "reason": "http://terms.example.org/unavailable"
             }
           },
           "links": [
