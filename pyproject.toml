@@ -43,7 +43,7 @@ uritemplate = "^4.1"
 dunamai = "^1.19"
 pre-commit = "^3.4"
 tox = "^4.4"
-tox-docker = "^4.1"
+tox-docker = "^5.0"
 tox-gh-actions = "^3.0"
 
 [tool.poetry.group.dev.dependencies]
