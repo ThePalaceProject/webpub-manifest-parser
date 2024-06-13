@@ -6,11 +6,11 @@ from dateutil.tz import tzoffset, tzutc
 
 from webpub_manifest_parser.core import ManifestParserResult
 from webpub_manifest_parser.odl import ODLFeedParserFactory
-from webpub_manifest_parser.odl.ast import ODLPublicationMetadata
 from webpub_manifest_parser.opds2.ast import (
     OPDS2AvailabilityInformation,
     OPDS2AvailabilityType,
     OPDS2FeedMetadata,
+    OPDS2PublicationMetadata,
 )
 from webpub_manifest_parser.opds2.registry import OPDS2LinkRelationsRegistry
 from webpub_manifest_parser.utils import first_or_default
@@ -39,7 +39,7 @@ class ODLParserTest(TestCase):
         self.assertEqual(1, len(feed.publications))
         [publication] = feed.publications
 
-        self.assertIsInstance(publication.metadata, ODLPublicationMetadata)
+        self.assertIsInstance(publication.metadata, OPDS2PublicationMetadata)
         self.assertIsInstance(
             publication.metadata.availability, OPDS2AvailabilityInformation
         )

@@ -23,6 +23,13 @@
           "urn:isbn:978-3-16-148410-0"
         ],
         "language": "en",
+        "availability": {
+          "state": "unavailable",
+          "reason": "https://example.com/subscription/removal",
+          "detail": "This publication is no longer available in your subscription",
+          "since": "2019-09-29T01:03:02Z"
+        },
+        "http://palaceproject.io/terms/timeTracking": true,
         "published": "2015-09-29T00:00:00Z",
         "modified": "2015-09-29T17:00:00Z",
         "subject": [

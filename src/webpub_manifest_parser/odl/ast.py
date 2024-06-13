@@ -6,7 +6,6 @@ from webpub_manifest_parser.core.ast import (
     Collection,
     CollectionList,
     Node,
-    PresentationMetadata,
 )
 from webpub_manifest_parser.core.properties import (
     ArrayOfStringsProperty,
@@ -114,18 +113,9 @@ class ODLLicense(Collection):
         return hash((self.metadata, self.links))
 
 
-class ODLPublicationMetadata(PresentationMetadata):
-    availability = TypeProperty(
-        "availability", required=False, nested_type=OPDS2AvailabilityInformation
-    )
-
-
 class ODLPublication(OPDS2Publication):
     """ODL publication."""
 
-    metadata = TypeProperty(
-        key="metadata", required=True, nested_type=ODLPublicationMetadata
-    )
     links = ArrayOfLinksProperty(key="links", required=False)
     licenses = ArrayOfCollectionsProperty(
         "licenses",

@@ -20,6 +20,7 @@ from webpub_manifest_parser.opds2.ast import (
     OPDS2Feed,
     OPDS2FeedMetadata,
     OPDS2LinkProperties,
+    OPDS2PublicationMetadata,
 )
 from webpub_manifest_parser.opds2.registry import (
     OPDS2LinkRelationsRegistry,
@@ -61,7 +62,7 @@ class OPDS2ParserTest(TestCase):
         self.assertEqual(2, len(feed.publications))
         publication = feed.publications[0]
 
-        self.assertIsInstance(publication.metadata, PresentationMetadata)
+        self.assertIsInstance(publication.metadata, OPDS2PublicationMetadata)
         self.assertEqual("http://schema.org/Book", publication.metadata.type)
         self.assertEqual("Moby-Dick", publication.metadata.title)
         self.assertEqual(
@@ -78,6 +79,26 @@ class OPDS2ParserTest(TestCase):
             datetime.datetime(2015, 9, 29, 17, 0, tzinfo=tzutc()),
             publication.metadata.modified,
         )
+        self.assertIsInstance(
+            publication.metadata.availability, OPDS2AvailabilityInformation
+        )
+        self.assertEqual(
+            publication.metadata.availability.state,
+            OPDS2AvailabilityType.UNAVAILABLE.value,
+        )
+        self.assertEqual(
+            publication.metadata.availability.since,
+            datetime.datetime(2019, 9, 29, 1, 3, 2, tzinfo=tzutc()),
+        )
+        self.assertEqual(
+            publication.metadata.availability.detail,
+            "This publication is no longer available in your subscription",
+        )
+        self.assertEqual(
+            publication.metadata.availability.reason,
+            "https://example.com/subscription/removal",
+        )
+        self.assertIs(publication.metadata.time_tracking, True)
 
         self.assertIsInstance(publication.links, list)
         self.assertEqual(len(publication.links), 2)
@@ -162,6 +183,9 @@ class OPDS2ParserTest(TestCase):
             datetime.datetime(2015, 9, 29, 17, 0, 0, tzinfo=tzutc()),
             publication.metadata.modified,
         )
+
+        self.assertIs(publication.metadata.availability, None)
+        self.assertIs(publication.metadata.time_tracking, False)
 
         self.assertIsInstance(publication.links, list)
 

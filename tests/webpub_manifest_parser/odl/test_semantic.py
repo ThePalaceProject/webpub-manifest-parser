@@ -3,12 +3,7 @@ import datetime
 from parameterized import parameterized
 
 from tests.webpub_manifest_parser.core.test_analyzer import AnalyzerTest
-from webpub_manifest_parser.core.ast import (
-    CollectionList,
-    Link,
-    LinkList,
-    PresentationMetadata,
-)
+from webpub_manifest_parser.core.ast import CollectionList, Link, LinkList
 from webpub_manifest_parser.core.registry import LinkRelationsRegistry
 from webpub_manifest_parser.core.semantic import (
     MANIFEST_MISSING_SELF_LINK_ERROR,
@@ -40,6 +35,7 @@ from webpub_manifest_parser.opds2.ast import (
     OPDS2FeedMetadata,
     OPDS2Group,
     OPDS2Navigation,
+    OPDS2PublicationMetadata,
 )
 
 
@@ -141,7 +137,9 @@ class ODLSemanticAnalyzerTest(AnalyzerTest):
                     publications=CollectionList(
                         [
                             ODLPublication(
-                                metadata=PresentationMetadata(title="Publication 1"),
+                                metadata=OPDS2PublicationMetadata(
+                                    title="Publication 1"
+                                ),
                                 licenses=CollectionList(),
                             )
                         ]
@@ -150,7 +148,7 @@ class ODLSemanticAnalyzerTest(AnalyzerTest):
                 [
                     ODL_PUBLICATION_MUST_CONTAIN_EITHER_LICENSES_OR_OA_ACQUISITION_LINK_ERROR(
                         node=ODLPublication(
-                            metadata=PresentationMetadata(title="Publication 1")
+                            metadata=OPDS2PublicationMetadata(title="Publication 1")
                         ),
                         node_property=None,
                     )
@@ -171,7 +169,9 @@ class ODLSemanticAnalyzerTest(AnalyzerTest):
                     publications=CollectionList(
                         [
                             ODLPublication(
-                                metadata=PresentationMetadata(title="Publication 1"),
+                                metadata=OPDS2PublicationMetadata(
+                                    title="Publication 1"
+                                ),
                                 links=LinkList([Link(href="http://example.com")]),
                             )
                         ]
@@ -180,7 +180,7 @@ class ODLSemanticAnalyzerTest(AnalyzerTest):
                 [
                     ODL_PUBLICATION_MUST_CONTAIN_EITHER_LICENSES_OR_OA_ACQUISITION_LINK_ERROR(
                         node=ODLPublication(
-                            metadata=PresentationMetadata(title="Publication 1")
+                            metadata=OPDS2PublicationMetadata(title="Publication 1")
                         ),
                         node_property=None,
                     )
@@ -201,7 +201,9 @@ class ODLSemanticAnalyzerTest(AnalyzerTest):
                     publications=CollectionList(
                         [
                             ODLPublication(
-                                metadata=PresentationMetadata(title="Publication 1"),
+                                metadata=OPDS2PublicationMetadata(
+                                    title="Publication 1"
+                                ),
                                 links=LinkList(
                                     [
                                         Link(
@@ -233,7 +235,9 @@ class ODLSemanticAnalyzerTest(AnalyzerTest):
                     publications=CollectionList(
                         [
                             ODLPublication(
-                                metadata=PresentationMetadata(title="Publication 1"),
+                                metadata=OPDS2PublicationMetadata(
+                                    title="Publication 1"
+                                ),
                                 links=LinkList([Link(href="http://example.com")]),
                                 licenses=CollectionList(
                                     [
