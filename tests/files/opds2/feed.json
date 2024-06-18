@@ -25,7 +25,7 @@
         "language": "en",
         "availability": {
           "state": "unavailable",
-          "reason": "https://example.com/subscription/removal",
+          "reason": "https://registry.opds.io/reason#removed",
           "detail": "This publication is no longer available in your subscription",
           "since": "2019-09-29T01:03:02Z"
         },

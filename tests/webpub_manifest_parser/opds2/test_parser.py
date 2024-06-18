@@ -96,7 +96,7 @@ class OPDS2ParserTest(TestCase):
         )
         self.assertEqual(
             publication.metadata.availability.reason,
-            "https://example.com/subscription/removal",
+            "https://registry.opds.io/reason#removed",
         )
         self.assertIs(publication.metadata.time_tracking, True)
 

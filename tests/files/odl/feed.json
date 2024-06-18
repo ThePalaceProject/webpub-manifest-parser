@@ -89,7 +89,7 @@
               "state": "unavailable",
               "until": "2000-05-04T03:02:01Z",
               "detail": "a detailed reason",
-              "reason": "http://terms.example.org/unavailable"
+              "reason": "https://registry.opds.io/reason#exhausted"
             }
           },
           "links": [

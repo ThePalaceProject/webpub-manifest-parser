@@ -96,7 +96,8 @@ class ODLParserTest(TestCase):
         )
         self.assertEqual("a detailed reason", license.metadata.availability.detail)
         self.assertEqual(
-            "http://terms.example.org/unavailable", license.metadata.availability.reason
+            "https://registry.opds.io/reason#exhausted",
+            license.metadata.availability.reason,
         )
 
         self.assertEqual(2, len(license.links))
