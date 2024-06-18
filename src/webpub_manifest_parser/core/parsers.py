@@ -5,7 +5,7 @@ from pydoc import locate
 
 import jsonschema
 from dateutil import parser as datetime_parser
-from jsonschema import FormatError
+from jsonschema.exceptions import FormatError
 from uritemplate import URITemplate
 
 from webpub_manifest_parser.errors import BaseError

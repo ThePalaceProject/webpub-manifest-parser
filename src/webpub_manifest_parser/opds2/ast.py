@@ -21,6 +21,7 @@ from webpub_manifest_parser.core.parsers import (
 )
 from webpub_manifest_parser.core.properties import (
     ArrayProperty,
+    BooleanProperty,
     DateOrTimeProperty,
     DateTimeProperty,
     EnumProperty,
@@ -276,6 +277,8 @@ class OPDS2AvailabilityInformation(Node):
     )
     since = DateOrTimeProperty("since", required=False)
     until = DateOrTimeProperty("until", required=False)
+    reason = URIProperty("reason", required=False)
+    detail = StringProperty("detail", required=False)
 
 
 class OPDS2LinkProperties(LinkProperties):
@@ -345,21 +348,36 @@ class OPDS2FeedMetadata(Node):
         self.number_of_items = number_of_items
 
 
+class OPDS2PublicationMetadata(PresentationMetadata):
+    # OPDS2 Removal proposed property. See here for more detail:
+    # https://github.com/opds-community/drafts/discussions/63
+    availability = TypeProperty(
+        "availability", required=False, nested_type=OPDS2AvailabilityInformation
+    )
+    # Palace OPDS extension to indicate that the publication supports time tracking
+    time_tracking = BooleanProperty(
+        "http://palaceproject.io/terms/timeTracking", False, default_value=False
+    )
+
+
 class OPDS2Publication(Collection):
     """OPDS 2.0 publication."""
 
     images = CompactCollectionProperty(
         "images", required=True, role=OPDS2CollectionRolesRegistry.IMAGES
     )
+    metadata = TypeProperty(
+        key="metadata", required=True, nested_type=OPDS2PublicationMetadata
+    )
 
     def __init__(self, metadata=None, links=None, images=None):
         """Initialize a new instance of OPDS2Publication class."""
         super().__init__()
 
-        if metadata and not isinstance(metadata, PresentationMetadata):
+        if metadata and not isinstance(metadata, OPDS2PublicationMetadata):
             raise ValueError(
                 "Argument 'metadata' must be an instance of {}".format(
-                    PresentationMetadata
+                    OPDS2PublicationMetadata
                 )
             )
         if links and not isinstance(links, LinkList):

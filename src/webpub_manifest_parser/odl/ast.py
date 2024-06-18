@@ -16,7 +16,12 @@ from webpub_manifest_parser.core.properties import (
     URIProperty,
 )
 from webpub_manifest_parser.odl.registry import ODLCollectionRolesRegistry
-from webpub_manifest_parser.opds2.ast import OPDS2Feed, OPDS2Price, OPDS2Publication
+from webpub_manifest_parser.opds2.ast import (
+    OPDS2AvailabilityInformation,
+    OPDS2Feed,
+    OPDS2Price,
+    OPDS2Publication,
+)
 from webpub_manifest_parser.opds2.registry import OPDS2CollectionRolesRegistry
 from webpub_manifest_parser.utils import is_string
 
@@ -62,6 +67,9 @@ class ODLLicenseMetadata(Node):
         nested_type=OPDS2Price,
     )
     source = URIProperty("source", required=False)
+    availability = TypeProperty(
+        "availability", required=False, nested_type=OPDS2AvailabilityInformation
+    )
 
     def __init__(self, identifier=None, formats=None, created=None):
         """Initialize a new instance of ODLLicenseMetadata class.

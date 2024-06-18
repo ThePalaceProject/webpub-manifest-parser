@@ -29,6 +29,7 @@ from webpub_manifest_parser.opds2.ast import (
     OPDS2Group,
     OPDS2Navigation,
     OPDS2Publication,
+    OPDS2PublicationMetadata,
 )
 from webpub_manifest_parser.rwpm import (
     RWPMCollectionRolesRegistry,
@@ -136,7 +137,7 @@ OPDS2_FEED = OPDS2Feed(
     publications=CollectionList(
         [
             OPDS2Publication(
-                metadata=PresentationMetadata(title="Publication 1"),
+                metadata=OPDS2PublicationMetadata(title="Publication 1"),
                 links=LinkList(
                     [
                         Link(
@@ -167,7 +168,7 @@ OPDS2_FEED = OPDS2Feed(
                 publications=CollectionList(
                     [
                         OPDS2Publication(
-                            metadata=PresentationMetadata(title="Publication 1.1"),
+                            metadata=OPDS2PublicationMetadata(title="Publication 1.1"),
                             links=LinkList(
                                 [
                                     Link(
@@ -199,7 +200,7 @@ ODL_FEED = ODLFeed(
     publications=CollectionList(
         [
             ODLPublication(
-                metadata=PresentationMetadata(title="Publication 1"),
+                metadata=OPDS2PublicationMetadata(title="Publication 1"),
                 links=LinkList([Link(href="http://example.com")]),
                 licenses=CollectionList(
                     [
@@ -215,7 +216,7 @@ ODL_FEED = ODLFeed(
                 ),
             ),
             ODLPublication(
-                metadata=PresentationMetadata(title="Publication 1"),
+                metadata=OPDS2PublicationMetadata(title="Publication 1"),
                 links=LinkList([Link(href="http://example.com")]),
                 licenses=CollectionList(
                     [

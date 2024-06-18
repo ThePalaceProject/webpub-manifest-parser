@@ -3,12 +3,7 @@ from unittest.mock import MagicMock, call
 from parameterized import parameterized
 
 from tests.webpub_manifest_parser.core.test_analyzer import AnalyzerTest
-from webpub_manifest_parser.core.ast import (
-    CollectionList,
-    Link,
-    LinkList,
-    PresentationMetadata,
-)
+from webpub_manifest_parser.core.ast import CollectionList, Link, LinkList
 from webpub_manifest_parser.core.semantic import SemanticAnalyzerError
 from webpub_manifest_parser.opds2.ast import (
     OPDS2Feed,
@@ -16,6 +11,7 @@ from webpub_manifest_parser.opds2.ast import (
     OPDS2Group,
     OPDS2Navigation,
     OPDS2Publication,
+    OPDS2PublicationMetadata,
 )
 from webpub_manifest_parser.opds2.registry import (
     OPDS2CollectionRolesRegistry,
@@ -91,7 +87,9 @@ class OPDS2SemanticAnalyzerTest(AnalyzerTest):
                     publications=CollectionList(
                         [
                             OPDS2Publication(
-                                metadata=PresentationMetadata(title="Publication 1"),
+                                metadata=OPDS2PublicationMetadata(
+                                    title="Publication 1"
+                                ),
                                 links=LinkList([Link(href="http://example.com")]),
                             )
                         ]
@@ -127,7 +125,7 @@ class OPDS2SemanticAnalyzerTest(AnalyzerTest):
                                 publications=CollectionList(
                                     [
                                         OPDS2Publication(
-                                            metadata=PresentationMetadata(
+                                            metadata=OPDS2PublicationMetadata(
                                                 title="Publication 1"
                                             ),
                                             links=LinkList(
@@ -192,7 +190,7 @@ class OPDS2SemanticAnalyzerTest(AnalyzerTest):
             publications=CollectionList(
                 [
                     OPDS2Publication(
-                        metadata=PresentationMetadata(title="Publication 1"),
+                        metadata=OPDS2PublicationMetadata(title="Publication 1"),
                         links=LinkList(
                             [
                                 Link(
@@ -223,7 +221,7 @@ class OPDS2SemanticAnalyzerTest(AnalyzerTest):
                         publications=CollectionList(
                             [
                                 OPDS2Publication(
-                                    metadata=PresentationMetadata(
+                                    metadata=OPDS2PublicationMetadata(
                                         title="Publication 1.1"
                                     ),
                                     links=LinkList(

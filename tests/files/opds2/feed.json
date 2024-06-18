@@ -23,6 +23,13 @@
           "urn:isbn:978-3-16-148410-0"
         ],
         "language": "en",
+        "availability": {
+          "state": "unavailable",
+          "reason": "https://registry.opds.io/reason#removed",
+          "detail": "This publication is no longer available in your subscription",
+          "since": "2019-09-29T01:03:02Z"
+        },
+        "http://palaceproject.io/terms/timeTracking": true,
         "published": "2015-09-29T00:00:00Z",
         "modified": "2015-09-29T17:00:00Z",
         "subject": [
@@ -97,7 +104,10 @@
           "href": "http://montreal.pretnumerique.ca/v1/media/EDEN656014-9782404012711-epub/loans_activation.opds2?_resource_id=5f775a8c2357946dbe59f911",
           "properties": {
             "availability": {
-              "state": "available"
+              "state": "available",
+              "until": "2019-09-29T01:03:02Z",
+              "detail": "a detailed reason",
+              "reason": "http://terms.example.org/available"
             },
             "indirectAcquisition": [
               {
