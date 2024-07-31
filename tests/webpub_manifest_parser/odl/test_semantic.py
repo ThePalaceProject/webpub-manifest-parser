@@ -255,7 +255,7 @@ class ODLSemanticAnalyzerTest(AnalyzerTest):
                 [],
             ),
             (
-                "when_publication_does_not_contain_licenses_and_has_an_acquisition_link",
+                "when_publication_does_not_contain_licenses_and_has_an_unknown_acquisition_link",
                 ODLFeed(
                     metadata=OPDS2FeedMetadata(title="test"),
                     links=LinkList(
@@ -277,7 +277,7 @@ class ODLSemanticAnalyzerTest(AnalyzerTest):
                                         Link(
                                             href="http://example.com",
                                             rels=[
-                                                OPDS2LinkRelationsRegistry.ACQUISITION.key
+                                                f"{OPDS2LinkRelationsRegistry.ACQUISITION.key}/unknown"
                                             ],
                                         )
                                     ]
