@@ -22,7 +22,7 @@ from webpub_manifest_parser.odl.semantic import (
     ODL_FEED_MISSING_PUBLICATIONS_SUBCOLLECTION_ERROR,
     ODL_LICENSE_MUST_CONTAIN_CHECKOUT_LINK_TO_LICENSE_STATUS_DOCUMENT_ERROR,
     ODL_LICENSE_MUST_CONTAIN_SELF_LINK_TO_LICENSE_INFO_DOCUMENT_ERROR,
-    ODL_PUBLICATION_MUST_CONTAIN_EITHER_LICENSES_OR_OA_ACQUISITION_LINK_ERROR,
+    ODL_PUBLICATION_MUST_CONTAIN_EITHER_LICENSES_OR_ACQUISITION_LINK_ERROR,
     ODLSemanticAnalyzer,
 )
 from webpub_manifest_parser.opds2 import (
@@ -123,7 +123,7 @@ class ODLSemanticAnalyzerTest(AnalyzerTest):
                 ],
             ),
             (
-                "when_publication_does_not_contain_neither_licenses_nor_oa_link",
+                "when_publication_does_not_contain_licenses_nor_acquisition_link",
                 ODLFeed(
                     metadata=OPDS2FeedMetadata(title="test"),
                     links=LinkList(
@@ -146,7 +146,7 @@ class ODLSemanticAnalyzerTest(AnalyzerTest):
                     ),
                 ),
                 [
-                    ODL_PUBLICATION_MUST_CONTAIN_EITHER_LICENSES_OR_OA_ACQUISITION_LINK_ERROR(
+                    ODL_PUBLICATION_MUST_CONTAIN_EITHER_LICENSES_OR_ACQUISITION_LINK_ERROR(
                         node=ODLPublication(
                             metadata=OPDS2PublicationMetadata(title="Publication 1")
                         ),
@@ -155,7 +155,7 @@ class ODLSemanticAnalyzerTest(AnalyzerTest):
                 ],
             ),
             (
-                "when_publication_does_not_contain_neither_licenses_nor_oa_link",
+                "when_publication_does_not_contain_licenses_nor_acquisition_link",
                 ODLFeed(
                     metadata=OPDS2FeedMetadata(title="test"),
                     links=LinkList(
@@ -178,7 +178,7 @@ class ODLSemanticAnalyzerTest(AnalyzerTest):
                     ),
                 ),
                 [
-                    ODL_PUBLICATION_MUST_CONTAIN_EITHER_LICENSES_OR_OA_ACQUISITION_LINK_ERROR(
+                    ODL_PUBLICATION_MUST_CONTAIN_EITHER_LICENSES_OR_ACQUISITION_LINK_ERROR(
                         node=ODLPublication(
                             metadata=OPDS2PublicationMetadata(title="Publication 1")
                         ),
@@ -210,6 +210,74 @@ class ODLSemanticAnalyzerTest(AnalyzerTest):
                                             href="http://example.com",
                                             rels=[
                                                 OPDS2LinkRelationsRegistry.OPEN_ACCESS.key
+                                            ],
+                                        )
+                                    ]
+                                ),
+                            )
+                        ]
+                    ),
+                ),
+                [],
+            ),
+            (
+                "when_publication_does_not_contain_licenses_and_has_an_acquisition_link",
+                ODLFeed(
+                    metadata=OPDS2FeedMetadata(title="test"),
+                    links=LinkList(
+                        [
+                            Link(
+                                href="http://example.com",
+                                rels=[LinkRelationsRegistry.SELF.key],
+                            )
+                        ]
+                    ),
+                    publications=CollectionList(
+                        [
+                            ODLPublication(
+                                metadata=OPDS2PublicationMetadata(
+                                    title="Publication 1"
+                                ),
+                                links=LinkList(
+                                    [
+                                        Link(
+                                            href="http://example.com",
+                                            rels=[
+                                                OPDS2LinkRelationsRegistry.ACQUISITION.key
+                                            ],
+                                        )
+                                    ]
+                                ),
+                            )
+                        ]
+                    ),
+                ),
+                [],
+            ),
+            (
+                "when_publication_does_not_contain_licenses_and_has_an_acquisition_link",
+                ODLFeed(
+                    metadata=OPDS2FeedMetadata(title="test"),
+                    links=LinkList(
+                        [
+                            Link(
+                                href="http://example.com",
+                                rels=[LinkRelationsRegistry.SELF.key],
+                            )
+                        ]
+                    ),
+                    publications=CollectionList(
+                        [
+                            ODLPublication(
+                                metadata=OPDS2PublicationMetadata(
+                                    title="Publication 1"
+                                ),
+                                links=LinkList(
+                                    [
+                                        Link(
+                                            href="http://example.com",
+                                            rels=[
+                                                OPDS2LinkRelationsRegistry.ACQUISITION.key
                                             ],
                                         )
                                     ]
