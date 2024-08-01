@@ -108,10 +108,10 @@ ODL_FEED_CONTAINS_REDUNDANT_NAVIGATION_SUBCOLLECTION_ERROR = partial(
     message="ODL feed '{0}' contains redundant 'navigation' subcollection",
 )
 
-ODL_PUBLICATION_MUST_CONTAIN_EITHER_LICENSES_OR_OA_ACQUISITION_LINK_ERROR = partial(
+ODL_PUBLICATION_MUST_CONTAIN_EITHER_LICENSES_OR_ACQUISITION_LINK_ERROR = partial(
     ODLPublicationSemanticError,
     message="ODL publication '{0}' contains neither 'licenses' subcollection nor "
-    "an Open-Access Acquisition Link (http://opds-spec.org/acquisition/open-access)",
+    "an Acquisition Link (http://opds-spec.org/acquisition)",
 )
 
 ODL_LICENSE_MUST_CONTAIN_SELF_LINK_TO_LICENSE_INFO_DOCUMENT_ERROR = partial(
@@ -195,12 +195,19 @@ class ODLSemanticAnalyzer(SemanticAnalyzer):
         """
         self._logger.debug(f"Started processing {encode(node)}")
 
+        links = node.links or []
+        acquisition_uri = OPDS2LinkRelationsRegistry.ACQUISITION.key
+        acquisition_links = [
+            l
+            for l in links
+            if any([rel.startswith(acquisition_uri) for rel in l.rels or []])
+        ]
+
         if (not node.licenses or len(node.licenses) == 0) and (
-            (not node.links or len(node.links) == 0)
-            or not node.links.get_by_rel(OPDS2LinkRelationsRegistry.OPEN_ACCESS.key)
+            (not node.links or len(node.links) == 0) or (len(acquisition_links) == 0)
         ):
             with self._record_errors():
-                raise ODL_PUBLICATION_MUST_CONTAIN_EITHER_LICENSES_OR_OA_ACQUISITION_LINK_ERROR(
+                raise ODL_PUBLICATION_MUST_CONTAIN_EITHER_LICENSES_OR_ACQUISITION_LINK_ERROR(
                     node=node, node_property=None
                 )
         elif node.licenses:

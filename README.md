@@ -12,6 +12,26 @@ A parser for the
 [Open Publication Distribution System 2.0 (OPDS 2.0)](https://drafts.opds.io/opds-2.0), and
 [Open Distribution to Libraries 1.0 (ODL)](https://drafts.opds.io/odl-1.0.html) formats.
 
+**Note**: This parser varys from the OPDS 2 + ODL spec in that it allows OPDS 2 + ODL feeds to contain
+non-open access acquisition links.
+
+The spec [defines](https://drafts.opds.io/odl-1.0.html#21-opds-20) an OPDS 2 + ODL feed as:
+
+- It must be a valid OPDS Feed as defined in [[OPDS-2](https://drafts.opds.io/odl-1.0.html#normative-references)] with
+  one difference:
+    - The requirement for the presence of an Acquisition Link is relaxed
+    - Instead, each Publication listed in publications must either contain a licenses subcollection or an Open-Access
+      Acquisition Link (http://opds-spec.org/acquisition/open-access)
+
+The requirement that each link be an Open-Access Acquisition Link is overly restrictive, and prevents us from importing
+mixed OPDS2 and OPDS2 + ODL feeds. We relax the requirement to:
+
+- It must be a valid OPDS Feed as defined in [[OPDS-2](https://drafts.opds.io/odl-1.0.html#normative-references)] with
+  one difference:
+    - The requirement for the presence of an Acquisition Link is relaxed
+    - Instead, each Publication listed in publications must either contain a licenses subcollection or an
+      **Acquisition Link** (http://opds-spec.org/acquisition)
+
 ## Usage
 
 Install the library with `pip`
