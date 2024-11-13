@@ -1,6 +1,8 @@
 # webpub manifest parser
 
-**ARCHIVED:** This package has been archived, and is no longer maintained. Palace Manager has been updated to use Pydantic instead of this parsing library. 
+🚨 **ARCHIVED** 🚨: This package has been archived, and is no longer maintained. Palace Manager has been updated to 
+use Pydantic instead of this parsing library. See [Palace Manager](https://github.com/ThePalaceProject/circulation)
+for more information.
 
 A parser for the
 [Readium Web Publication Manifest (RWPM)](https://github.com/readium/webpub-manifest),
