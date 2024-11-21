@@ -1,11 +1,8 @@
 # webpub manifest parser
 
-[![Run Tests](https://github.com/ThePalaceProject/webpub-manifest-parser/actions/workflows/test.yml/badge.svg)](https://github.com/ThePalaceProject/webpub-manifest-parser/actions/workflows/test.yml)
-[![PyPI](https://img.shields.io/pypi/v/palace-webpub-manifest-parser)](https://pypi.org/project/palace-webpub-manifest-parser/)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
-![Python: 3.8,3.9,3.10,3.11](https://img.shields.io/badge/Python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue)
+🚨 **ARCHIVED** 🚨: This package has been archived, and is no longer maintained. Palace Manager has been updated to
+use Pydantic instead of this parsing library. See [Palace Manager](https://github.com/ThePalaceProject/circulation)
+for more information.
 
 A parser for the
 [Readium Web Publication Manifest (RWPM)](https://github.com/readium/webpub-manifest),
